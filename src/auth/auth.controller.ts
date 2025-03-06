@@ -1,7 +1,7 @@
-import { Controller, Post, Body, UnauthorizedException, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Body, UnauthorizedException, HttpCode, HttpStatus, Get } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { LoginDto, LoginResponseDto } from './dto/auth.dto';
+import { LoginDto } from './dto/auth.dto';
 
 @ApiTags('auth')
 @Controller('api')
@@ -19,7 +19,7 @@ export class AuthController {
     description: 'Unauthorized: Invalid credentials',
 
   })
-  @Post('login')
+  @Get('login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: LoginDto): Promise<string> {
     const user = await this.authService.validateUserCredentials(
