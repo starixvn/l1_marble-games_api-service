@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
-import { User } from './user.schema'; // interface from user.schema.ts
+import { User } from './user.schema';
+
 
 @Injectable()
 export class AuthService {
@@ -29,9 +30,10 @@ export class AuthService {
 
   // Generate JWT for a specific user
   async generateJwt(user: User): Promise<string> {
-    const payload = { username: user.username, sub: user._id };
+    const payload = { username: user?.username };
     return this.jwtService.sign(payload, {
-      expiresIn: '24h'
+      expiresIn: '24h',
+      subject: user._id.toString()
     });
   }
 

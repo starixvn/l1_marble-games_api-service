@@ -1,4 +1,4 @@
-import { Schema, Document } from 'mongoose';
+import { Schema, Document, ObjectId } from 'mongoose';
 
 export const UserSchema = new Schema({
   username: { type: String, unique: true, required: true },
@@ -6,7 +6,7 @@ export const UserSchema = new Schema({
 });
 
 // For NestJS usage
-export interface User extends Document {
+export interface User extends Document<ObjectId> {
   username: string;
   password: string;
 }

@@ -8,13 +8,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: 'MY_SUPER_SECRET_KEY', // same as in JwtModule
-      // Optional: ignoreExpiration: false
     });
   }
 
   async validate(payload: any) {
-    // 'validate' is called automatically if token is valid
-    // You can do further checks (e.g. user existence in DB) if needed.
     return { userId: payload.sub, username: payload.username };
   }
 }
