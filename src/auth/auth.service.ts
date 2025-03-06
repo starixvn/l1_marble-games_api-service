@@ -30,7 +30,9 @@ export class AuthService {
   // Generate JWT for a specific user
   async generateJwt(user: User): Promise<string> {
     const payload = { username: user.username, sub: user._id };
-    return this.jwtService.sign(payload);
+    return this.jwtService.sign(payload, {
+      expiresIn: '24h'
+    });
   }
 
   // Optional: sign up a new user
