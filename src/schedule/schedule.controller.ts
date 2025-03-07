@@ -16,6 +16,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { ScheduleEventItemDto } from './dto/schedule.dto';
+import { EventDto } from 'src/events/dto/event.dto';
 
 @ApiTags('schedule')
 @ApiBearerAuth()
@@ -48,7 +49,7 @@ export class ScheduleController {
   @ApiResponse({
     status: 200,
     description: 'Returns the event details',
-    type: [ScheduleEventItemDto],
+    type: [EventDto],
   })
   @ApiResponse({
     status: 404,
