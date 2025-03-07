@@ -15,7 +15,7 @@ import {
   ApiParam,
   ApiResponse,
 } from '@nestjs/swagger';
-import { ScheduleEventDto } from './dto/schedule.dto';
+import { ScheduleEventItemDto } from './dto/schedule.dto';
 
 @ApiTags('schedule')
 @ApiBearerAuth()
@@ -28,11 +28,19 @@ export class ScheduleController {
   @ApiResponse({
     status: 200,
     description: 'Returns a list of all scheduled events',
-    type: [ScheduleEventDto],
+    type: [ScheduleEventItemDto],
   })
   @Get('schedule')
-  getSchedule(): ScheduleEvent[] {
-    return this.scheduleService.getSchedule();
+  getSchedule(): ScheduleEventItemDto[] {
+    return this.scheduleService.getSchedule().map(item => {
+      return {
+        eventID: item.id,
+        eventNameAKey: "Poland",
+        eventNameBKey: "Wales",
+        productCode: "PG_SOCCER_SPEED_MAX",
+        productTypeKey: "PG_RNG",
+      }
+    });
   }
 
   @ApiOperation({ summary: 'Get event details by ID' })
@@ -40,14 +48,14 @@ export class ScheduleController {
   @ApiResponse({
     status: 200,
     description: 'Returns the event details',
-    type: ScheduleEventDto,
+    type: [ScheduleEventItemDto],
   })
   @ApiResponse({
     status: 404,
     description: 'Event not found',
   })
   @Get('event/:id')
-  getEventById(@Param('id') id: string) {
+  getEventById(@Param('id') id: number) {
     const event = this.scheduleService.getEventDetail(id);
     if (!event) {
       throw new HttpException('Event not found', HttpStatus.NOT_FOUND);

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 export interface ScheduleEvent {
-  id: string;
+  id: number;
   title: string;
   description: string;
 }
@@ -30,7 +30,7 @@ export class ScheduleService {
     const events: ScheduleEvent[] = [];
     for (let i = 1; i <= eventCount; i++) {
       events.push({
-        id: `evt-${Date.now()}-${i}`,
+        id: i,
         title: `Event #${i}`,
         description: `Generated at ${new Date().toISOString()}`,
       });
@@ -38,7 +38,7 @@ export class ScheduleService {
     return events;
   }
 
-  getEventDetail(eventId: string): ScheduleEvent | null {
+  getEventDetail(eventId: number): ScheduleEvent | null {
     return this.scheduleData.find((e) => e.id === eventId) || null;
   }
 }
