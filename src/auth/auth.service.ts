@@ -1,45 +1,41 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from './user.schema';
+import { ConfigService } from '@nestjs/config';
+import { ConfigProps } from 'src/config/consts';
 
+interface UserCredParams {
+  username: string;
+  password?: string;
+}
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel('User') private readonly userModel: Model<User>,
+    @Inject(ConfigService) private readonly configService: ConfigService, 
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUserCredentials(
-    username: string,
-    password: string,
-  ): Promise<User | null> {
-    const user = await this.userModel.findOne({ username }).exec();
-    if (!user) {
+  async validateUserCredentials({
+    username,
+    password
+  }: UserCredParams): Promise<string | null> {
+    const userUsername = await Promise.resolve(this.configService.get<string>(ConfigProps.AUTH_USERNAME));
+    if (!userUsername || userUsername !== username) {
       return null;
     }
 
-    // In production, compare hashed passwords (e.g., bcrypt.compare)
-    if (user.password === password) {
-      return user;
+    const userPassword = await Promise.resolve(this.configService.get(ConfigProps.AUTH_PASSWORD));
+    if (!userPassword || userPassword !== password) {
+      return null;
     }
-    return null;
+    return username;
   }
 
-  // Generate JWT for a specific user
-  async generateJwt(user: User): Promise<string> {
+  async generateJwt(user: UserCredParams): Promise<string> {
     const payload = { username: user?.username };
     return this.jwtService.sign(payload, {
       expiresIn: '24h',
-      subject: user._id.toString()
+      subject: user.username
     });
-  }
-
-  // Optional: sign up a new user
-  async createUser(username: string, password: string): Promise<User> {
-    const newUser = new this.userModel({ username, password });
-    return newUser.save();
   }
 }
