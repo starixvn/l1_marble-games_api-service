@@ -1,18 +1,25 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ConfigProps } from './config/consts';
+import { ConfigKeys } from './config/config-keys';
+import configuration from './config/configuration';
+
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration]
+    }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>(ConfigProps.DB_URI)
+          ...configService.get(ConfigKeys.Database)
       })
     }
     ),

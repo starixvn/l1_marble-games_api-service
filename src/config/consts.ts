@@ -1,7 +1,0 @@
-export enum ConfigProps {
-    AUTH_USERNAME = "AUTH_USERNAME",
-    AUTH_PASSWORD = "AUTH_PASSWORD",
-    JWT_SECRET = "JWT_SECRET",
-    JWT_EXPIREIN = "JWT_EXPIREIN",
-    DB_URI = "DB_URI"
-}

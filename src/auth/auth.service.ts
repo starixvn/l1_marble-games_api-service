@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { ConfigProps } from 'src/config/consts';
+import { ConfigKeys } from 'src/config/config-keys';
+import { AuthConfig } from 'src/config/types';
 
 interface UserCredParams {
   username: string;
@@ -10,22 +11,28 @@ interface UserCredParams {
 
 @Injectable()
 export class AuthService {
+
+  private readonly auth?: AuthConfig;
+
   constructor(
     @Inject(ConfigService) private readonly configService: ConfigService, 
     private readonly jwtService: JwtService,
-  ) {}
+  ) {
+    this.auth = configService.get<AuthConfig>(ConfigKeys.Auth)
+  }
+
 
   async validateUserCredentials({
     username,
     password
   }: UserCredParams): Promise<string | null> {
-    const userUsername = await Promise.resolve(this.configService.get<string>(ConfigProps.AUTH_USERNAME));
-    if (!userUsername || userUsername !== username) {
+    if (!this.auth) return null;
+
+    if (!username || this.auth.username !== username) {
       return null;
     }
 
-    const userPassword = await Promise.resolve(this.configService.get(ConfigProps.AUTH_PASSWORD));
-    if (!userPassword || userPassword !== password) {
+    if (!password || this.auth.password !== password) {
       return null;
     }
     return username;
@@ -34,7 +41,6 @@ export class AuthService {
   async generateJwt(user: UserCredParams): Promise<string> {
     const payload = { username: user?.username };
     return this.jwtService.sign(payload, {
-      expiresIn: '24h',
       subject: user.username
     });
   }
