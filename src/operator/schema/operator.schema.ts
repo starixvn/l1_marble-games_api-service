@@ -10,7 +10,7 @@ export type OperatorDocument = Operator & Document<ObjectId>;
 @Schema()
 export class Operator {
   @Prop({ type: String })
-  hashedPassword: string;
+  password: string;
 
   @Prop({ type: Object })
   configs: OperatorConfig;

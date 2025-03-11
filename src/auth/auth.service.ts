@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { ConfigKeys } from 'src/config/config-keys';
 import { AuthConfig } from 'src/config/types';
 import { OperatorService } from 'src/operator/operator.service';
-import { compare } from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 
 interface OperatorCredParams {
   operatorId: string;
@@ -34,7 +34,7 @@ export class AuthService {
 
     if (!operator) return null;
 
-    const isPasswordMatch = await compare(password, operator.hashedPassword);
+    const isPasswordMatch = await bcrypt.compare(password, operator.password);
 
     return isPasswordMatch ? operator._id.toString() : null;
   }
