@@ -11,9 +11,6 @@ export type OperatorDocument = Operator & Document<ObjectId>;
 export class Operator {
   @Prop({ type: String })
   password: string;
-
-  @Prop({ type: Object })
-  configs: OperatorConfig;
 }
 
 export const OperatorSchema = SchemaFactory.createForClass(Operator);
