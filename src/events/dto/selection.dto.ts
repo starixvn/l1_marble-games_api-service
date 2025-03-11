@@ -1,3 +1,1 @@
-export class SelectionDto {
-    
-}
+export class SelectionDto {}

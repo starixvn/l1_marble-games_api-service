@@ -6,9 +6,7 @@ import { ConfigKeys } from 'src/config/config-keys';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(
-    @Inject(ConfigService) configService: ConfigService
-  ) {
+  constructor(@Inject(ConfigService) configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: configService.get(ConfigKeys.Jwt).secret,
@@ -19,4 +17,3 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     return { userId: payload.sub, username: payload.username };
   }
 }
- 

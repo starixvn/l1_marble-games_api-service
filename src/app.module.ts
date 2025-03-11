@@ -8,21 +8,19 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ConfigKeys } from './config/config-keys';
 import configuration from './config/configuration';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [configuration]
+      load: [configuration],
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-          ...configService.get(ConfigKeys.Database)
-      })
-    }
-    ),
+        ...configService.get(ConfigKeys.Database),
+      }),
+    }),
     AuthModule,
     ScheduleModule,
   ],

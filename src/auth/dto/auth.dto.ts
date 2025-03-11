@@ -5,7 +5,7 @@ export class AuthDto {
     description: 'The username of the user',
     example: 'john.doe',
   })
-  username: string;
+  operatorId: string;
 
   @ApiProperty({
     description: 'The password of the user',

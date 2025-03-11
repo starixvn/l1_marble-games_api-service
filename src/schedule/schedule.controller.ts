@@ -33,14 +33,14 @@ export class ScheduleController {
   })
   @Get('schedule')
   getSchedule(): ScheduleEventItemDto[] {
-    return this.scheduleService.getSchedule().map(item => {
+    return this.scheduleService.getSchedule().map((item) => {
       return {
         eventID: item.id,
-        eventNameAKey: "Poland",
-        eventNameBKey: "Wales",
-        productCode: "PG_SOCCER_SPEED_MAX",
-        productTypeKey: "PG_RNG",
-      }
+        eventNameAKey: 'Poland',
+        eventNameBKey: 'Wales',
+        productCode: 'PG_SOCCER_SPEED_MAX',
+        productTypeKey: 'PG_RNG',
+      };
     });
   }
 

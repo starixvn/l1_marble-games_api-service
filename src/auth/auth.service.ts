@@ -3,45 +3,47 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ConfigKeys } from 'src/config/config-keys';
 import { AuthConfig } from 'src/config/types';
+import { OperatorService } from 'src/operator/operator.service';
+import { compare } from 'bcryptjs';
 
-interface UserCredParams {
-  username: string;
+interface OperatorCredParams {
+  operatorId: string;
   password?: string;
 }
 
 @Injectable()
 export class AuthService {
-
-  private readonly auth?: AuthConfig;
+  private readonly expireIn: string;
 
   constructor(
-    @Inject(ConfigService) private readonly configService: ConfigService, 
+    @Inject(ConfigService) configService: ConfigService,
     private readonly jwtService: JwtService,
+    @Inject(OperatorService)
+    private readonly operatorService: OperatorService,
   ) {
-    this.auth = configService.get<AuthConfig>(ConfigKeys.Auth)
+    this.expireIn = configService.get(ConfigKeys.Jwt).signOptions.expireIn;
   }
 
+  async validateOperatorCredential({
+    operatorId,
+    password,
+  }: OperatorCredParams): Promise<string | null> {
+    if (!password) return null;
 
-  async validateUserCredentials({
-    username,
-    password
-  }: UserCredParams): Promise<string | null> {
-    if (!this.auth) return null;
+    const operator = await this.operatorService.getOperator(operatorId);
 
-    if (!username || this.auth.username !== username) {
-      return null;
-    }
+    if (!operator) return null;
 
-    if (!password || this.auth.password !== password) {
-      return null;
-    }
-    return username;
+    const isPasswordMatch = await compare(password, operator.hashedPassword);
+
+    return isPasswordMatch ? operator._id.toString() : null;
   }
 
-  async generateJwt(user: UserCredParams): Promise<string> {
-    const payload = { username: user?.username };
+  async generateJwt(user: OperatorCredParams): Promise<string> {
+    const payload = { username: user?.operatorId };
     return this.jwtService.sign(payload, {
-      subject: user.username
+      subject: user.operatorId,
+      expiresIn: this.expireIn,
     });
   }
 }

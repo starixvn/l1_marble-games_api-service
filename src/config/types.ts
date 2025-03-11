@@ -1,8 +1,8 @@
 export interface MatchConfig {
-    scoreRate: Record<string, number>
+  scoreRate: Record<string, number>;
 }
 
 export interface AuthConfig {
-    username: string;
-    password: string;
+  username: string;
+  password: string;
 }

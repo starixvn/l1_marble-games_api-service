@@ -1,7 +1,15 @@
-import { Controller, Body, UnauthorizedException, HttpCode, HttpStatus, Get, Post } from '@nestjs/common';
+import {
+  Controller,
+  Body,
+  UnauthorizedException,
+  HttpCode,
+  HttpStatus,
+  Get,
+  Post,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { AuthDto } from './dto/auth.dto';
+import { AuthDto, AuthResponseDto } from './dto/auth.dto';
 
 @ApiTags('auth')
 @Controller('api')
@@ -12,18 +20,17 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'Login successful',
-    type: "string"
+    type: AuthResponseDto,
   })
   @ApiResponse({
     status: 401,
     description: 'Unauthorized: Invalid credentials',
-
   })
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Body() loginDto: AuthDto): Promise<string> {
-    const user = await this.authService.validateUserCredentials({
-      username: loginDto.username,
+  async login(@Body() loginDto: AuthDto): Promise<AuthResponseDto> {
+    const user = await this.authService.validateOperatorCredential({
+      operatorId: loginDto.operatorId,
       password: loginDto.password,
     });
 
@@ -32,9 +39,11 @@ export class AuthController {
     }
 
     const token = await this.authService.generateJwt({
-      username: loginDto.username
+      operatorId: loginDto.operatorId,
     });
 
-    return token;
+    return {
+      access_token: token,
+    };
   }
 }
