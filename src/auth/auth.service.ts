@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ConfigKeys } from 'src/config/config-keys';
-import { AuthConfig } from 'src/config/types';
 import { OperatorService } from 'src/operator/operator.service';
 import bcrypt from 'bcryptjs';
 
