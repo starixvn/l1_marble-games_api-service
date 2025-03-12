@@ -4,7 +4,6 @@ import {
   UnauthorizedException,
   HttpCode,
   HttpStatus,
-  Get,
   Post,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';

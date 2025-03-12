@@ -1,11 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, ObjectId } from 'mongoose';
 
-export interface OperatorConfig {
-  productCodes: string[];
-}
-
-export type OperatorDocument = Operator & Document<ObjectId>;
+export type OperatorDocument = Operator & Document<unknown>;
 
 @Schema()
 export class Operator {

@@ -5,8 +5,8 @@ import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ConfigKeys } from 'src/config/config-keys';
-import { OperatorModule } from 'src/operator/operator.module';
+import { ConfigKeys } from '../config/config-keys';
+import { OperatorModule } from '../operator/operator.module';
 
 @Module({
   imports: [

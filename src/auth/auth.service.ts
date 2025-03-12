@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { ConfigKeys } from 'src/config/config-keys';
-import { OperatorService } from 'src/operator/operator.service';
+import { ConfigKeys } from '../config/config-keys';
+import { OperatorService } from '../operator/operator.service';
 import { compare } from 'bcryptjs';
+import { ObjectId } from 'mongoose';
 
 interface OperatorCredParams {
   operatorId: string;
@@ -35,12 +36,12 @@ export class AuthService {
 
     const isPasswordMatch = await compare(password, operator.password);
 
-    return isPasswordMatch ? operator._id.toString() : null;
+    return isPasswordMatch ? (operator._id as ObjectId).toString() : null;
   }
 
   async generateJwt(user: OperatorCredParams): Promise<string> {
     const payload = { username: user?.operatorId };
-    return this.jwtService.sign(payload, {
+    return await this.jwtService.signAsync(payload, {
       subject: user.operatorId,
       expiresIn: this.expireIn,
     });

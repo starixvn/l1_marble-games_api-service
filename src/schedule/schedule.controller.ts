@@ -16,7 +16,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { ScheduleEventItemDto } from './dto/schedule.dto';
-import { EventDto } from 'src/events/dto/event.dto';
+import { EventDto } from '../events/dto/event.dto';
 
 @ApiTags('schedule')
 @ApiBearerAuth()
