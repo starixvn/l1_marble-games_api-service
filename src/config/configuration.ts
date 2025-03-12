@@ -1,4 +1,4 @@
-const config = {
+const config = () => ({
   database: {
     uri: process.env.DATABASE_URI,
     dbName: 'marble-odds-feed',
@@ -9,6 +9,6 @@ const config = {
       expireIn: process.env.JWT_EXPIREIN,
     },
   },
-};
+});
 
-export default () => config;
+export default config;
