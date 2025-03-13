@@ -1,13 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { RequestMethod } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.setGlobalPrefix('api');
+  // for healthcheck
+  app.setGlobalPrefix('api', {
+    exclude: [{path: '', method: RequestMethod.GET}]
+  });
 
-  // Swagger configuration
   const config = new DocumentBuilder()
     .setTitle('Marble Odds Feed API')
     .setDescription('The API documentation for Marble Odds Feed')
