@@ -11,7 +11,7 @@ import { AuthService } from './auth.service';
 import { AuthDto, AuthResponseDto } from './dto/auth.dto';
 
 @ApiTags('auth')
-@Controller('api')
+@Controller('login')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -25,7 +25,7 @@ export class AuthController {
     status: 401,
     description: 'Unauthorized: Invalid credentials',
   })
-  @Post('login')
+  @Post()
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: AuthDto): Promise<AuthResponseDto> {
     const user = await this.authService.validateOperatorCredential({

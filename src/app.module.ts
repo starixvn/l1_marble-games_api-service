@@ -7,6 +7,7 @@ import { ScheduleModule } from './schedule/schedule.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ConfigKeys } from './config/config-keys';
 import configuration from './config/configuration';
+import { HealthCheckModule } from './healthcheck/healthcheck.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import configuration from './config/configuration';
     }),
     AuthModule,
     ScheduleModule,
+    HealthCheckModule
   ],
 })
 export class AppModule {}

@@ -5,12 +5,13 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.setGlobalPrefix('api');
+
   // Swagger configuration
   const config = new DocumentBuilder()
-    .setTitle('Marble Football API')
-    .setDescription('The API documentation for Marble Football application')
-    .setVersion('1.0')
-    .addTag('auth')
+    .setTitle('Marble Odds Feed API')
+    .setDescription('The API documentation for Marble Odds Feed')
+    .setVersion('0.0')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);

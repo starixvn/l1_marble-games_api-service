@@ -20,7 +20,7 @@ import { EventDto } from '../events/dto/event.dto';
 
 @ApiTags('schedule')
 @ApiBearerAuth()
-@Controller('api')
+@Controller('schedule')
 @UseGuards(JwtAuthGuard)
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
@@ -31,7 +31,7 @@ export class ScheduleController {
     description: 'Returns a list of all scheduled events',
     type: [ScheduleEventItemDto],
   })
-  @Get('schedule')
+  @Get()
   getSchedule(): ScheduleEventItemDto[] {
     return this.scheduleService.getSchedule().map((item) => {
       return {
@@ -42,25 +42,5 @@ export class ScheduleController {
         productTypeKey: 'PG_RNG',
       };
     });
-  }
-
-  @ApiOperation({ summary: 'Get event details by ID' })
-  @ApiParam({ name: 'id', description: 'Event ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'Returns the event details',
-    type: [EventDto],
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Event not found',
-  })
-  @Get('event/:id')
-  getEventById(@Param('id') id: number) {
-    const event = this.scheduleService.getEventDetail(id);
-    if (!event) {
-      throw new HttpException('Event not found', HttpStatus.NOT_FOUND);
-    }
-    return event;
   }
 }
