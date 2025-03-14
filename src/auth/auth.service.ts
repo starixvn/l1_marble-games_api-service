@@ -1,41 +1,49 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from './user.schema'; // interface from user.schema.ts
+import { ConfigService } from '@nestjs/config';
+import { ConfigKeys } from '../config/config-keys';
+import { OperatorService } from '../operator/operator.service';
+import { compare } from 'bcryptjs';
+import { ObjectId } from 'mongoose';
+
+interface OperatorCredParams {
+  operatorId: string;
+  password?: string;
+}
 
 @Injectable()
 export class AuthService {
+  private readonly expireIn: string;
+
   constructor(
-    @InjectModel('User') private readonly userModel: Model<User>,
+    @Inject(ConfigService) configService: ConfigService,
     private readonly jwtService: JwtService,
-  ) {}
-
-  async validateUserCredentials(
-    username: string,
-    password: string,
-  ): Promise<User | null> {
-    const user = await this.userModel.findOne({ username }).exec();
-    if (!user) {
-      return null;
-    }
-
-    // In production, compare hashed passwords (e.g., bcrypt.compare)
-    if (user.password === password) {
-      return user;
-    }
-    return null;
+    @Inject(OperatorService)
+    private readonly operatorService: OperatorService,
+  ) {
+    this.expireIn = configService.get(ConfigKeys.Jwt).signOptions.expireIn;
   }
 
-  // Generate JWT for a specific user
-  async generateJwt(user: User): Promise<string> {
-    const payload = { username: user.username, sub: user._id };
-    return this.jwtService.sign(payload);
+  async validateOperatorCredential({
+    operatorId,
+    password,
+  }: OperatorCredParams): Promise<string | null> {
+    if (!password) return null;
+
+    const operator = await this.operatorService.getOperator(operatorId);
+
+    if (!operator) return null;
+
+    const isPasswordMatch = await compare(password, operator.password);
+
+    return isPasswordMatch ? (operator._id as ObjectId).toString() : null;
   }
 
-  // Optional: sign up a new user
-  async createUser(username: string, password: string): Promise<User> {
-    const newUser = new this.userModel({ username, password });
-    return newUser.save();
+  async generateJwt(user: OperatorCredParams): Promise<string> {
+    const payload = { username: user?.operatorId };
+    return await this.jwtService.signAsync(payload, {
+      subject: user.operatorId,
+      expiresIn: this.expireIn,
+    });
   }
 }

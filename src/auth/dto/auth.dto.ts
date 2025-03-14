@@ -1,20 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class LoginDto {
+export class AuthDto {
   @ApiProperty({
     description: 'The username of the user',
     example: 'john.doe',
   })
-  username: string;
+  operatorId: string;
 
   @ApiProperty({
     description: 'The password of the user',
-    example: 'password123',
+    example: '1234aaAA',
   })
   password: string;
 }
 
-export class LoginResponseDto {
+export class AuthResponseDto {
   @ApiProperty({
     description: 'JWT access token',
     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',

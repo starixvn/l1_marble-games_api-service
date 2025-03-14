@@ -1,57 +1,54 @@
 import {
   Controller,
   Get,
-  Param,
   UseGuards,
-  HttpException,
-  HttpStatus,
+  Query,
+  Inject,
 } from '@nestjs/common';
-import { ScheduleService, ScheduleEvent } from './schedule.service';
 import { JwtAuthGuard } from '../common/guards/jwt.auth.guard';
 import {
   ApiTags,
   ApiOperation,
   ApiBearerAuth,
-  ApiParam,
   ApiResponse,
 } from '@nestjs/swagger';
-import { ScheduleEventDto } from './dto/schedule.dto';
+import { ScheduleEventItemDto } from './dto/schedule.dto';
+import { TimeRangeDto } from './dto/time-range.dto';
+import { EventService } from 'src/events/events.service';
 
 @ApiTags('schedule')
 @ApiBearerAuth()
-@Controller('api')
+@Controller('schedule')
 @UseGuards(JwtAuthGuard)
 export class ScheduleController {
-  constructor(private readonly scheduleService: ScheduleService) {}
+  constructor(
+    @Inject(EventService)
+    private readonly eventService: EventService
+  ) {}
 
   @ApiOperation({ summary: 'Get all scheduled events' })
   @ApiResponse({
     status: 200,
     description: 'Returns a list of all scheduled events',
-    type: [ScheduleEventDto],
+    type: [ScheduleEventItemDto],
   })
-  @Get('schedule')
-  getSchedule(): ScheduleEvent[] {
-    return this.scheduleService.getSchedule();
+  @Get()
+  async getSchedule(
+    @Query()
+    query: TimeRangeDto
+  ): Promise<ScheduleEventItemDto[]> {
+      const events = await this.eventService.getEventByTimeSpan({
+        startTime: query.fromDate,
+        endTime: query.toDate
+      });
+
+      return events.map(event => ({
+        eventID: event.eventID,
+        eventNameAKey: event.eventNameAKey,
+        eventNameBKey: event.eventNameBKey,
+        productCode: "Spinner_Soccer",
+        productTypeKey: "Marble_RNG",
+      }))
+    };
   }
 
-  @ApiOperation({ summary: 'Get event details by ID' })
-  @ApiParam({ name: 'id', description: 'Event ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'Returns the event details',
-    type: ScheduleEventDto,
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Event not found',
-  })
-  @Get('event/:id')
-  getEventById(@Param('id') id: string) {
-    const event = this.scheduleService.getEventDetail(id);
-    if (!event) {
-      throw new HttpException('Event not found', HttpStatus.NOT_FOUND);
-    }
-    return event;
-  }
-}

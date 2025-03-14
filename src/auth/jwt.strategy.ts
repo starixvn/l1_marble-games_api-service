@@ -1,20 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
+import { ConfigKeys } from '../config/config-keys';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(@Inject(ConfigService) configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: 'MY_SUPER_SECRET_KEY', // same as in JwtModule
-      // Optional: ignoreExpiration: false
+      secretOrKey: configService.get(ConfigKeys.Jwt).secret,
     });
   }
 
   async validate(payload: any) {
-    // 'validate' is called automatically if token is valid
-    // You can do further checks (e.g. user existence in DB) if needed.
     return { userId: payload.sub, username: payload.username };
   }
 }
