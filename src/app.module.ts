@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ConfigKeys } from './config/config-keys';
 import configuration from './config/configuration';
 import { HealthCheckModule } from './healthcheck/healthcheck.module';
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { HealthCheckModule } from './healthcheck/healthcheck.module';
         ...configService.get(ConfigKeys.Database),
       }),
     }),
+    LoggerModule,
     AuthModule,
     ScheduleModule,
     HealthCheckModule

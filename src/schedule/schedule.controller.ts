@@ -4,6 +4,7 @@ import {
   UseGuards,
   Query,
   Inject,
+  UseInterceptors,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../common/guards/jwt.auth.guard';
 import {
@@ -15,11 +16,13 @@ import {
 import { ScheduleEventItemDto } from './dto/schedule.dto';
 import { TimeRangeDto } from './dto/time-range.dto';
 import { EventService } from 'src/events/events.service';
+import { LoggerInterceptor } from 'src/logger/database-logger.interceptor';
 
 @ApiTags('schedule')
 @ApiBearerAuth()
 @Controller('schedule')
 @UseGuards(JwtAuthGuard)
+@UseInterceptors(LoggerInterceptor)
 export class ScheduleController {
   constructor(
     @Inject(EventService)
