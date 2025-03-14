@@ -5,8 +5,9 @@ import {
   UseGuards,
   HttpException,
   HttpStatus,
+  Query,
+  Inject,
 } from '@nestjs/common';
-import { ScheduleService, ScheduleEvent } from './schedule.service';
 import { JwtAuthGuard } from '../common/guards/jwt.auth.guard';
 import {
   ApiTags,
@@ -14,16 +15,22 @@ import {
   ApiBearerAuth,
   ApiParam,
   ApiResponse,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { ScheduleEventItemDto } from './dto/schedule.dto';
 import { EventDto } from '../events/dto/event.dto';
+import { TimeRangeDto } from './dto/time-range.dto';
+import { EventService } from 'src/events/events.service';
 
 @ApiTags('schedule')
 @ApiBearerAuth()
 @Controller('schedule')
 @UseGuards(JwtAuthGuard)
 export class ScheduleController {
-  constructor(private readonly scheduleService: ScheduleService) {}
+  constructor(
+    @Inject(EventService)
+    private readonly eventService: EventService
+  ) {}
 
   @ApiOperation({ summary: 'Get all scheduled events' })
   @ApiResponse({
@@ -32,15 +39,22 @@ export class ScheduleController {
     type: [ScheduleEventItemDto],
   })
   @Get()
-  getSchedule(): ScheduleEventItemDto[] {
-    return this.scheduleService.getSchedule().map((item) => {
-      return {
-        eventID: item.id,
-        eventNameAKey: 'Poland',
-        eventNameBKey: 'Wales',
-        productCode: 'PG_SOCCER_SPEED_MAX',
-        productTypeKey: 'PG_RNG',
-      };
-    });
+  async getSchedule(
+    @Query()
+    query: TimeRangeDto
+  ): Promise<ScheduleEventItemDto[]> {
+      const events = await this.eventService.getEventByTimeSpan({
+        startTime: query.start,
+        endTime: query.end
+      });
+
+      return events.map(event => ({
+        eventID: event.eventID,
+        eventNameAKey: event.eventNameAKey,
+        eventNameBKey: event.eventNameBKey,
+        productCode: "Spinner_Soccer",
+        productTypeKey: "Marble_RNG",
+      }))
+    };
   }
-}
+

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Operator, OperatorDocument } from './schema/operator.schema';
-import mongoose, { Model, ObjectId, Document } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 
 @Injectable()
 export class OperatorService {
