@@ -1,10 +1,7 @@
 import {
   Controller,
   Get,
-  Param,
   UseGuards,
-  HttpException,
-  HttpStatus,
   Query,
   Inject,
 } from '@nestjs/common';
@@ -13,12 +10,9 @@ import {
   ApiTags,
   ApiOperation,
   ApiBearerAuth,
-  ApiParam,
   ApiResponse,
-  ApiQuery,
 } from '@nestjs/swagger';
 import { ScheduleEventItemDto } from './dto/schedule.dto';
-import { EventDto } from '../events/dto/event.dto';
 import { TimeRangeDto } from './dto/time-range.dto';
 import { EventService } from 'src/events/events.service';
 
@@ -44,8 +38,8 @@ export class ScheduleController {
     query: TimeRangeDto
   ): Promise<ScheduleEventItemDto[]> {
       const events = await this.eventService.getEventByTimeSpan({
-        startTime: query.start,
-        endTime: query.end
+        startTime: query.fromDate,
+        endTime: query.toDate
       });
 
       return events.map(event => ({
