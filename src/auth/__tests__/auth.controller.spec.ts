@@ -49,7 +49,7 @@ describe('AuthController', () => {
       expect(mockAuthService.generateJwt).toHaveBeenCalledWith({
         operatorId: loginDto.operatorId,
       });
-      expect(result).toEqual({ accessToken: mockToken });
+      expect(result).toEqual({ access_token: mockToken });
     });
 
     it('should throw UnauthorizedException if credentials are invalid', async () => {

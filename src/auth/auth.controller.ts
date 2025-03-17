@@ -42,7 +42,7 @@ export class AuthController {
     });
 
     return {
-      accessToken: token,
+      access_token: token,
     };
   }
 }
