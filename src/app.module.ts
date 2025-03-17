@@ -23,6 +23,14 @@ import { LoggerModule } from './logger/logger.module';
         ...configService.get(ConfigKeys.Database),
       }),
     }),
+    MongooseModule.forRootAsync({
+      connectionName: 'log',
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        ...configService.get(ConfigKeys.Database),
+      }),
+    }),
     LoggerModule,
     AuthModule,
     ScheduleModule,

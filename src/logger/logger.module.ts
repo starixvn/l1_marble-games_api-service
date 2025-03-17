@@ -12,7 +12,7 @@ import { DatabaseLogService } from "./database-logger.service";
         schema: LogRecordSchema,
         collection: "log_records" 
       }
-    ])
+    ], "log")
   ],
   providers: [DatabaseLogService],
   exports: [DatabaseLogService]
