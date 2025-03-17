@@ -11,7 +11,9 @@ export class OperatorService {
   ) {}
 
   async getOperator(operatorId: string): Promise<OperatorDocument | null> {
-    if (!mongoose.Types.ObjectId.isValid(operatorId)) return null;
-    return await this.operatorModel.findById(operatorId).lean().exec();
+    if (!mongoose.Types.ObjectId.isValid(operatorId)) {
+      return null;
+    }
+    return this.operatorModel.findById(operatorId).lean().exec();
   }
 }

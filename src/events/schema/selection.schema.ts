@@ -1,15 +1,14 @@
-import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose";
+import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema()
 export class Selection {
-
-  @Prop({type: String})
+  @Prop({ type: String })
   name: string;
 
-  @Prop({type: Number})
+  @Prop({ type: Number })
   price: number;
 
-  @Prop({type: String})
+  @Prop({ type: String })
   settlementStatus: string;
 }
 

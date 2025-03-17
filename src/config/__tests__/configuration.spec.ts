@@ -1,4 +1,4 @@
-import  config  from '../configuration';
+import config from '../config';
 
 describe('Config function', () => {
   beforeEach(() => {
@@ -19,7 +19,7 @@ describe('Config function', () => {
     const result = config();
     expect(result.database).toEqual({
       uri: 'mongodb://localhost:27017/testdb',
-      dbName: 'marble-odds-feed',
+      dbName: 'marble_odds_feed',
     });
   });
 

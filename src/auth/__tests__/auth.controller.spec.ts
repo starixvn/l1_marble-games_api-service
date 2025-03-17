@@ -30,7 +30,10 @@ describe('AuthController', () => {
   describe('login', () => {
     it('should return an access token if credentials are valid', async () => {
       // arrange
-      const loginDto: AuthDto = { operatorId: 'testUser', password: 'password' };
+      const loginDto: AuthDto = {
+        operatorId: 'testUser',
+        password: 'password',
+      };
       const mockToken = 'mockJwtToken';
       mockAuthService.validateOperatorCredential.mockResolvedValue(true);
       mockAuthService.generateJwt.mockResolvedValue(mockToken);
@@ -51,13 +54,16 @@ describe('AuthController', () => {
 
     it('should throw UnauthorizedException if credentials are invalid', async () => {
       // arrange
-      const loginDto: AuthDto = { operatorId: 'testUser', password: 'wrongPassword' };
+      const loginDto: AuthDto = {
+        operatorId: 'testUser',
+        password: 'wrongPassword',
+      };
       mockAuthService.validateOperatorCredential.mockResolvedValue(null);
 
       // act
       const act = authController.login(loginDto);
 
-      // assert 
+      // assert
       await expect(act).rejects.toThrow(UnauthorizedException);
 
       expect(mockAuthService.validateOperatorCredential).toHaveBeenCalledWith({

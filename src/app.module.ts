@@ -6,8 +6,10 @@ import { AuthModule } from './auth/auth.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ConfigKeys } from './config/config-keys';
-import configuration from './config/configuration';
+import configuration from './config/config';
 import { HealthCheckModule } from './healthcheck/healthcheck.module';
+import { LoggerModule } from './logger/logger.module';
+import { ConnectionNames } from './config/connection-names';
 
 @Module({
   imports: [
@@ -22,9 +24,18 @@ import { HealthCheckModule } from './healthcheck/healthcheck.module';
         ...configService.get(ConfigKeys.Database),
       }),
     }),
+    MongooseModule.forRootAsync({
+      connectionName: ConnectionNames.Log,
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        ...configService.get(ConfigKeys.Database),
+      }),
+    }),
+    LoggerModule,
     AuthModule,
     ScheduleModule,
-    HealthCheckModule
+    HealthCheckModule,
   ],
 })
 export class AppModule {}
