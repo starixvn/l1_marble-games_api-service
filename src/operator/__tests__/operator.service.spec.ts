@@ -1,5 +1,5 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
+import { Test, TestingModule } from '@nestjs/testing';
 import { OperatorService } from '../operator.service';
 import { Operator, OperatorDocument } from '../schema/operator.schema';
 import mongoose from 'mongoose';

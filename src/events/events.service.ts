@@ -28,6 +28,7 @@ export class EventService {
           eventDetails: 0,
         },
       )
+      .lean()
       .exec();
 
     return events;
