@@ -31,28 +31,39 @@ describe('LoggerInterceptor', () => {
     };
   });
 
-  it('should be defined', () => {
-    expect(interceptor).toBeDefined();
-  });
+  describe("intercept", () => {
+    it('when response data available in 100ms, should call log service to log it', (done) => {
+      // Arrange
+      jest.spyOn(Date, 'now')
+        .mockImplementationOnce(() => 0)
+        .mockImplementationOnce(() => 100); 
+      const mockRequest = {
+        method: 'GET',
+        url: '/test-endpoint',
+        body: { key: 'value' },
+      }
 
-  it('should log request and response correctly', (done) => {
-    jest.spyOn(Date, 'now').mockImplementationOnce(() => 1000) // Mock start time
-                                   .mockImplementationOnce(() => 1100); // Mock end time (100ms duration)
+      const mockResponseBody = { success: true }
 
-    interceptor.intercept(executionContext, callHandler).subscribe(() => {
-      expect(databaseLogService.insertLog).toHaveBeenCalledWith({
-        request: {
-          method: 'GET',
-          url: '/test-endpoint',
-          body: { key: 'value' },
-        },
-        response: {
-          statusCode: 200,
-          responseBody: { success: true },
-          responseTime: '100ms',
-        },
-      });
-      done();
+      const expectedResponse = {
+        statusCode: 200,
+        responseBody: mockResponseBody,
+        responseTime: '100ms',
+      }
+
+      const expectedLogRecord = {
+        request: mockRequest,
+        response: expectedResponse
+      }
+
+      // Act
+      const result$ = interceptor.intercept(executionContext, callHandler)
+      
+      // Assert
+      result$.subscribe(() => {
+        expect(databaseLogService.insertLog).toHaveBeenCalledWith(expectedLogRecord);
+        done();
+      })
     });
-  });
+  })
 });

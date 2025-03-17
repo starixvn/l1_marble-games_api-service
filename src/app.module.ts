@@ -9,6 +9,7 @@ import { ConfigKeys } from './config/config-keys';
 import configuration from './config/configuration';
 import { HealthCheckModule } from './healthcheck/healthcheck.module';
 import { LoggerModule } from './logger/logger.module';
+import { ConnectionNames } from './config/connection-names';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { LoggerModule } from './logger/logger.module';
       }),
     }),
     MongooseModule.forRootAsync({
-      connectionName: 'log',
+      connectionName: ConnectionNames.Log,
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
