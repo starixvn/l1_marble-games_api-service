@@ -1,4 +1,4 @@
-import config from '../configuration';
+import config from '../config';
 
 describe('Config function', () => {
   beforeEach(() => {

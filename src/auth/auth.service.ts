@@ -28,11 +28,15 @@ export class AuthService {
     operatorId,
     password,
   }: OperatorCredParams): Promise<string | null> {
-    if (!password) return null;
+    if (!password) {
+      return null;
+    }
 
     const operator = await this.operatorService.getOperator(operatorId);
 
-    if (!operator) return null;
+    if (!operator) {
+      return null;
+    }
 
     const isPasswordMatch = await compare(password, operator.password);
 
@@ -41,7 +45,7 @@ export class AuthService {
 
   async generateJwt(user: OperatorCredParams): Promise<string> {
     const payload = { username: user?.operatorId };
-    return await this.jwtService.signAsync(payload, {
+    return this.jwtService.signAsync(payload, {
       subject: user.operatorId,
       expiresIn: this.expireIn,
     });

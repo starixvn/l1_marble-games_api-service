@@ -16,7 +16,7 @@ export class EventService {
   ) {}
 
   async getEventByTimeSpan(query: EventQueryOptions) {
-    const events = await this.eventModel
+    return this.eventModel
       .find(
         {
           startTime: {
@@ -31,6 +31,5 @@ export class EventService {
       .lean()
       .exec();
 
-    return events;
   }
 }

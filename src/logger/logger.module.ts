@@ -2,7 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LogRecord, LogRecordSchema } from './schema/log-record.schema';
 import { DatabaseLogService } from './database-logger.service';
-import { ConnectionNames } from 'src/config/connection-names';
+import { ConnectionNames } from '../config/connection-names';
 
 @Global()
 @Module({
