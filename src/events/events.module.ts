@@ -1,7 +1,7 @@
-import { Module } from "@nestjs/common";
-import { MongooseModule } from "@nestjs/mongoose";
-import { EventSchema } from "./schema/event.schema";
-import { EventService } from "./events.service";
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { EventSchema } from './schema/event.schema';
+import { EventService } from './events.service';
 
 @Module({
   imports: [
@@ -9,11 +9,11 @@ import { EventService } from "./events.service";
       {
         name: Event.name,
         schema: EventSchema,
-        collection: "events"
+        collection: 'events',
       },
-    ])
+    ]),
   ],
   providers: [EventService],
-  exports: [EventService]
+  exports: [EventService],
 })
 export class EventModule {}

@@ -17,17 +17,21 @@ describe('DatabaseLogService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         DatabaseLogService,
-        { provide: getModelToken(LogRecord.name, ConnectionNames.Log), useValue: mockModel },
+        {
+          provide: getModelToken(LogRecord.name, ConnectionNames.Log),
+          useValue: mockModel,
+        },
       ],
     }).compile();
 
     service = module.get<DatabaseLogService>(DatabaseLogService);
-    model = module.get<Model<LogRecordDocument>>(getModelToken(LogRecord.name, ConnectionNames.Log));
+    model = module.get<Model<LogRecordDocument>>(
+      getModelToken(LogRecord.name, ConnectionNames.Log),
+    );
   });
 
-  describe("insertLog", () => {
+  describe('insertLog', () => {
     it('When given log record, should call DB model to insert that log record', async () => {
-  
       // Arrange
       const logRecord: LogRecord = {
         request: {
@@ -41,13 +45,12 @@ describe('DatabaseLogService', () => {
           responseTime: '100ms',
         },
       };
-  
+
       // Act
       await service.insertLog(logRecord);
-  
+
       // Assert
       expect(model.insertOne).toHaveBeenCalledWith(logRecord);
     });
-  })
-
+  });
 });

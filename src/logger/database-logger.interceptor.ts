@@ -1,18 +1,26 @@
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler, Inject } from "@nestjs/common";
+import {
+  Injectable,
+  NestInterceptor,
+  ExecutionContext,
+  CallHandler,
+  Inject,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
-import { Observable } from "rxjs";
-import { tap } from "rxjs/operators";
-import { DatabaseLogService } from "./database-logger.service";
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { DatabaseLogService } from './database-logger.service';
 
 @Injectable()
 export class LoggerInterceptor implements NestInterceptor {
-
   constructor(
-    @Inject(DatabaseLogService) 
-    private readonly databaseLogService: DatabaseLogService
+    @Inject(DatabaseLogService)
+    private readonly databaseLogService: DatabaseLogService,
   ) {}
 
-  intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> {
+  intercept(
+    context: ExecutionContext,
+    next: CallHandler<any>,
+  ): Observable<any> {
     const request = context.switchToHttp().getRequest<Request>();
     const response = context.switchToHttp().getResponse<Response>();
 
@@ -25,7 +33,12 @@ export class LoggerInterceptor implements NestInterceptor {
     );
   }
 
-  private async log(request: Request, response: Response, data: any, startTime: number) {
+  private async log(
+    request: Request,
+    response: Response,
+    data: any,
+    startTime: number,
+  ) {
     try {
       const duration = Date.now() - startTime;
       const logRecord = {
@@ -37,12 +50,10 @@ export class LoggerInterceptor implements NestInterceptor {
         response: {
           statusCode: response.statusCode,
           responseBody: data,
-          responseTime: `${duration}ms`
-        }
+          responseTime: `${duration}ms`,
+        },
       };
       this.databaseLogService.insertLog(logRecord);
-    } catch {
-
-    }
+    } catch {}
   }
 }

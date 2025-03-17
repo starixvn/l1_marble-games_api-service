@@ -1,4 +1,4 @@
 export enum ConnectionNames {
-  Main = "",
-  Log = "log"
+  Main = '',
+  Log = 'log',
 }

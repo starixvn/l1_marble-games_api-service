@@ -1,10 +1,9 @@
-import { ConfigService } from "@nestjs/config";
-import { JwtService } from "@nestjs/jwt";
-import { TestingModule, Test } from "@nestjs/testing";
-import { compare } from "bcryptjs";
-import { OperatorService } from "../../operator/operator.service";
-import { AuthService } from "../auth.service";
-
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { TestingModule, Test } from '@nestjs/testing';
+import { compare } from 'bcryptjs';
+import { OperatorService } from '../../operator/operator.service';
+import { AuthService } from '../auth.service';
 
 jest.mock('bcryptjs', () => ({
   compare: jest.fn(),
@@ -77,7 +76,9 @@ describe('AuthService', () => {
         password: 'password123',
       });
 
-      expect(mockOperatorService.getOperator).toHaveBeenCalledWith('invalidUser');
+      expect(mockOperatorService.getOperator).toHaveBeenCalledWith(
+        'invalidUser',
+      );
       expect(result).toBeNull();
     });
 
@@ -101,7 +102,7 @@ describe('AuthService', () => {
       });
 
       expect(result).toBeNull();
-    })
+    });
   });
 
   describe('generateJwt', () => {
@@ -110,7 +111,7 @@ describe('AuthService', () => {
 
       expect(jwtService.signAsync).toHaveBeenCalledWith(
         { username: 'testUser' },
-        { subject: 'testUser', expiresIn: '1h' }
+        { subject: 'testUser', expiresIn: '1h' },
       );
       expect(result).toBe('mockJwtToken');
     });

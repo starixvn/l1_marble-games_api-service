@@ -35,7 +35,7 @@ import { ConnectionNames } from './config/connection-names';
     LoggerModule,
     AuthModule,
     ScheduleModule,
-    HealthCheckModule
+    HealthCheckModule,
   ],
 })
 export class AppModule {}
