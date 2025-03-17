@@ -21,24 +21,28 @@ export class LoggerInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap((data) => {
         this.log(request, response, data, startTime);
-      })
+      }),
     );
   }
 
   private async log(request: Request, response: Response, data: any, startTime: number) {
-    const duration = Date.now() - startTime;
-    const logRecord = {
-      request: {
-        method: request.method,
-        url: request.url,
-        body: request.body,
-      },
-      response: {
-        statusCode: response.statusCode,
-        responseBody: data,
-        responseTime: `${duration}ms`
-      }
-    };
-    this.databaseLogService.insertLog(logRecord);
+    try {
+      const duration = Date.now() - startTime;
+      const logRecord = {
+        request: {
+          method: request.method,
+          url: request.url,
+          body: request.body,
+        },
+        response: {
+          statusCode: response.statusCode,
+          responseBody: data,
+          responseTime: `${duration}ms`
+        }
+      };
+      this.databaseLogService.insertLog(logRecord);
+    } catch {
+
+    }
   }
 }

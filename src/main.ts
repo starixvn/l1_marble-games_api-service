@@ -10,7 +10,6 @@ async function bootstrap() {
   app.setGlobalPrefix('api', {
     exclude: [{path: '', method: RequestMethod.GET}]
   });
-
   const config = new DocumentBuilder()
     .setTitle('Marble Odds Feed API')
     .setDescription('The API documentation for Marble Odds Feed')
