@@ -8,5 +8,5 @@ export default {
   collectCoverageFrom: ['**/*.(t|j)s'],
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
-  coveragePathIgnorePatterns: ['/node_modules/', '.module.ts$'],
+  coveragePathIgnorePatterns: ['/node_modules/', '.module.ts$', '/src/main.ts'],
 };
