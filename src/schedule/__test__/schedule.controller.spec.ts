@@ -1,11 +1,10 @@
-import { TestingModule, Test } from "@nestjs/testing";
-import { JwtAuthGuard } from "../../common/guards/jwt.auth.guard";
-import { EventService } from "../../events/events.service";
-import { LoggerInterceptor } from "../../logger/database-logger.interceptor";
-import { ScheduleEventItemDto } from "../dto/schedule.dto";
-import { TimeRangeDto } from "../dto/time-range.dto";
-import { ScheduleController } from "../schedule.controller";
-
+import { TestingModule, Test } from '@nestjs/testing';
+import { JwtAuthGuard } from '../../common/guards/jwt.auth.guard';
+import { EventService } from '../../events/events.service';
+import { LoggerInterceptor } from '../../logger/database-logger.interceptor';
+import { ScheduleEventItemDto } from '../dto/schedule.dto';
+import { TimeRangeDto } from '../dto/time-range.dto';
+import { ScheduleController } from '../schedule.controller';
 
 // Mock EventService
 const mockEventService = {
@@ -34,7 +33,6 @@ describe('ScheduleController', () => {
     controller = module.get<ScheduleController>(ScheduleController);
   });
 
-
   it('should return a formatted schedule list', async () => {
     // Arrange
     const mockEvents = [
@@ -57,10 +55,8 @@ describe('ScheduleController', () => {
       toDate: new Date('2024-03-18T00:00:00Z'),
     };
 
-
     // Act
     const result: ScheduleEventItemDto[] = await controller.getSchedule(query);
-
 
     // Assert
     expect(mockEventService.getEventByTimeSpan).toHaveBeenCalledWith({

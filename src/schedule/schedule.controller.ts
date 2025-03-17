@@ -1,11 +1,22 @@
-import { Controller, UseGuards, UseInterceptors, Inject, Get, Query } from "@nestjs/common";
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from "@nestjs/swagger";
-import { JwtAuthGuard } from "../common/guards/jwt.auth.guard";
-import { EventService } from "../events/events.service";
-import { LoggerInterceptor } from "../logger/database-logger.interceptor";
-import { ScheduleEventItemDto } from "./dto/schedule.dto";
-import { TimeRangeDto } from "./dto/time-range.dto";
-
+import {
+  Controller,
+  UseGuards,
+  UseInterceptors,
+  Inject,
+  Get,
+  Query,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
+import { JwtAuthGuard } from '../common/guards/jwt.auth.guard';
+import { EventService } from '../events/events.service';
+import { LoggerInterceptor } from '../logger/database-logger.interceptor';
+import { ScheduleEventItemDto } from './dto/schedule.dto';
+import { TimeRangeDto } from './dto/time-range.dto';
 
 @ApiTags('schedule')
 @ApiBearerAuth()
