@@ -1,3 +1,5 @@
+const MAX_CACHE_TTL = 24 * 60 * 60 * 1000; // one day
+
 const config = () => ({
   database: {
     uri: process.env.DATABASE_URI,
@@ -9,6 +11,9 @@ const config = () => ({
       expireIn: process.env.JWT_EXPIREIN,
     },
   },
+  cache: {
+    ttl: MAX_CACHE_TTL
+  }
 });
 
 export default config;

@@ -3,4 +3,5 @@ export enum ConfigKeys {
   MatchConfigs = 'matchConfigs',
   Jwt = 'jwt',
   Auth = 'auth',
+  Cache = 'cache'
 }
