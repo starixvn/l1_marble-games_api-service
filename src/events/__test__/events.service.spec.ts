@@ -1,6 +1,5 @@
-import { Model } from 'mongoose';
 import { EventService } from '../events.service';
-import { Event, EventDocument } from '../schema/event.schema';
+import { Event } from '../schema/event.schema';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 
