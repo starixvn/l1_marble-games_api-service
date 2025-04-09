@@ -30,6 +30,5 @@ export class EventService {
       )
       .lean()
       .exec();
-
   }
 }

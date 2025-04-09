@@ -33,7 +33,7 @@ describe('ScheduleController', () => {
     controller = module.get<ScheduleController>(ScheduleController);
   });
 
-  describe("getSchedule", () => {
+  describe('getSchedule', () => {
     it('should return a formatted schedule list', async () => {
       // Arrange
       const mockEvents = [
@@ -48,23 +48,24 @@ describe('ScheduleController', () => {
           eventNameBKey: 'Match 2',
         },
       ];
-  
+
       mockEventService.getEventByTimeSpan.mockResolvedValue(mockEvents);
-  
+
       const query: TimeRangeDto = {
         fromDate: new Date('2024-03-17T00:00:00Z'),
         toDate: new Date('2024-03-18T00:00:00Z'),
       };
-  
+
       // Act
-      const result: ScheduleEventItemDto[] = await controller.getSchedule(query);
-  
+      const result: ScheduleEventItemDto[] =
+        await controller.getSchedule(query);
+
       // Assert
       expect(mockEventService.getEventByTimeSpan).toHaveBeenCalledWith({
         startTime: query.fromDate,
         endTime: query.toDate,
       });
-  
+
       expect(result).toEqual([
         {
           eventID: '1',
@@ -82,7 +83,5 @@ describe('ScheduleController', () => {
         },
       ]);
     });
-  })
-
-  
+  });
 });
