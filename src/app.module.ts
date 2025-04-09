@@ -10,6 +10,8 @@ import configuration from './config/config';
 import { HealthCheckModule } from './healthcheck/healthcheck.module';
 import { LoggerModule } from './logger/logger.module';
 import { ConnectionNames } from './config/connection-names';
+import { GameIntegrationModule } from './game-integration/game-integration.module';
+import { CacheModule } from './cache/cache.module';
 
 @Module({
   imports: [
@@ -21,7 +23,7 @@ import { ConnectionNames } from './config/connection-names';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        ...configService.get(ConfigKeys.Database),
+        ...(await configService.get(ConfigKeys.Database)),
       }),
     }),
     MongooseModule.forRootAsync({
@@ -29,10 +31,12 @@ import { ConnectionNames } from './config/connection-names';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        ...configService.get(ConfigKeys.Database),
+        ...(await configService.get(ConfigKeys.Database)),
       }),
     }),
+    CacheModule,
     LoggerModule,
+    GameIntegrationModule,
     AuthModule,
     ScheduleModule,
     HealthCheckModule,

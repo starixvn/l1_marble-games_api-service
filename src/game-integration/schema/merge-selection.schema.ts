@@ -1,7 +1,7 @@
-import { Prop, SchemaFactory } from "@nestjs/mongoose";
+import { Prop, SchemaFactory } from '@nestjs/mongoose';
 
 export class MergeSelection {
-  @Prop({ type: Number})
+  @Prop({ type: Number })
   selectionID: number;
 
   @Prop({ type: Number })
@@ -10,15 +10,15 @@ export class MergeSelection {
   @Prop({ type: String })
   name: string;
 
-  @Prop({type: String })
+  @Prop({ type: String })
   selectionNameKey: string;
-  
-  @Prop({type: String })
+
+  @Prop({ type: String })
   selectionName: string;
-  
-  
-  @Prop({type: String })
+
+  @Prop({ type: String })
   selectionNameLongKey: string;
 }
 
-export const MergeSelectionSchema = SchemaFactory.createForClass(MergeSelection);
+export const MergeSelectionSchema =
+  SchemaFactory.createForClass(MergeSelection);

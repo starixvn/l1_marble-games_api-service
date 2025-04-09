@@ -5,6 +5,7 @@ import {
   Inject,
   Get,
   Query,
+  Req,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -17,6 +18,7 @@ import { EventService } from '../events/events.service';
 import { LoggerInterceptor } from '../logger/database-logger.interceptor';
 import { ScheduleEventItemDto } from './dto/schedule.dto';
 import { TimeRangeDto } from './dto/time-range.dto';
+import { GameIntegrationService } from '../game-integration/game-integration.service';
 
 @ApiTags('schedule')
 @ApiBearerAuth()
@@ -27,6 +29,9 @@ export class ScheduleController {
   constructor(
     @Inject(EventService)
     private readonly eventService: EventService,
+
+    @Inject(GameIntegrationService)
+    private readonly gameIntegrationService: GameIntegrationService,
   ) {}
 
   @ApiOperation({ summary: 'Get all scheduled events' })
@@ -39,18 +44,32 @@ export class ScheduleController {
   async getSchedule(
     @Query()
     query: TimeRangeDto,
-  ): Promise<ScheduleEventItemDto[]> {
+    @Req() req: any,
+  ): Promise<any> {
+    const operatorId = req.user.userId;
     const events = await this.eventService.getEventByTimeSpan({
       startTime: query.fromDate,
       endTime: query.toDate,
     });
 
-    return events.map((event) => ({
-      eventID: event.eventID,
-      eventNameAKey: event.eventNameAKey,
-      eventNameBKey: event.eventNameBKey,
-      productCode: 'Spinner_Soccer',
-      productTypeKey: 'Marble_RNG',
-    }));
+    return Promise.all(
+      events.map(async (event) => {
+        const eventItem = {
+          eventID: event.eventID,
+          eventNameAKey: event.eventNameAKey,
+          eventNameBKey: event.eventNameBKey,
+          schdeuleStartTs: event.startTime,
+          eventName: `${event.eventNameAKey} v ${event.eventNameBKey}`,
+        };
+
+        return await this.gameIntegrationService.mergeWithEvents({
+          targets: eventItem,
+          query: {
+            operatorId: operatorId,
+            gameId: event.gameId,
+          },
+        });
+      }),
+    );
   }
 }
