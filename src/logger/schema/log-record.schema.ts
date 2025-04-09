@@ -9,6 +9,9 @@ export class LogRecord {
   request: object;
   @Prop({ type: mongoose.Schema.Types.Mixed })
   response: object;
+
+  @Prop({ type: Date, default: Date.now })
+  timestamp?: Date;
 }
 
 export const LogRecordSchema = SchemaFactory.createForClass(LogRecord);
