@@ -1,7 +1,7 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { ConfigKeys } from "../config/config-keys";
-import { CacheableMemory } from "cacheable";
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { ConfigKeys } from '../config/config-keys';
+import { CacheableMemory } from 'cacheable';
 
 export interface CacheOptions {
   ttl?: number;
@@ -9,20 +9,23 @@ export interface CacheOptions {
 
 @Injectable()
 export class MemoryCacheService {
-
   private readonly cache: CacheableMemory;
 
   constructor(
-    @Inject(ConfigService) 
-    private readonly configService: ConfigService
+    @Inject(ConfigService)
+    private readonly configService: ConfigService,
   ) {
     const config = configService.get(ConfigKeys.Cache);
     this.cache = new CacheableMemory({
-      ttl: config.ttl
-    })
+      ttl: config.ttl,
+    });
   }
 
-  public async get<TReturnType>(key: string, getFunction: Function, options?: CacheOptions) {
+  public async get<TReturnType>(
+    key: string,
+    getFunction: Function,
+    options?: CacheOptions,
+  ) {
     if (this.cache.has(key)) {
       return this.cache.get(key) as TReturnType;
     }

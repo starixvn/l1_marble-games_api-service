@@ -12,8 +12,8 @@ const config = () => ({
     },
   },
   cache: {
-    ttl: MAX_CACHE_TTL
-  }
+    ttl: MAX_CACHE_TTL,
+  },
 });
 
 export default config;

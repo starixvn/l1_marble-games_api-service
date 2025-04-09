@@ -1,10 +1,13 @@
-import { Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { GameIntegration, GameIntegrationDocument } from "./schema/game-integration.schema";
-import { Model } from "mongoose";
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import {
+  GameIntegration,
+  GameIntegrationDocument,
+} from './schema/game-integration.schema';
+import { Model } from 'mongoose';
 
 interface MergeArgs {
-  targets: any[],
+  targets: any[];
   operatorId: string;
 }
 
@@ -12,15 +15,10 @@ interface MergeArgs {
 export class GameIntegrationService {
   constructor(
     @InjectModel(GameIntegration.name)
-    private readonly gameIntegrationMode: Model<GameIntegrationDocument>
+    private readonly gameIntegrationMode: Model<GameIntegrationDocument>,
   ) {}
-  
-  async mergeWithEvents(args: MergeArgs) {
-    
-  }
 
-  private async getGameIntegrationByOperatorId(operatorId: string) {
+  async mergeWithEvents(args: MergeArgs) {}
 
-  }
-
+  private async getGameIntegrationByOperatorId(operatorId: string) {}
 }
