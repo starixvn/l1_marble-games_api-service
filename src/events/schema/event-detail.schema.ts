@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
-import { SelectionSchema } from './selection.schema';
+import { SelectionSchema, Selection } from './selection.schema';
 
 @Schema()
 export class EventDetail {
@@ -20,7 +20,7 @@ export class EventDetail {
   selections: Array<Selection>;
 
   @Prop({ type: mongoose.Schema.Types.Mixed })
-  results: Record<string, any>;
+  result: Record<string, any>;
 }
 
 export const EventDetailSchema = SchemaFactory.createForClass(EventDetail);

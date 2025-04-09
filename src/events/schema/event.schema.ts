@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { EventDetailSchema, EventDetail } from './event-detail.schema';
-import { Document } from 'mongoose';
+import { EventDetail } from './event-detail.schema';
+import { Document, Schema as MongooseSchema } from 'mongoose';
 
 export type EventDocument = Event & Document<unknown>;
 
@@ -24,7 +24,9 @@ export class Event {
   @Prop({ type: Date })
   endTime: Date;
 
-  @Prop({ type: [EventDetailSchema] })
+  @Prop({
+    type: [{ type: MongooseSchema.Types.ObjectId, ref: EventDetail.name }],
+  })
   eventDetails: Array<EventDetail>;
 }
 
