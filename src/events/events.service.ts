@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { EventDocument } from './schema/event.schema';
+import { EventDocument, Event } from './schema/event.schema';
 import { Model } from 'mongoose';
 
 export type EventQueryOptions = {
@@ -30,5 +30,19 @@ export class EventService {
       )
       .lean()
       .exec();
+  }
+
+  async getEventById(eventId: number) {
+    const event = await this.eventModel
+      .findOne({ eventID: eventId })
+      .populate('eventDetails')
+      .lean()
+      .exec();
+    
+    if (!event) {
+      throw new NotFoundException(`Event with ID ${eventId} not found`);
+    }
+    
+    return event;
   }
 }
