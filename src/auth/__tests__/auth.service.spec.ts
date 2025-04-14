@@ -44,9 +44,7 @@ describe('AuthService', () => {
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
-    operatorService = module.get<OperatorService>(OperatorService);
     jwtService = module.get<JwtService>(JwtService);
-    configService = module.get<ConfigService>(ConfigService);
   });
 
   afterEach(() => {

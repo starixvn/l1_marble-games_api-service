@@ -35,7 +35,9 @@ export class GameIntegrationService {
 
     const merge = gameIntegration?.merge;
 
-    if (!merge) return args.targets;
+    if (!merge) {
+      return args.targets;
+    }
 
     return apply(args.targets, merge);
   }

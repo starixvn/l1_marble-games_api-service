@@ -62,7 +62,7 @@ export class ScheduleController {
           eventName: `${event.eventNameAKey} v ${event.eventNameBKey}`,
         };
 
-        return await this.gameIntegrationService.mergeWithEvents({
+        return this.gameIntegrationService.mergeWithEvents({
           targets: eventItem,
           query: {
             operatorId: operatorId,
