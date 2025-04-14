@@ -10,6 +10,9 @@ export class EventDetail {
   @Prop({ type: Date })
   resultsAvailableTs: Date;
 
+  @Prop({ type: Date })
+  oddsAvailableTs: Date;
+
   @Prop({ type: String })
   playlist: string;
 
