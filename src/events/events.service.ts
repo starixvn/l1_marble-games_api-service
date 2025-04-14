@@ -4,8 +4,8 @@ import { EventDocument, Event } from './schema/event.schema';
 import { Model } from 'mongoose';
 
 export type EventQueryOptions = {
-  startTime: Date;
-  endTime: Date;
+  startTime?: Date;
+  endTime?: Date;
 };
 
 @Injectable()
@@ -16,14 +16,23 @@ export class EventService {
   ) {}
 
   async getEventByTimeSpan(query: EventQueryOptions) {
+
+    const timeQuery = query.startTime 
+    ? {
+        startTime: {
+          $gte: query.startTime,
+          $lte: query.endTime,
+        },
+    }
+    : {
+        endTime: {
+          $gte: new Date(),
+        },
+    }
+
     return this.eventModel
       .find(
-        {
-          startTime: {
-            $gte: query.startTime,
-            $lte: query.endTime,
-          },
-        },
+        timeQuery,
         {
           eventDetails: 0,
         },

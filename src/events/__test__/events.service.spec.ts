@@ -82,6 +82,41 @@ describe('EventService', () => {
         projection,
       );
     });
+
+    it('should return events that have not ended when no startTime is provided', async () => {
+      // Arrange
+      const events = [
+        {
+          eventID: 1,
+          eventNameAKey: 'Thailand',
+          eventNameBKey: 'Laos',
+          gameId: 1,
+          eventDetails: [],
+          startTime: new Date('2025-03-13T10:27:15.527Z'),
+          endTime: new Date('2025-03-13T10:29:14.527Z'),
+        },
+      ];
+
+      const query = {};
+
+      eventModel.find.mockReturnValue({
+        lean: jest.fn().mockReturnValue({
+          exec: jest.fn().mockResolvedValue(events),
+        }),
+      });
+
+      // Act
+      const result = await service.getEventByTimeSpan(query);
+
+      // Assert
+      expect(result).toEqual(events);
+      
+      // Verify that find was called with a query containing startTime with $gte property
+      expect(eventModel.find).toHaveBeenCalled();
+      const calledArgs = eventModel.find.mock.calls[0];
+      expect(calledArgs[0]).toHaveProperty('endTime.$gte');
+      expect(calledArgs[1]).toEqual({ eventDetails: 0 });
+    });
   });
 
   describe('getEventById', () => {
