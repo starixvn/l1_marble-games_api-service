@@ -35,7 +35,7 @@ export class EventService {
   async getEventById(eventId: number) {
     const event = await this.eventModel
       .findOne({ eventID: eventId })
-      .populate('eventDetails')
+      .populate('eventDetails', '-_id')
       .lean()
       .exec();
     
