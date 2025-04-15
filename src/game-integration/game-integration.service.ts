@@ -65,12 +65,11 @@ export class GameIntegrationService {
     
     const markets = this.composeMergedMarkets(gameIntegration, eventDetail.selections);
     
-    const result = apply(eventDetail, {
+    return apply(eventDetail, {
       markets,
       selections: null,
     })
-    
-    return result;
+  
   }
 
   private composeMergedMarkets(gameIntegration: GameIntegrationDocument, selections: Selection[] = []) {
@@ -106,7 +105,7 @@ export class GameIntegrationService {
 
   private async getGameIntegrationWithCache(query: GameIntegrationQuery) {
     const cacheKey = this.composeCacheKey(query, GameIntegration.name);
-    return await this.cacheService.get<GameIntegrationDocument>(cacheKey, () =>
+    return this.cacheService.get<GameIntegrationDocument>(cacheKey, () =>
         this.getGameIntegrationFromDb(query),
       );
   }
@@ -118,7 +117,7 @@ export class GameIntegrationService {
   private async getGameIntegrationFromDb(
     args: GameIntegrationQuery,
   ): Promise<GameIntegrationDocument | null> {
-    const result = await this.gameIntegrationModel
+    return this.gameIntegrationModel
       .findOne({
         operatorId: new Types.ObjectId(args.operatorId),
         gameId: args.gameId,
@@ -126,6 +125,5 @@ export class GameIntegrationService {
       .populate('markets', '-_id -operatorId')
       .lean()
       .exec();
-    return result;
   }
 }
