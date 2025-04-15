@@ -142,7 +142,9 @@ describe('GameIntegrationService', () => {
               column: 1
             }]
           }
-        ]
+        ],
+        streamServer: 'https://stream-server.example.com',
+        videoExtension: 'mp4'
       };
       
       const args = {
@@ -160,8 +162,8 @@ describe('GameIntegrationService', () => {
             scheduleStartTs: mockEventDetail.scheduleStartTs,
             resultsAvailableTs: mockEventDetail.resultsAvailableTs,
             oddsAvailableTs: mockEventDetail.oddsAvailableTs,
-            playlist: 'playlist1',
-            goalInfo: 'goalInfo1',
+            playlist: 'https://stream-server.example.com/playlist1.mp4',
+            goalInfo: 'https://stream-server.example.com/goalInfo1.json',
             result: {},
             markets: [
               {
@@ -219,7 +221,9 @@ describe('GameIntegrationService', () => {
               column: 1
             }]
           }
-        ]
+        ],
+        streamServer: 'https://stream-server.example.com',
+        videoExtension: 'mp4'
       };
       
       const args = {
@@ -237,8 +241,8 @@ describe('GameIntegrationService', () => {
             scheduleStartTs: mockEventDetail.scheduleStartTs,
             resultsAvailableTs: mockEventDetail.resultsAvailableTs,
             oddsAvailableTs: mockEventDetail.oddsAvailableTs,
-            playlist: 'playlist1',
-            goalInfo: 'goalInfo1',
+            playlist: 'https://stream-server.example.com/playlist1.mp4',
+            goalInfo: 'https://stream-server.example.com/goalInfo1.json',
             result: {},
             markets: []
           }
@@ -288,7 +292,9 @@ describe('GameIntegrationService', () => {
               column: 1
             }]
           }
-        ]
+        ],
+        streamServer: 'https://stream-server.example.com',
+        videoExtension: 'mp4'
       };
       
       const args = {
@@ -306,8 +312,8 @@ describe('GameIntegrationService', () => {
             scheduleStartTs: mockEventDetail.scheduleStartTs,
             resultsAvailableTs: mockEventDetail.resultsAvailableTs,
             oddsAvailableTs: mockEventDetail.oddsAvailableTs,
-            playlist: 'playlist1',
-            goalInfo: 'goalInfo1',
+            playlist: 'https://stream-server.example.com/playlist1.mp4',
+            goalInfo: 'https://stream-server.example.com/goalInfo1.json',
             result: {},
             markets: [
               {

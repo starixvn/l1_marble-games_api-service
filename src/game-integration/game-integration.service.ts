@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   GameIntegration,
-  GameIntegrationDocument,
 } from './schema/game-integration.schema';
 import { Model, Types } from 'mongoose';
 import { MemoryCacheService } from '../cache/cache.service';
@@ -26,7 +25,7 @@ interface MergeArgs {
 export class GameIntegrationService {
   constructor(
     @InjectModel(GameIntegration.name)
-    private readonly gameIntegrationModel: Model<GameIntegrationDocument>,
+    private readonly gameIntegrationModel: Model<GameIntegration>,
     private readonly cacheService: MemoryCacheService,
   ) {}
 
@@ -49,30 +48,33 @@ export class GameIntegrationService {
     
     const eventDetails = mergedEvent.eventDetails as EventDetail[];
 
-    const mergedEventDetails: any[] = []
-
-    for (const eventDetail of eventDetails) {
-      const mergedEventDetail = this.composeMergedEventDetail(gameIntegration, eventDetail);
-      mergedEventDetails.push(mergedEventDetail);
-    }
+    const mergedEventDetails = eventDetails.map(eventDetail => this.composeMergedEventDetail(gameIntegration, eventDetail));
       
     return apply(mergedEvent, {
       eventDetails: mergedEventDetails,
     });
   }
 
-  private composeMergedEventDetail(gameIntegration: GameIntegrationDocument, eventDetail: EventDetail) {
+  private composeMergedEventDetail(gameIntegration: GameIntegration, eventDetail: EventDetail) {
     
     const markets = this.composeMergedMarkets(gameIntegration, eventDetail.selections);
+    const liveServer = gameIntegration.streamServer;
+    const videoExtension = gameIntegration.videoExtension;
+
+    const playlist = `${liveServer}/${eventDetail.playlist}.${videoExtension}`;
+    const goalInfo = `${liveServer}/${eventDetail.goalInfo}.json`;
     
-    return apply(eventDetail, {
+    return apply({ ...eventDetail,
+      playlist,
+      goalInfo
+    }, {
       markets,
       selections: null,
     })
   
   }
 
-  private composeMergedMarkets(gameIntegration: GameIntegrationDocument, selections: Selection[] = []) {
+  private composeMergedMarkets(gameIntegration: GameIntegration, selections: Selection[] = []) {
     const markets = gameIntegration?.markets;
     if (selections.length === 0) {
       return selections;
@@ -105,7 +107,7 @@ export class GameIntegrationService {
 
   private async getGameIntegrationWithCache(query: GameIntegrationQuery) {
     const cacheKey = this.composeCacheKey(query, GameIntegration.name);
-    return this.cacheService.get<GameIntegrationDocument>(cacheKey, () =>
+    return this.cacheService.get<GameIntegration>(cacheKey, () =>
         this.getGameIntegrationFromDb(query),
       );
   }
@@ -116,7 +118,7 @@ export class GameIntegrationService {
 
   private async getGameIntegrationFromDb(
     args: GameIntegrationQuery,
-  ): Promise<GameIntegrationDocument | null> {
+  ): Promise<GameIntegration | null> {
     return this.gameIntegrationModel
       .findOne({
         operatorId: new Types.ObjectId(args.operatorId),

@@ -20,6 +20,12 @@ export class GameIntegration {
 
   @Prop({ type: [mongoose.Schema.Types.Mixed] })
   patches: Array<any>;
+
+  @Prop({ type: String })
+  streamServer: string;
+
+  @Prop({ type: String })
+  videoExtension: string;
 }
 
 export type GameIntegrationDocument = GameIntegration & Document<unknown>;
