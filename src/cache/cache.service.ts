@@ -13,7 +13,7 @@ export class MemoryCacheService {
 
   constructor(
     @Inject(ConfigService)
-    private readonly configService: ConfigService,
+    configService: ConfigService,
   ) {
     const config = configService.get(ConfigKeys.Cache);
     this.cache = new CacheableMemory({

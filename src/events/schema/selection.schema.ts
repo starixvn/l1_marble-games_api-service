@@ -4,7 +4,10 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 export class Selection {
   @Prop({ type: String })
   name: string;
-
+  
+  @Prop({ type: Number })
+  point: number;
+  
   @Prop({ type: Number })
   price: number;
 

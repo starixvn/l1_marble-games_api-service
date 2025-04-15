@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { EventDocument } from './schema/event.schema';
+import { EventDocument, Event } from './schema/event.schema';
 import { Model } from 'mongoose';
 
 export type EventQueryOptions = {
-  startTime: Date;
-  endTime: Date;
+  startTime?: Date;
+  endTime?: Date;
 };
 
 @Injectable()
@@ -16,19 +16,42 @@ export class EventService {
   ) {}
 
   async getEventByTimeSpan(query: EventQueryOptions) {
+
+    const timeQuery = query.startTime 
+    ? {
+        startTime: {
+          $gte: query.startTime,
+          $lte: query.endTime,
+        },
+    }
+    : {
+        endTime: {
+          $gte: new Date(),
+        },
+    }
+
     return this.eventModel
       .find(
-        {
-          startTime: {
-            $gte: query.startTime,
-            $lte: query.endTime,
-          },
-        },
+        timeQuery,
         {
           eventDetails: 0,
         },
       )
       .lean()
       .exec();
+  }
+
+  async getEventById(eventId: number) {
+    const event = await this.eventModel
+      .findOne({ eventID: eventId }, { _id: 0 })
+      .populate('eventDetails', '-_id')
+      .lean()
+      .exec();
+    
+    if (!event) {
+      throw new NotFoundException(`Event with ID ${eventId} not found`);
+    }
+    
+    return event;
   }
 }

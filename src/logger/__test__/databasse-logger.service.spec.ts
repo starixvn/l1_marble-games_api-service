@@ -44,6 +44,7 @@ describe('DatabaseLogService', () => {
           responseBody: { success: true },
           responseTime: '100ms',
         },
+        timestamp: new Date(0),
       };
 
       // Act

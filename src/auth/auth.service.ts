@@ -4,7 +4,6 @@ import { ConfigService } from '@nestjs/config';
 import { ConfigKeys } from '../config/config-keys';
 import { OperatorService } from '../operator/operator.service';
 import { compare } from 'bcryptjs';
-import { ObjectId } from 'mongoose';
 
 interface OperatorCredParams {
   operatorId: string;
@@ -40,7 +39,7 @@ export class AuthService {
 
     const isPasswordMatch = await compare(password, operator.password);
 
-    return isPasswordMatch ? (operator._id as ObjectId).toString() : null;
+    return isPasswordMatch ? String(operator._id) : null;
   }
 
   async generateJwt(user: OperatorCredParams): Promise<string> {
