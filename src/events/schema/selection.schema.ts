@@ -2,12 +2,12 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema()
 export class Selection {
-  @Prop({ type: Number })
-  id: number;
-
   @Prop({ type: String })
   name: string;
-
+  
+  @Prop({ type: Number })
+  point: number;
+  
   @Prop({ type: Number })
   price: number;
 
