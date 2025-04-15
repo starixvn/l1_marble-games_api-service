@@ -1,19 +1,30 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { GameIntegrationService } from '../game-integration.service';
 import { MemoryCacheService } from '../../cache/cache.service';
-import { apply } from 'json-merge-patch';
 import { GameIntegration } from '../schema/game-integration.schema';
 import { getModelToken } from '@nestjs/mongoose';
-
-jest.mock('json-merge-patch', () => ({
-  apply: jest.fn(),
-}));
+import { Event } from '../../events/schema/event.schema';
+import { EventDetail } from '../../events/schema/event-detail.schema';
+import { Selection } from '../../events/schema/selection.schema';
 
 describe('GameIntegrationService', () => {
   let service: GameIntegrationService;
-  let cacheService: MemoryCacheService;
+  let cacheGetMock: jest.Mock;
+  let mockEvent: Event;
 
   beforeEach(async () => {
+    cacheGetMock = jest.fn();
+    
+    mockEvent = {
+      eventID: 123,
+      eventNameAKey: 'team_a',
+      eventNameBKey: 'team_b',
+      gameId: 1,
+      startTime: new Date(),
+      endTime: new Date(),
+      eventDetails: []
+    };
+    
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GameIntegrationService,
@@ -21,8 +32,10 @@ describe('GameIntegrationService', () => {
           provide: getModelToken(GameIntegration.name),
           useValue: {
             findOne: jest.fn().mockReturnValue({
-              lean: jest.fn().mockReturnValue({
-                exec: jest.fn(),
+              populate: jest.fn().mockReturnValue({
+                lean: jest.fn().mockReturnValue({
+                  exec: jest.fn(),
+                }),
               }),
             }),
           },
@@ -30,33 +43,30 @@ describe('GameIntegrationService', () => {
         {
           provide: MemoryCacheService,
           useValue: {
-            get: jest.fn(),
+            get: cacheGetMock,
           },
         },
       ],
     }).compile();
 
     service = module.get<GameIntegrationService>(GameIntegrationService);
-    cacheService = module.get<MemoryCacheService>(MemoryCacheService);
   });
 
   describe('mergeWithEvents', () => {
     it('should return targets when no game integration found', async () => {
       // Arrange
       const args = {
-        targets: { test: 'value' },
+        targets: mockEvent,
         query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
       };
-      (cacheService.get as jest.Mock).mockImplementation(() => {
-        return Promise.resolve(null);
-      });
+      cacheGetMock.mockResolvedValue(null);
 
       // Act
       const result = await service.mergeWithEvents(args);
 
       // Assert
-      expect(result).toEqual(args.targets);
-      expect(cacheService.get).toHaveBeenCalledWith(
+      expect(result).toEqual(mockEvent);
+      expect(cacheGetMock).toHaveBeenCalledWith(
         `GameIntegration:${args.query.operatorId}:${args.query.gameId}`,
         expect.any(Function)
       );
@@ -65,40 +75,255 @@ describe('GameIntegrationService', () => {
     it('should return targets when game integration has no merge field', async () => {
       // Arrange
       const args = {
-        targets: { test: 'value' },
+        targets: mockEvent,
         query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
       };
-      (cacheService.get as jest.Mock).mockImplementation(() => {
-        return Promise.resolve({});
-      });
+      cacheGetMock.mockResolvedValue({});
 
       // Act
       const result = await service.mergeWithEvents(args);
 
       // Assert
-      expect(result).toEqual(args.targets);
+      expect(result).toEqual(mockEvent);
     });
 
     it('should apply merge patch when game integration has merge field', async () => {
       // Arrange
       const args = {
-        targets: { test: 'value' },
+        targets: mockEvent,
         query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
       };
-      const merge = { newField: 'newValue' };
-      const expectedResult = { test: 'value', newField: 'newValue' };
+      const merge = { eventNameAKey: 'updated_team_a' };
       
-      (cacheService.get as jest.Mock).mockImplementation(() => {
-        return Promise.resolve({ merge });
-      });
-      (apply as jest.Mock).mockReturnValue(expectedResult);
+      cacheGetMock.mockResolvedValue({ merge });
 
       // Act
       const result = await service.mergeWithEvents(args);
 
       // Assert
+      expect(result.eventNameAKey).toEqual('updated_team_a');
+    });
+  });
+
+  describe('mergeEventWithEventDetails', () => {
+    it('should correctly merge event with event details', async () => {
+      // Arrange
+      const mockSelection: Selection = {
+        name: 'selection1',
+        price: 1.5,
+        point: 1.0,
+        settlementStatus: 'pending'
+      };
+      
+      const mockEventDetail: EventDetail = {
+        scheduleStartTs: new Date(),
+        resultsAvailableTs: new Date(),
+        oddsAvailableTs: new Date(),
+        playlist: 'playlist1',
+        goalInfo: 'goalInfo1',
+        selections: [mockSelection],
+        result: {}
+      };
+      
+      const mockEventWithDetails = {
+        ...mockEvent,
+        eventDetails: [mockEventDetail]
+      };
+      
+      const mockGameIntegration = {
+        merge: { customField: 'customValue' },
+        markets: [
+          {
+            merge: { name: 'Market1' },
+            selections: [{ 
+              name: 'selection1', 
+              selectionNameKey: 'key1',
+              selectionID: 1001,
+              column: 1
+            }]
+          }
+        ]
+      };
+      
+      const args = {
+        targets: mockEventWithDetails,
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      
+      cacheGetMock.mockResolvedValue(mockGameIntegration);
+      
+      const expectedResult = {
+        ...mockEventWithDetails,
+        customField: 'customValue',
+        eventDetails: [
+          {
+            scheduleStartTs: mockEventDetail.scheduleStartTs,
+            resultsAvailableTs: mockEventDetail.resultsAvailableTs,
+            oddsAvailableTs: mockEventDetail.oddsAvailableTs,
+            playlist: 'playlist1',
+            goalInfo: 'goalInfo1',
+            result: {},
+            markets: [
+              {
+                name: 'Market1',
+                selections: [
+                  {
+                    name: 'selection1',
+                    price: 1.5,
+                    point: 1.0,
+                    settlementStatus: 'pending',
+                    selectionNameKey: 'key1',
+                    selectionID: 1001,
+                    column: 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      };
+      
+      // Act
+      const result = await service.mergeEventWithEventDetails(args);
+      
+      // Assert
       expect(result).toEqual(expectedResult);
-      expect(apply).toHaveBeenCalledWith(args.targets, merge);
+    });
+
+    it('should correctly merge event with event details that have no selections', async () => {
+      // Arrange
+      const mockEventDetail: EventDetail = {
+        scheduleStartTs: new Date(),
+        resultsAvailableTs: new Date(),
+        oddsAvailableTs: new Date(),
+        playlist: 'playlist1',
+        goalInfo: 'goalInfo1',
+        selections: [],
+        result: {}
+      };
+      
+      const mockEventWithDetails = {
+        ...mockEvent,
+        eventDetails: [mockEventDetail]
+      };
+      
+      const mockGameIntegration = {
+        merge: { customField: 'customValue' },
+        markets: [
+          {
+            merge: { name: 'Market1' },
+            selections: [{ 
+              name: 'selection1', 
+              selectionNameKey: 'key1',
+              selectionID: 1001,
+              column: 1
+            }]
+          }
+        ]
+      };
+      
+      const args = {
+        targets: mockEventWithDetails,
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      
+      cacheGetMock.mockResolvedValue(mockGameIntegration);
+      
+      const expectedResult = {
+        ...mockEventWithDetails,
+        customField: 'customValue',
+        eventDetails: [
+          {
+            scheduleStartTs: mockEventDetail.scheduleStartTs,
+            resultsAvailableTs: mockEventDetail.resultsAvailableTs,
+            oddsAvailableTs: mockEventDetail.oddsAvailableTs,
+            playlist: 'playlist1',
+            goalInfo: 'goalInfo1',
+            result: {},
+            markets: []
+          }
+        ]
+      };
+      
+      // Act
+      const result = await service.mergeEventWithEventDetails(args);
+      
+      // Assert
+      expect(result).toEqual(expectedResult);
+    });
+
+    it('should correctly merge event with selection that has no matching name in market integrations', async () => {
+      // Arrange
+      const mockSelection: Selection = {
+        name: 'NOT_APPEAR',
+        price: 1.5,
+        point: 1.0,
+        settlementStatus: 'pending'
+      };
+      
+      const mockEventDetail: EventDetail = {
+        scheduleStartTs: new Date(),
+        resultsAvailableTs: new Date(),
+        oddsAvailableTs: new Date(),
+        playlist: 'playlist1',
+        goalInfo: 'goalInfo1',
+        selections: [mockSelection],
+        result: {}
+      };
+      
+      const mockEventWithDetails = {
+        ...mockEvent,
+        eventDetails: [mockEventDetail]
+      };
+      
+      const mockGameIntegration = {
+        merge: { customField: 'customValue' },
+        markets: [
+          {
+            merge: { name: 'Market1' },
+            selections: [{ 
+              name: 'selection1', 
+              selectionNameKey: 'key1',
+              selectionID: 1001,
+              column: 1
+            }]
+          }
+        ]
+      };
+      
+      const args = {
+        targets: mockEventWithDetails,
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      
+      cacheGetMock.mockResolvedValue(mockGameIntegration);
+      
+      const expectedResult = {
+        ...mockEventWithDetails,
+        customField: 'customValue',
+        eventDetails: [
+          {
+            scheduleStartTs: mockEventDetail.scheduleStartTs,
+            resultsAvailableTs: mockEventDetail.resultsAvailableTs,
+            oddsAvailableTs: mockEventDetail.oddsAvailableTs,
+            playlist: 'playlist1',
+            goalInfo: 'goalInfo1',
+            result: {},
+            markets: [
+              {
+                name: 'Market1',
+                selections: []
+              }
+            ]
+          }
+        ]
+      };
+      
+      // Act
+      const result = await service.mergeEventWithEventDetails(args);
+      
+      // Assert
+      expect(result).toEqual(expectedResult);
     });
   });
 }); 

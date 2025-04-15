@@ -4,6 +4,7 @@ import { EventDetail, EventDetailSchema } from './schema/event-detail.schema';
 import { EventService } from './events.service';
 import { EventSchema, Event } from './schema/event.schema';
 import { EventsController } from './events.controller';
+import { GameIntegrationModule } from '../game-integration/game-integration.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { EventsController } from './events.controller';
         collection: 'event_details',
       },
     ]),
+    GameIntegrationModule,
   ],
   controllers: [EventsController],
   providers: [EventService],
