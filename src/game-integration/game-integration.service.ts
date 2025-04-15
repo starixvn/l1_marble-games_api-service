@@ -58,11 +58,10 @@ export class GameIntegrationService {
   private composeMergedEventDetail(gameIntegration: GameIntegration, eventDetail: EventDetail) {
     
     const markets = this.composeMergedMarkets(gameIntegration, eventDetail.selections);
-    const liveServer = gameIntegration.streamServer;
-    const videoExtension = gameIntegration.videoExtension;
-
-    const playlist = `${liveServer}/${eventDetail.playlist}.${videoExtension}`;
-    const goalInfo = `${liveServer}/${eventDetail.goalInfo}.json`;
+    const liveServer = gameIntegration.streamServer ? `${gameIntegration.streamServer}/` : "";
+    const videoExtension = gameIntegration.videoExtension ? `.${gameIntegration.videoExtension}` : "";
+    const playlist = eventDetail.playlist ? `${liveServer}${eventDetail.playlist}${videoExtension}` : "";
+    const goalInfo = eventDetail.goalInfo ? `${liveServer}${eventDetail.goalInfo}.json` : "";
     
     return apply({ ...eventDetail,
       playlist,

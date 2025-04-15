@@ -331,5 +331,221 @@ describe('GameIntegrationService', () => {
       // Assert
       expect(result).toEqual(expectedResult);
     });
+
+    it('should correctly handle undefined playlist value', async () => {
+      // Arrange
+      const mockEventDetail: EventDetail = {
+        scheduleStartTs: new Date(),
+        resultsAvailableTs: new Date(),
+        oddsAvailableTs: new Date(),
+        playlist: undefined,
+        goalInfo: 'goalInfo1',
+        selections: [],
+        result: {}
+      };
+      
+      const mockEventWithDetails = {
+        ...mockEvent,
+        eventDetails: [mockEventDetail]
+      };
+      
+      const mockGameIntegration = {
+        merge: { customField: 'customValue' },
+        markets: [],
+        streamServer: 'https://stream-server.example.com',
+        videoExtension: 'mp4'
+      };
+      
+      const args = {
+        targets: mockEventWithDetails,
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      
+      cacheGetMock.mockResolvedValue(mockGameIntegration);
+      
+      const expectedResult = {
+        ...mockEventWithDetails,
+        customField: 'customValue',
+        eventDetails: [
+          {
+            scheduleStartTs: mockEventDetail.scheduleStartTs,
+            resultsAvailableTs: mockEventDetail.resultsAvailableTs,
+            oddsAvailableTs: mockEventDetail.oddsAvailableTs,
+            playlist: '',
+            goalInfo: 'https://stream-server.example.com/goalInfo1.json',
+            result: {},
+            markets: []
+          }
+        ]
+      };
+      
+      // Act
+      const result = await service.mergeEventWithEventDetails(args);
+      
+      // Assert
+      expect(result).toEqual(expectedResult);
+    });
+    
+    it('should correctly handle undefined goalInfo value', async () => {
+      // Arrange
+      const mockEventDetail: EventDetail = {
+        scheduleStartTs: new Date(),
+        resultsAvailableTs: new Date(),
+        oddsAvailableTs: new Date(),
+        playlist: 'playlist1',
+        goalInfo: undefined,
+        selections: [],
+        result: {}
+      };
+      
+      const mockEventWithDetails = {
+        ...mockEvent,
+        eventDetails: [mockEventDetail]
+      };
+      
+      const mockGameIntegration = {
+        merge: { customField: 'customValue' },
+        markets: [],
+        streamServer: 'https://stream-server.example.com',
+        videoExtension: 'mp4'
+      };
+      
+      const args = {
+        targets: mockEventWithDetails,
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      
+      cacheGetMock.mockResolvedValue(mockGameIntegration);
+      
+      const expectedResult = {
+        ...mockEventWithDetails,
+        customField: 'customValue',
+        eventDetails: [
+          {
+            scheduleStartTs: mockEventDetail.scheduleStartTs,
+            resultsAvailableTs: mockEventDetail.resultsAvailableTs,
+            oddsAvailableTs: mockEventDetail.oddsAvailableTs,
+            playlist: 'https://stream-server.example.com/playlist1.mp4',
+            goalInfo: '',
+            result: {},
+            markets: []
+          }
+        ]
+      };
+      
+      // Act
+      const result = await service.mergeEventWithEventDetails(args);
+      
+      // Assert
+      expect(result).toEqual(expectedResult);
+    });
+
+    it('should correctly handle undefined streamServer value', async () => {
+      // Arrange
+      const mockEventDetail: EventDetail = {
+        scheduleStartTs: new Date(),
+        resultsAvailableTs: new Date(),
+        oddsAvailableTs: new Date(),
+        playlist: 'playlist1',
+        goalInfo: 'goalInfo1',
+        selections: [],
+        result: {}
+      };
+      
+      const mockEventWithDetails = {
+        ...mockEvent,
+        eventDetails: [mockEventDetail]
+      };
+      
+      const mockGameIntegration = {
+        merge: { customField: 'customValue' },
+        markets: [],
+        streamServer: undefined,
+        videoExtension: 'mp4'
+      };
+      
+      const args = {
+        targets: mockEventWithDetails,
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      
+      cacheGetMock.mockResolvedValue(mockGameIntegration);
+      
+      const expectedResult = {
+        ...mockEventWithDetails,
+        customField: 'customValue',
+        eventDetails: [
+          {
+            scheduleStartTs: mockEventDetail.scheduleStartTs,
+            resultsAvailableTs: mockEventDetail.resultsAvailableTs,
+            oddsAvailableTs: mockEventDetail.oddsAvailableTs,
+            playlist: 'playlist1.mp4',
+            goalInfo: 'goalInfo1.json',
+            result: {},
+            markets: []
+          }
+        ]
+      };
+      
+      // Act
+      const result = await service.mergeEventWithEventDetails(args);
+      
+      // Assert
+      expect(result).toEqual(expectedResult);
+    });
+
+    it('should correctly handle undefined videoExtension value', async () => {
+      // Arrange
+      const mockEventDetail: EventDetail = {
+        scheduleStartTs: new Date(),
+        resultsAvailableTs: new Date(),
+        oddsAvailableTs: new Date(),
+        playlist: 'playlist1',
+        goalInfo: 'goalInfo1',
+        selections: [],
+        result: {}
+      };
+      
+      const mockEventWithDetails = {
+        ...mockEvent,
+        eventDetails: [mockEventDetail]
+      };
+      
+      const mockGameIntegration = {
+        merge: { customField: 'customValue' },
+        markets: [],
+        streamServer: 'https://stream-server.example.com',
+        videoExtension: undefined
+      };
+      
+      const args = {
+        targets: mockEventWithDetails,
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      
+      cacheGetMock.mockResolvedValue(mockGameIntegration);
+      
+      const expectedResult = {
+        ...mockEventWithDetails,
+        customField: 'customValue',
+        eventDetails: [
+          {
+            scheduleStartTs: mockEventDetail.scheduleStartTs,
+            resultsAvailableTs: mockEventDetail.resultsAvailableTs,
+            oddsAvailableTs: mockEventDetail.oddsAvailableTs,
+            playlist: 'https://stream-server.example.com/playlist1',
+            goalInfo: 'https://stream-server.example.com/goalInfo1.json',
+            result: {},
+            markets: []
+          }
+        ]
+      };
+      
+      // Act
+      const result = await service.mergeEventWithEventDetails(args);
+      
+      // Assert
+      expect(result).toEqual(expectedResult);
+    });
   });
 }); 

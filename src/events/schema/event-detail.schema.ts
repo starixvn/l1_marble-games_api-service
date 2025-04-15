@@ -14,10 +14,10 @@ export class EventDetail {
   oddsAvailableTs: Date;
 
   @Prop({ type: String })
-  playlist: string;
+  playlist?: string;
 
   @Prop({ type: String })
-  goalInfo: string;
+  goalInfo?: string;
 
   @Prop({ type: [SelectionSchema] })
   selections: Array<Selection>;
