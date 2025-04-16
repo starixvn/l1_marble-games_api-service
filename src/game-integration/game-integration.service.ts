@@ -48,8 +48,8 @@ export class GameIntegrationService {
     const merge = gameIntegration?.merge ?? {};
     const eventDetails = event.eventDetails as EventDetail[];
 
-    const mergedEventDetails = eventDetails.map(eventDetail => this.composeMergedEventDetail(gameIntegration, eventDetail));
-    
+    const mergedEventDetails = eventDetails.map((eventDetail, index) => this.composeMergedEventDetail(gameIntegration, eventDetail, index));
+
     const mergedEvent = apply(event, {
       eventDetails: mergedEventDetails,
     });
@@ -57,7 +57,7 @@ export class GameIntegrationService {
     return apply(mergedEvent, merge);
   }
 
-  private composeMergedEventDetail(gameIntegration: GameIntegration, eventDetail: EventDetail) {
+  private composeMergedEventDetail(gameIntegration: GameIntegration, eventDetail: EventDetail, index: number) {
     
     const markets = this.composeMergedMarkets(gameIntegration, eventDetail.selections);
     const liveServer = gameIntegration.streamServer ? `${gameIntegration.streamServer}/` : "";
@@ -65,11 +65,14 @@ export class GameIntegrationService {
     const playlist = eventDetail.playlist ? `${liveServer}${eventDetail.playlist}${videoExtension}` : "";
     const goalInfo = eventDetail.goalInfo ? `${liveServer}${eventDetail.goalInfo}.json` : "";
     
+    const mergeEventDetails = gameIntegration?.mergeEventDetails?.[index] ?? {};
+
     return apply({ ...eventDetail,
       playlist,
       goalInfo
     }, {
       markets,
+      ...mergeEventDetails
     })
   }
 

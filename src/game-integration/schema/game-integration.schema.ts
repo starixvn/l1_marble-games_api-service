@@ -26,6 +26,9 @@ export class GameIntegration {
 
   @Prop({ type: String })
   videoExtension: string;
+
+  @Prop({ type: [mongoose.Schema.Types.Mixed] })
+  mergeEventDetails: Array<any>;
 }
 
 export type GameIntegrationDocument = GameIntegration & Document<unknown>;
