@@ -1,6 +1,6 @@
 import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
 import mongoose, { ObjectId, Document, Schema as MongooseSchema } from 'mongoose';
-import { MarketIntegration } from './market_integration.schema';
+import { MarketIntegration } from './market-integration.schema';
 
 @Schema()
 export class GameIntegration {

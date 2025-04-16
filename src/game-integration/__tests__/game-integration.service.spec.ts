@@ -165,6 +165,7 @@ describe('GameIntegrationService', () => {
             playlist: 'https://stream-server.example.com/playlist1.mp4',
             goalInfo: 'https://stream-server.example.com/goalInfo1.json',
             result: {},
+            selections: mockEventDetail.selections,
             markets: [
               {
                 name: 'Market1',
@@ -244,7 +245,13 @@ describe('GameIntegrationService', () => {
             playlist: 'https://stream-server.example.com/playlist1.mp4',
             goalInfo: 'https://stream-server.example.com/goalInfo1.json',
             result: {},
-            markets: []
+            selections: mockEventDetail.selections,
+            markets: [
+              {
+                name: 'Market1',
+                selections: []
+              }
+            ]
           }
         ]
       };
@@ -315,6 +322,7 @@ describe('GameIntegrationService', () => {
             playlist: 'https://stream-server.example.com/playlist1.mp4',
             goalInfo: 'https://stream-server.example.com/goalInfo1.json',
             result: {},
+            selections: mockEventDetail.selections,
             markets: [
               {
                 name: 'Market1',
@@ -374,6 +382,7 @@ describe('GameIntegrationService', () => {
             playlist: '',
             goalInfo: 'https://stream-server.example.com/goalInfo1.json',
             result: {},
+            selections: mockEventDetail.selections,
             markets: []
           }
         ]
@@ -428,6 +437,7 @@ describe('GameIntegrationService', () => {
             playlist: 'https://stream-server.example.com/playlist1.mp4',
             goalInfo: '',
             result: {},
+            selections: mockEventDetail.selections,
             markets: []
           }
         ]
@@ -482,6 +492,7 @@ describe('GameIntegrationService', () => {
             playlist: 'playlist1.mp4',
             goalInfo: 'goalInfo1.json',
             result: {},
+            selections: mockEventDetail.selections,
             markets: []
           }
         ]
@@ -536,6 +547,7 @@ describe('GameIntegrationService', () => {
             playlist: 'https://stream-server.example.com/playlist1',
             goalInfo: 'https://stream-server.example.com/goalInfo1.json',
             result: {},
+            selections: mockEventDetail.selections,
             markets: []
           }
         ]

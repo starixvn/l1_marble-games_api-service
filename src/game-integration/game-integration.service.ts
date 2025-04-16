@@ -6,7 +6,7 @@ import {
 import { Model, Types } from 'mongoose';
 import { MemoryCacheService } from '../cache/cache.service';
 import { apply } from 'json-merge-patch';
-import { MarketIntegrationDocument } from './schema/market_integration.schema';
+import { MarketIntegrationDocument } from './schema/market-integration.schema';
 import { Event } from '../events/schema/event.schema';
 import { Selection } from '../events/schema/selection.schema';
 import { MergeSelection } from './schema/merge-selection.schema';
@@ -43,16 +43,18 @@ export class GameIntegrationService {
   }
 
   async mergeEventWithEventDetails(args: MergeArgs) {
-    const mergedEvent = await this.mergeWithEvents(args);
+    const event = args.targets;
     const gameIntegration = await this.getGameIntegrationWithCache(args.query);
-    
-    const eventDetails = mergedEvent.eventDetails as EventDetail[];
+    const merge = gameIntegration?.merge ?? {};
+    const eventDetails = event.eventDetails as EventDetail[];
 
     const mergedEventDetails = eventDetails.map(eventDetail => this.composeMergedEventDetail(gameIntegration, eventDetail));
-      
-    return apply(mergedEvent, {
+    
+    const mergedEvent = apply(event, {
       eventDetails: mergedEventDetails,
     });
+
+    return apply(mergedEvent, merge);
   }
 
   private composeMergedEventDetail(gameIntegration: GameIntegration, eventDetail: EventDetail) {
@@ -68,15 +70,13 @@ export class GameIntegrationService {
       goalInfo
     }, {
       markets,
-      selections: null,
     })
-  
   }
 
   private composeMergedMarkets(gameIntegration: GameIntegration, selections: Selection[] = []) {
     const markets = gameIntegration?.markets;
-    if (selections.length === 0) {
-      return selections;
+    if (!markets || markets.length === 0) {
+      return [];
     }
 
     const selectionMap = {}
