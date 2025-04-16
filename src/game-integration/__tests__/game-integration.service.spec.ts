@@ -93,9 +93,9 @@ describe('GameIntegrationService', () => {
         targets: mockEvent,
         query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
       };
-      const merge = { eventNameAKey: 'updated_team_a' };
+      const mergeEvent = { eventNameAKey: 'updated_team_a' };
       
-      cacheGetMock.mockResolvedValue({ merge });
+      cacheGetMock.mockResolvedValue({ mergeEvent });
 
       // Act
       const result = await service.mergeWithEvents(args);
@@ -131,7 +131,7 @@ describe('GameIntegrationService', () => {
       };
       
       const mockGameIntegration = {
-        merge: { customField: 'customValue' },
+        mergeEvent: { customField: 'customValue' },
         markets: [
           {
             merge: { name: 'Market1' },
@@ -211,7 +211,7 @@ describe('GameIntegrationService', () => {
       };
       
       const mockGameIntegration = {
-        merge: { customField: 'customValue' },
+        mergeEvent: { customField: 'customValue' },
         markets: [
           {
             merge: { name: 'Market1' },
@@ -288,7 +288,7 @@ describe('GameIntegrationService', () => {
       };
       
       const mockGameIntegration = {
-        merge: { customField: 'customValue' },
+        mergeEvent: { customField: 'customValue' },
         markets: [
           {
             merge: { name: 'Market1' },
@@ -358,7 +358,7 @@ describe('GameIntegrationService', () => {
       };
       
       const mockGameIntegration = {
-        merge: { customField: 'customValue' },
+        mergeEvent: { customField: 'customValue' },
         markets: [],
         streamServer: 'https://stream-server.example.com',
         videoExtension: 'mp4'
@@ -413,7 +413,7 @@ describe('GameIntegrationService', () => {
       };
       
       const mockGameIntegration = {
-        merge: { customField: 'customValue' },
+        mergeEvent: { customField: 'customValue' },
         markets: [],
         streamServer: 'https://stream-server.example.com',
         videoExtension: 'mp4'
@@ -468,7 +468,7 @@ describe('GameIntegrationService', () => {
       };
       
       const mockGameIntegration = {
-        merge: { customField: 'customValue' },
+        mergeEvent: { customField: 'customValue' },
         markets: [],
         streamServer: undefined,
         videoExtension: 'mp4'
@@ -523,7 +523,7 @@ describe('GameIntegrationService', () => {
       };
       
       const mockGameIntegration = {
-        merge: { customField: 'customValue' },
+        mergeEvent: { customField: 'customValue' },
         markets: [],
         streamServer: 'https://stream-server.example.com',
         videoExtension: undefined
@@ -578,7 +578,7 @@ describe('GameIntegrationService', () => {
       };
       
       const mockGameIntegration = {
-        merge: { customField: 'customValue' },
+        mergeEvent: { customField: 'customValue' },
         markets: [],
         streamServer: 'https://stream-server.example.com',
         videoExtension: 'mp4',

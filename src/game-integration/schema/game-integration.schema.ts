@@ -11,7 +11,7 @@ export class GameIntegration {
   gameId: number;
 
   @Prop({ type: mongoose.Schema.Types.Mixed })
-  merge: Record<string, any>;
+  mergeEvent: Record<string, any>;
 
   @Prop({ 
     type: [{ type: MongooseSchema.Types.ObjectId, ref: MarketIntegration.name }]

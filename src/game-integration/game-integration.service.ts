@@ -33,11 +33,7 @@ export class GameIntegrationService {
     const gameIntegration =
       await this.getGameIntegrationWithCache(args.query);
 
-    const merge = gameIntegration?.merge;
-
-    if (!merge) {
-      return args.targets;
-    }
+    const merge = gameIntegration?.mergeEvent ?? {};
 
     return apply(args.targets, merge);
   }
@@ -45,7 +41,7 @@ export class GameIntegrationService {
   async mergeEventWithEventDetails(args: MergeArgs) {
     const event = args.targets;
     const gameIntegration = await this.getGameIntegrationWithCache(args.query);
-    const merge = gameIntegration?.merge ?? {};
+    const merge = gameIntegration?.mergeEvent ?? {};
     const eventDetails = event.eventDetails as EventDetail[];
 
     const mergedEventDetails = eventDetails.map((eventDetail, index) => this.composeMergedEventDetail(gameIntegration, eventDetail, index));
