@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger, LoggerService, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   GameIntegration,
@@ -11,12 +11,15 @@ import { Event } from '../events/schema/event.schema';
 import { Selection } from '../events/schema/selection.schema';
 import { MergeSelection } from './schema/merge-selection.schema';
 import { EventDetail } from '../events/schema/event-detail.schema';
+import { applyOperation, validate } from 'fast-json-patch'
+
+
 interface GameIntegrationQuery {
   operatorId: string;
   gameId: number;
 }
 
-interface MergeArgs {
+interface IntegrationArgs {
   targets: Partial<Event>;
   query: GameIntegrationQuery;
 }
@@ -27,9 +30,10 @@ export class GameIntegrationService {
     @InjectModel(GameIntegration.name)
     private readonly gameIntegrationModel: Model<GameIntegration>,
     private readonly cacheService: MemoryCacheService,
+    @Inject(Logger) private readonly logger: LoggerService,
   ) {}
 
-  async mergeWithEvents(args: MergeArgs) {
+  async mergeWithEvents(args: IntegrationArgs) {
     const gameIntegration =
       await this.getGameIntegrationWithCache(args.query);
 
@@ -38,7 +42,32 @@ export class GameIntegrationService {
     return apply(args.targets, merge);
   }
 
-  async mergeEventWithEventDetails(args: MergeArgs) {
+  async patchEvent(args: IntegrationArgs) {
+    const gameIntegration =
+      await this.getGameIntegrationWithCache(args.query);
+
+    return this.patchEventWithGameIntegration(args.targets, gameIntegration);
+  }
+
+  private patchEventWithGameIntegration(target: Partial<Event>, gameIntegration: GameIntegration) {
+    const patches = gameIntegration?.patches ?? [];
+
+    if (patches.length === 0) {
+      return target;
+    }
+
+    return patches.reduce((result, patch) => {
+      const patchError = validate([patch], target);
+      if (patchError) {
+        this.logger.error(`Patch error: ${patchError.message}`, GameIntegrationService.name);
+        return result;
+      }
+
+      return applyOperation(result, patch).newDocument;
+    }, target);
+  }
+
+  async mergeEventWithEventDetails(args: IntegrationArgs) {
     const event = args.targets;
     const gameIntegration = await this.getGameIntegrationWithCache(args.query);
     const merge = gameIntegration?.mergeEvent ?? {};

@@ -54,12 +54,18 @@ export class ScheduleController {
 
     return Promise.all(
       events.map(async (event) => {
-        return this.gameIntegrationService.mergeWithEvents({
+        const query = {
+          operatorId: operatorId,
+          gameId: event.gameId,
+        }
+        const mergedEvent = await this.gameIntegrationService.mergeWithEvents({
           targets: event,
-          query: {
-            operatorId: operatorId,
-            gameId: event.gameId,
-          },
+          query,
+        });
+
+        return this.gameIntegrationService.patchEvent({
+          targets: mergedEvent,
+          query,
         });
       }),
     );

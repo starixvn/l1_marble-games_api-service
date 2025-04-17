@@ -12,6 +12,7 @@ const mockEventService = {
 
 const mockGameIntegrationService = {
   mergeWithEvents: jest.fn(),
+  patchEvent: jest.fn(),
 };
 
 describe('ScheduleController', () => {
@@ -81,13 +82,33 @@ describe('ScheduleController', () => {
         },
       ];
 
+      const mockPatchedEvents = [
+        {
+          ...mockMergedEvents[0],
+          patchedField: 'patched-value',
+        },
+        {
+          ...mockMergedEvents[1],
+          patchedField: 'patched-value',
+        },
+      ];
+
       mockEventService.getEventByTimeSpan.mockResolvedValue(mockEvents);
+      
       mockGameIntegrationService.mergeWithEvents.mockImplementation(
         ({ targets, query }) =>
           Promise.resolve({
             ...targets,
             productCode: 'Spinner_Soccer',
             productTypeKey: 'Marble_RNG',
+          }),
+      );
+      
+      mockGameIntegrationService.patchEvent.mockImplementation(
+        ({ targets, query }) =>
+          Promise.resolve({
+            ...targets,
+            patchedField: 'patched-value',
           }),
       );
 
@@ -130,7 +151,24 @@ describe('ScheduleController', () => {
         },
       });
 
-      expect(await Promise.all(result)).toEqual(mockMergedEvents);
+      expect(mockGameIntegrationService.patchEvent).toHaveBeenCalledTimes(2);
+      expect(mockGameIntegrationService.patchEvent).toHaveBeenCalledWith({
+        targets: mockMergedEvents[0],
+        query: {
+          operatorId: 'test-operator',
+          gameId: 'game1',
+        },
+      });
+
+      expect(mockGameIntegrationService.patchEvent).toHaveBeenCalledWith({
+        targets: mockMergedEvents[1],
+        query: {
+          operatorId: 'test-operator',
+          gameId: 'game2',
+        },
+      });
+
+      expect(await Promise.all(result)).toEqual(mockPatchedEvents);
     });
   });
 });

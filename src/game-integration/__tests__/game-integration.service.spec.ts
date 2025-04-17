@@ -6,6 +6,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Event } from '../../events/schema/event.schema';
 import { EventDetail } from '../../events/schema/event-detail.schema';
 import { Selection } from '../../events/schema/selection.schema';
+import { Logger } from '@nestjs/common';
 
 describe('GameIntegrationService', () => {
   let service: GameIntegrationService;
@@ -45,6 +46,16 @@ describe('GameIntegrationService', () => {
           useValue: {
             get: cacheGetMock,
           },
+        },
+        {
+          provide: Logger,
+          useValue: {
+            log: jest.fn(),
+            error: jest.fn(),
+            warn: jest.fn(),
+            debug: jest.fn(),
+            verbose: jest.fn()
+          }
         },
       ],
     }).compile();
