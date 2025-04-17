@@ -17,6 +17,7 @@ import {
   ApiResponse,
   ApiQuery,
 } from '@nestjs/swagger';
+import { GameIntegrationService } from '../game-integration/game-integration.service';
 
 @ApiTags('events')
 @ApiBearerAuth()
@@ -24,7 +25,10 @@ import {
 @UseGuards(JwtAuthGuard)
 @UseInterceptors(LoggerInterceptor)
 export class EventsController {
-  constructor(private readonly eventService: EventService) {}
+  constructor(
+    private readonly eventService: EventService,
+    private readonly gameIntegrationService: GameIntegrationService,
+  ) {}
 
   @ApiOperation({ summary: 'Get an event by ID' })
   @ApiResponse({
@@ -55,7 +59,16 @@ export class EventsController {
     if (isNaN(eventId)) {
       throw new BadRequestException('eventID must be a valid integer');
     }
+    const operatorId = req.user.userId;
+
+    const rawEventData = await this.eventService.getEventById(eventId); 
     
-    return this.eventService.getEventById(eventId);
+    return this.gameIntegrationService.mergeEventWithEventDetails({
+      query: {
+        operatorId,
+        gameId: rawEventData.gameId,
+      },
+      targets: rawEventData
+    });
   }
 } 

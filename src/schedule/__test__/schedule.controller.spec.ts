@@ -65,8 +65,8 @@ describe('ScheduleController', () => {
           eventID: '1',
           eventNameAKey: 'Manchester United',
           eventNameBKey: 'Liverpool',
-          eventName: 'Manchester United v Liverpool',
-          schdeuleStartTs: mockEvents[0].startTime,
+          gameId: 'game1',
+          startTime: mockEvents[0].startTime,
           productCode: 'Spinner_Soccer',
           productTypeKey: 'Marble_RNG',
         },
@@ -74,8 +74,8 @@ describe('ScheduleController', () => {
           eventID: '2',
           eventNameAKey: 'Arsenal',
           eventNameBKey: 'Chelsea',
-          eventName: 'Arsenal v Chelsea',
-          schdeuleStartTs: mockEvents[1].startTime,
+          gameId: 'game2',
+          startTime: mockEvents[1].startTime,
           productCode: 'Spinner_Soccer',
           productTypeKey: 'Marble_RNG',
         },
@@ -83,7 +83,7 @@ describe('ScheduleController', () => {
 
       mockEventService.getEventByTimeSpan.mockResolvedValue(mockEvents);
       mockGameIntegrationService.mergeWithEvents.mockImplementation(
-        ({ targets }) =>
+        ({ targets, query }) =>
           Promise.resolve({
             ...targets,
             productCode: 'Spinner_Soccer',
@@ -115,21 +115,22 @@ describe('ScheduleController', () => {
         2,
       );
       expect(mockGameIntegrationService.mergeWithEvents).toHaveBeenCalledWith({
-        targets: {
-          eventID: '1',
-          eventNameAKey: 'Manchester United',
-          eventNameBKey: 'Liverpool',
-          eventName: 'Manchester United v Liverpool',
-          schdeuleStartTs: mockEvents[0].startTime,
-        },
+        targets: mockEvents[0],
         query: {
           operatorId: 'test-operator',
           gameId: 'game1',
         },
       });
 
-      const resolvedResults = await Promise.all(result);
-      expect(resolvedResults).toEqual(mockMergedEvents);
+      expect(mockGameIntegrationService.mergeWithEvents).toHaveBeenCalledWith({
+        targets: mockEvents[1],
+        query: {
+          operatorId: 'test-operator',
+          gameId: 'game2',
+        },
+      });
+
+      expect(await Promise.all(result)).toEqual(mockMergedEvents);
     });
   });
 });

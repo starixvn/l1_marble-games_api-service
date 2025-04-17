@@ -7,7 +7,7 @@ import {
 import {
   MarketIntegration,
   MarketIntegrationSchema,
-} from './schema/market_integration.schema';
+} from './schema/market-integration.schema';
 import { CacheModule } from '../cache/cache.module';
 import { GameIntegrationService } from './game-integration.service';
 
