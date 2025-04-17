@@ -14,6 +14,11 @@ const config = () => ({
   cache: {
     ttl: MAX_CACHE_TTL,
   },
+  sentry: {
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.ENVIRONMENT,
+    logIdentifier: 'marble-odds-feed',
+  }
 });
 
 export default config;
