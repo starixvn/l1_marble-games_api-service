@@ -116,6 +116,123 @@ describe('GameIntegrationService', () => {
     });
   });
 
+  describe('patchEvent', () => {
+    it('should return targets when no game integration found', async () => {
+      // Arrange
+      const args = {
+        targets: mockEvent,
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      cacheGetMock.mockResolvedValue(null);
+
+      // Act
+      const result = await service.patchEvent(args);
+
+      // Assert
+      expect(result).toEqual(mockEvent);
+      expect(cacheGetMock).toHaveBeenCalledWith(
+        `GameIntegration:${args.query.operatorId}:${args.query.gameId}`,
+        expect.any(Function)
+      );
+    });
+
+    it('should return targets when game integration has no patches', async () => {
+      // Arrange
+      const args = {
+        targets: mockEvent,
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      cacheGetMock.mockResolvedValue({ 
+        mergeEvent: { someField: 'value' } 
+      });
+
+      // Act
+      const result = await service.patchEvent(args);
+
+      // Assert
+      expect(result).toEqual(mockEvent);
+    });
+
+    it('should apply valid json patches to the target', async () => {
+      // Arrange
+      const args = {
+        targets: mockEvent,
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      
+      const gameIntegration = {
+        patches: [
+          { op: 'replace', path: '/eventNameAKey', value: 'patched_team_a' },
+          { op: 'add', path: '/customField', value: 'customValue' }
+        ]
+      };
+      
+      cacheGetMock.mockResolvedValue(gameIntegration);
+
+      // Act
+      const result = await service.patchEvent(args);
+
+      // Assert
+      expect(result.eventNameAKey).toEqual('patched_team_a');
+      expect(result.customField).toEqual('customValue');
+    });
+
+    it('should skip invalid patches and log errors', async () => {
+      // Arrange
+      const loggerSpy = jest.spyOn((service as any).logger, 'error');
+      
+      const args = {
+        targets: mockEvent,
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      
+      const gameIntegration = {
+        patches: [
+          { op: 'replace', path: '/eventNameAKey', value: 'patched_team_a' },
+          { op: 'remove', path: '/nonExistentField' }, // Invalid patch
+          { op: 'add', path: '/customField', value: 'customValue' }
+        ]
+      };
+      
+      cacheGetMock.mockResolvedValue(gameIntegration);
+
+      // Act
+      const result = await service.patchEvent(args);
+
+      // Assert
+      expect(result.eventNameAKey).toEqual('patched_team_a');
+      expect(result.customField).toEqual('customValue');
+      expect(loggerSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Patch error:'),
+        'GameIntegrationService'
+      );
+    });
+
+    it('should apply multiple patches in sequence', async () => {
+      // Arrange
+      const args = {
+        targets: { ...mockEvent, counter: 0 },
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      
+      const gameIntegration = {
+        patches: [
+          { op: 'replace', path: '/counter', value: 1 },
+          { op: 'replace', path: '/counter', value: 2 },
+          { op: 'replace', path: '/counter', value: 3 }
+        ]
+      };
+      
+      cacheGetMock.mockResolvedValue(gameIntegration);
+
+      // Act
+      const result = await service.patchEvent(args);
+
+      // Assert
+      expect(result.counter).toEqual(3);
+    });
+  });
+
   describe('mergeEventWithEventDetails', () => {
     it('should correctly merge event with event details', async () => {
       // Arrange
