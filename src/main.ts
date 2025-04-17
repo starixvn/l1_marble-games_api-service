@@ -2,9 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { RequestMethod } from '@nestjs/common';
+import { GlobalLoggerService } from './logger/global-logger.service';
+import { ConfigService } from '@nestjs/config';
+import { networkInterfaces } from 'os';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useLogger(new GlobalLoggerService(app.get(ConfigService)));
 
   // for healthcheck
   app.setGlobalPrefix('api', {
@@ -19,11 +23,28 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
 
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT ?? 3000;
+  const serverIp = getServerIp();
   await app.listen(port);
-  console.log(`Application is running on: http://localhost:${port}`);
+  console.log(`Application is running on: http://${serverIp}:${port}`);
   console.log(
-    `Swagger documentation available at: http://localhost:${port}/swagger`,
+    `Swagger documentation available at: http://${serverIp}:${port}/swagger`,
   );
+
+  
+function getServerIp() {
+  const nets = networkInterfaces();
+  for (const name of Object.keys(nets)) {
+    const interfaces = nets[name];
+    if (interfaces) {
+      for (const net of interfaces) {
+        if (net.family === 'IPv4' && !net.internal) {
+          return net.address;
+        }
+      }
+    }
+  }
+  return 'localhost';
+}
 }
 bootstrap();
