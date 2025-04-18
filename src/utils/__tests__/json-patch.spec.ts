@@ -15,7 +15,7 @@ describe('JSON patch', () => {
         };
 
         // Act
-        await validatePatch({}, operation);
+        validatePatch({}, operation);
         
         // Assert
         expect(validateSpy).not.toHaveBeenCalled();
@@ -32,7 +32,7 @@ describe('JSON patch', () => {
         };
 
         // Act
-        const result = await validatePatch({}, operation);
+        const result = validatePatch({}, operation);
         
         // Assert
         expect(result).toBeInstanceOf(PatchError);
@@ -49,7 +49,7 @@ describe('JSON patch', () => {
         };
 
         // Act
-        const result = await validatePatch({}, operation);
+        const result = validatePatch({}, operation);
         
         // Assert
         expect(result).toBeNull();
@@ -68,7 +68,7 @@ describe('JSON patch', () => {
         };
 
         // Act
-        await validatePatch(document, operation);
+        validatePatch(document, operation);
         
         // Assert
         expect(validateSpy).toHaveBeenCalledWith([operation], document);

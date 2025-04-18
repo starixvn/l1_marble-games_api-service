@@ -13,7 +13,7 @@ export class PatchError extends Error {
   }
 }
 
-export async function validatePatch(document: any, patch: any) {
+export function validatePatch(document: any, patch: any) {
   if (isJsonataOperation(patch)) {
     return validateJsonataOperation(patch as JsonataOperation);
   }
@@ -51,6 +51,6 @@ async function applyJsonataOperation(operation: JsonataOperation, document: any)
   return result;
 }
 
-function deepClone(obj: any) {
+export function deepClone(obj: any) {
   return JSON.parse(JSON.stringify(obj));
 }

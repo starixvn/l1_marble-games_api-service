@@ -11,7 +11,7 @@ import { Event } from '../events/schema/event.schema';
 import { Selection } from '../events/schema/selection.schema';
 import { MergeSelection } from './schema/merge-selection.schema';
 import { EventDetail } from '../events/schema/event-detail.schema';
-import { applyOperation, validate } from 'fast-json-patch'
+import { applyPatch, deepClone, validatePatch } from '../utils/json-patch';
 
 
 interface GameIntegrationQuery {
@@ -49,22 +49,24 @@ export class GameIntegrationService {
     return this.patchEventWithGameIntegration(args.targets, gameIntegration);
   }
 
-  private patchEventWithGameIntegration(target: Partial<Event>, gameIntegration: GameIntegration) {
+  private async patchEventWithGameIntegration(target: Partial<Event>, gameIntegration: GameIntegration) {
     const patches = gameIntegration?.patches ?? [];
 
     if (patches.length === 0) {
       return target;
     }
-
-    return patches.reduce((result, patch) => {
-      const patchError = validate([patch], target);
+    let result = deepClone(target)
+    
+    for (const patch of patches) {
+      const patchError = validatePatch(result, patch);
       if (patchError) {
         this.logger.error(`Patch error: ${patchError.message}`, GameIntegrationService.name);
-        return result;
+        continue;
       }
+      result = await applyPatch(result, patch);
+    }
 
-      return applyOperation(result, patch).newDocument;
-    }, target);
+    return result;
   }
 
   async mergeEventWithEventDetails(args: IntegrationArgs) {
