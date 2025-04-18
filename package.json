@@ -37,6 +37,8 @@
     "dotenv": "^16.4.7",
     "fast-json-patch": "^3.1.1",
     "json-merge-patch": "^1.0.2",
+    "jsonata": "^2.0.6",
+    "jsonpointer": "^5.0.1",
     "mongoose": "^8.12.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
