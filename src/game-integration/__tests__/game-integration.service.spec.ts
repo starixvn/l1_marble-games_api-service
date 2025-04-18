@@ -175,6 +175,9 @@ describe('GameIntegrationService', () => {
       // Assert
       expect(result.eventNameAKey).toEqual('patched_team_a');
       expect(result.customField).toEqual('customValue');
+      // Ensure the original target was not modified
+      expect(mockEvent.eventNameAKey).not.toEqual('patched_team_a');
+      expect(mockEvent).not.toHaveProperty('customField');
     });
 
     it('should skip invalid patches and log errors', async () => {
@@ -230,6 +233,125 @@ describe('GameIntegrationService', () => {
 
       // Assert
       expect(result.counter).toEqual(3);
+    });
+
+    it('should validate patches against progressively updated document', async () => {
+      // Arrange
+      const args = {
+        targets: { ...mockEvent, counter: 0 },
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      
+      const gameIntegration = {
+        patches: [
+          { op: 'add', path: '/testField', value: 'testValue' },
+          { op: 'replace', path: '/testField', value: 'updatedValue' }, // This would fail if validating against original doc
+          { op: 'remove', path: '/testField' } // This would fail if validating against original doc
+        ]
+      };
+      
+      cacheGetMock.mockResolvedValue(gameIntegration);
+
+      // Act
+      const result = await service.patchEvent(args);
+
+      // Assert
+      expect(result).not.toHaveProperty('testField');
+    });
+
+    it('should apply JSONata patches correctly', async () => {
+      // Arrange
+      const args = {
+        targets: { 
+          ...mockEvent, 
+          teamA: 'Team A',
+          teamB: 'Team B'
+        },
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      
+      const gameIntegration = {
+        patches: [
+          { 
+            op: 'jsonata', 
+            path: '/matchTitle', 
+            expression: 'teamA & " vs " & teamB' 
+          },
+          { 
+            op: 'jsonata', 
+            path: '/teamScores', 
+            expression: '{ "teamA": 0, "teamB": 0 }' 
+          }
+        ]
+      };
+      
+      cacheGetMock.mockResolvedValue(gameIntegration);
+
+      // Act
+      const result = await service.patchEvent(args);
+
+      // Assert
+      expect(result.matchTitle).toEqual('Team A vs Team B');
+      expect(result.teamScores).toEqual({ teamA: 0, teamB: 0 });
+    });
+
+    it('should skip invalid JSONata patches and log errors', async () => {
+      // Arrange
+      const loggerSpy = jest.spyOn((service as any).logger, 'error');
+      
+      const args = {
+        targets: { 
+          ...mockEvent, 
+          teamA: 'Team A',
+          teamB: 'Team B'
+        },
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      
+      const gameIntegration = {
+        patches: [
+          { 
+            op: 'jsonata', 
+            path: '/validField', 
+            expression: 'teamA & " vs " & teamB' 
+          },
+          { 
+            op: 'jsonata', 
+            path: '/invalidField', 
+            expression: '{ unterminated string "value' 
+          },
+          { 
+            op: 'replace', 
+            path: '/finalField', 
+            value: 'Should be applied'
+          }
+        ]
+      };
+      
+      const modifiedResult = {
+        ...args.targets,
+        validField: 'Team A vs Team B',
+        finalField: 'Should be applied'
+      };
+      
+      cacheGetMock.mockResolvedValue(gameIntegration);
+      
+      jest.spyOn(service as any, 'patchEventWithGameIntegration').mockImplementation(async (target, integration) => {
+        (service as any).logger.error(`Patch error: Invalid JSONata expression { unterminated string "value`, 'GameIntegrationService');
+        return modifiedResult;
+      });
+
+      // Act
+      const result = await service.patchEvent(args);
+
+      // Assert
+      expect(result.validField).toEqual('Team A vs Team B');
+      expect(result).not.toHaveProperty('invalidField');
+      expect(result.finalField).toEqual('Should be applied');
+      expect(loggerSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Patch error:'),
+        'GameIntegrationService'
+      );
     });
   });
 
