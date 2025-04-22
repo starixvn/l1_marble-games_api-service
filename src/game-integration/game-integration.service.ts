@@ -129,9 +129,10 @@ export class GameIntegrationService {
       selectionMap[selection.name] = selection;
     }
 
-    return (markets as MarketIntegrationDocument[]).map(market => {
-      const marketMergeCopy: Record<string, any> = JSON.parse(JSON.stringify(market.merge || {}));
-      const marketSelectionsCopy: MergeSelection[] = JSON.parse(JSON.stringify(market.selections || []));
+    return markets.map((market) => {
+      const marketDoc = market as MarketIntegrationDocument;
+      const marketMergeCopy: Record<string, any> = JSON.parse(JSON.stringify(marketDoc?.merge ?? {}));
+      const marketSelectionsCopy: MergeSelection[] = JSON.parse(JSON.stringify(marketDoc?.selections ?? []));
       
       return apply(marketMergeCopy, {
         selections: marketSelectionsCopy
