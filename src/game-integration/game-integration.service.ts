@@ -6,7 +6,7 @@ import {
 import { Model, Types } from 'mongoose';
 import { MemoryCacheService } from '../cache/cache.service';
 import { apply } from 'json-merge-patch';
-import { MarketIntegrationDocument } from './schema/market-integration.schema';
+import { MarketIntegration } from './schema/market-integration.schema';
 import { Event } from '../events/schema/event.schema';
 import { Selection } from '../events/schema/selection.schema';
 import { MergeSelection } from './schema/merge-selection.schema';
@@ -130,9 +130,8 @@ export class GameIntegrationService {
     }
 
     return markets.map((market) => {
-      const marketDoc = market as MarketIntegrationDocument;
-      const marketMergeCopy: Record<string, any> = JSON.parse(JSON.stringify(marketDoc?.merge ?? {}));
-      const marketSelectionsCopy: MergeSelection[] = JSON.parse(JSON.stringify(marketDoc?.selections ?? []));
+      const marketMergeCopy: Record<string, any> = JSON.parse(JSON.stringify((market as MarketIntegration)?.merge ?? {}));
+      const marketSelectionsCopy: MergeSelection[] = JSON.parse(JSON.stringify((market as MarketIntegration)?.selections ?? []));
       
       return apply(marketMergeCopy, {
         selections: marketSelectionsCopy
