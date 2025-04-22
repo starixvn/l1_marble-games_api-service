@@ -63,6 +63,173 @@ describe('GameIntegrationService', () => {
     service = module.get<GameIntegrationService>(GameIntegrationService);
   });
 
+  describe('processEvent', () => {
+    it('should return targets when no game integration found', async () => {
+      // Arrange
+      const args = {
+        targets: mockEvent,
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      cacheGetMock.mockResolvedValue(null);
+
+      // Act
+      const result = await service.processEvent(args);
+
+      // Assert
+      expect(result).toEqual(mockEvent);
+      expect(cacheGetMock).toHaveBeenCalledWith(
+        `GameIntegration:${args.query.operatorId}:${args.query.gameId}`,
+        expect.any(Function)
+      );
+    });
+
+    it('should apply merge and then patch when game integration contains both', async () => {
+      // Arrange
+      const args = {
+        targets: { 
+          ...mockEvent,
+          counter: 0 
+        },
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      
+      const gameIntegration = {
+        mergeEvent: { 
+          eventNameAKey: 'merged_team_a',
+          extraField: 'extra_value' 
+        },
+        patches: [
+          { op: 'replace', path: '/counter', value: 5 },
+          { op: 'replace', path: '/eventNameBKey', value: 'patched_team_b' }
+        ]
+      };
+      
+      cacheGetMock.mockResolvedValue(gameIntegration);
+
+      // Act
+      const result = await service.processEvent(args);
+
+      // Assert
+      expect(result.eventNameAKey).toEqual('merged_team_a');
+      expect(result.eventNameBKey).toEqual('patched_team_b');
+      expect(result.extraField).toEqual('extra_value');
+      expect(result.counter).toEqual(5);
+    });
+
+    it('should apply merge first and then patches in sequence', async () => {
+      // Arrange
+      const args = {
+        targets: { 
+          ...mockEvent,
+          counter: 10 
+        },
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      
+      const gameIntegration = {
+        mergeEvent: { 
+          counter: 20,
+          newField: 'new value'
+        },
+        patches: [
+          { op: 'replace', path: '/counter', value: 30 },
+          { op: 'replace', path: '/counter', value: 60 }
+        ]
+      };
+      
+      cacheGetMock.mockResolvedValue(gameIntegration);
+
+      // Act
+      const result = await service.processEvent(args);
+
+      // Assert
+      expect(result.counter).toEqual(60);
+      expect(result.newField).toEqual('new value');
+    });
+
+    it('should handle invalid patches correctly after merge', async () => {
+      // Arrange
+      const loggerSpy = jest.spyOn((service as any).logger, 'error');
+      
+      const args = {
+        targets: { 
+          ...mockEvent,
+          teamA: 'Team A',
+          teamB: 'Team B'
+        },
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      
+      const gameIntegration = {
+        mergeEvent: { 
+          matchTitle: 'Original Title',
+          matchType: 'friendly'
+        },
+        patches: [
+          { op: 'replace', path: '/matchTitle', value: 'Updated Title' },
+          { op: 'remove', path: '/nonExistentField' },
+          { op: 'add', path: '/customField', value: 'customValue' }
+        ]
+      };
+      
+      cacheGetMock.mockResolvedValue(gameIntegration);
+
+      // Act
+      const result = await service.processEvent(args);
+
+      // Assert
+      expect(result.matchTitle).toEqual('Updated Title');
+      expect(result.matchType).toEqual('friendly');
+      expect(result.customField).toEqual('customValue');
+      expect(loggerSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Patch error:'),
+        'GameIntegrationService'
+      );
+    });
+
+    it('should apply JSONata patches after merging', async () => {
+      // Arrange
+      const args = {
+        targets: { 
+          ...mockEvent, 
+          teamA: 'Team A',
+          teamB: 'Team B',
+          score: { teamA: 0, teamB: 0 }
+        },
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      
+      const gameIntegration = {
+        mergeEvent: { 
+          stats: { possession: { teamA: 50, teamB: 50 } }
+        },
+        patches: [
+          { 
+            op: 'jsonata', 
+            path: '/matchTitle', 
+            expression: '"Team A vs Team B"'
+          },
+          { 
+            op: 'replace',
+            path: '/score/teamA', 
+            value: 1 
+          }
+        ]
+      };
+      
+      cacheGetMock.mockResolvedValue(gameIntegration);
+
+      // Act
+      const result = await service.processEvent(args);
+
+      // Assert
+      expect(result.matchTitle).toEqual('Team A vs Team B');
+      expect(result.score.teamA).toEqual(1);
+      expect(result.score.teamB).toEqual(0);
+      expect(result.stats.possession).toEqual({ teamA: 50, teamB: 50 });
+    });
+  });
+
   describe('mergeWithEvents', () => {
     it('should return targets when no game integration found', async () => {
       // Arrange

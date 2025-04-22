@@ -1,4 +1,4 @@
-const MAX_CACHE_TTL = 24 * 60 * 60 * 1000; // one day
+const MAX_CACHE_TTL = 5 * 1000; // 5 seconds
 
 const config = () => ({
   database: {

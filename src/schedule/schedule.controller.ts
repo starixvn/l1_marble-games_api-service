@@ -58,13 +58,10 @@ export class ScheduleController {
           operatorId: operatorId,
           gameId: event.gameId,
         }
-        const mergedEvent = await this.gameIntegrationService.mergeWithEvents({
-          targets: event,
-          query,
-        });
 
-        return this.gameIntegrationService.patchEvent({
-          targets: mergedEvent,
+
+        return this.gameIntegrationService.processForScheduleEvents({
+          targets: event,
           query,
         });
       }),

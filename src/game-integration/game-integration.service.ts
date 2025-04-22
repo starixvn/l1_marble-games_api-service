@@ -33,20 +33,34 @@ export class GameIntegrationService {
     @Inject(Logger) private readonly logger: LoggerService,
   ) {}
 
+  async processForScheduleEvents(args: IntegrationArgs) {
+    const processed = await this.processEvent(args);
+    return apply(processed, {
+      eventDetails: null
+    });
+  }
+
+  async processEvent(args: IntegrationArgs) {
+    const gameIntegration = await this.getGameIntegrationWithCache(args.query);
+    const merged = this.mergeEventWithGameIntegration(args.targets, gameIntegration);
+    return this.patchEventWithGameIntegration(merged, gameIntegration);
+  }
+
   async mergeWithEvents(args: IntegrationArgs) {
     const gameIntegration =
       await this.getGameIntegrationWithCache(args.query);
-
-    const merge = gameIntegration?.mergeEvent ?? {};
-
-    return apply(args.targets, merge);
+    return this.mergeEventWithGameIntegration(args.targets, gameIntegration);
   }
 
   async patchEvent(args: IntegrationArgs) {
     const gameIntegration =
       await this.getGameIntegrationWithCache(args.query);
-
     return this.patchEventWithGameIntegration(args.targets, gameIntegration);
+  }
+
+  private mergeEventWithGameIntegration(target: Partial<Event>, gameIntegration: GameIntegration) {
+    const merge = gameIntegration?.mergeEvent ?? {};
+    return apply(target, merge);
   }
 
   private async patchEventWithGameIntegration(target: Partial<Event>, gameIntegration: GameIntegration) {
