@@ -1,12 +1,12 @@
 FROM hub.lumigame.com/docker-hub/library/node:20-alpine AS builder
 WORKDIR /app
-COPY package.json package-lock.json .modprunerrc ./
+COPY package.json yarn.lock .modprunerrc ./
 RUN npm run reg \
-    && npm install
+    && yarn install
 COPY . .
 RUN npm run build
 RUN rm -rf ./node_modules
-RUN npm install --production \
+RUN yarn install --production \
     && npx mod-pruner prune --force 
 
 FROM hub.lumigame.com/docker-hub/library/node:20-alpine
@@ -22,7 +22,7 @@ ENV PATH=/app/node_modules/.bin:$PATH
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./
-COPY --from=builder /app/package-lock.json ./
+COPY --from=builder /app/yarn.lock ./
 COPY --from=builder /app/.env ./
 
-CMD [ "npm", "run", "start:prod" ]
+CMD [ "node", "dist/src/main.js" ]
