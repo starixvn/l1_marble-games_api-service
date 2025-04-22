@@ -19,7 +19,6 @@ describe('Config function', () => {
     const result = config();
     expect(result.database).toEqual({
       uri: 'mongodb://localhost:27017/testdb',
-      dbName: 'marble_odds_feed',
     });
   });
 
