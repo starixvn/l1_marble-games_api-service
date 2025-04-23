@@ -7,6 +7,9 @@ export default async function globalSetup(): Promise<void> {
   try {
     await setupDatabaseStub();
     
+    // Verify credentials are available in global variable
+    console.log(`✅ Setup complete with ${global.__CREDENTIALS__?.length ?? 0} test credentials available`);
+    
     await apiService.start();
     
     console.log('✅ Global setup complete');

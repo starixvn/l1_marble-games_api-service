@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { Operator, OperatorSchema } from '../../../src/operator/schema/operator.schema';
 
-const credentials: Array<{ password: string; operatorId: string }> = [];
+// Initialize global credentials if not already defined
+  global.__CREDENTIALS__ ??= [];
 
 async function connectToDatabase() {
   try {
@@ -35,16 +36,18 @@ async function createOperator() {
   
   const savedOperator = await operator.save();
   
-  credentials.push({
+  global.__CREDENTIALS__.push({
     password: randomPassword,
     operatorId: savedOperator._id.toString(),
   });
+  
+  console.log(`Created operator with ID: ${savedOperator._id.toString()}`);
   
   return savedOperator;
 }
 
 function getCredentials() {
-  return credentials;
+  return [...global.__CREDENTIALS__];
 }
 
 async function closeDatabaseConnection() {
@@ -74,6 +77,9 @@ async function clearDatabase() {
     
     await Promise.all(clearPromises);
     console.log('Database cleared successfully - all collections dropped');
+    
+    // Clear global credentials
+    global.__CREDENTIALS__ = [];
   } catch (error) {
     console.error('Failed to clear database:', error);
     throw error;

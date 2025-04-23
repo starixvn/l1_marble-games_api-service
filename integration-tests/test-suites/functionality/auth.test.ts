@@ -1,16 +1,12 @@
 import { getCredentials } from "../../_stub/data/setup";
+import { getAuthToken } from "../../utils/auth";
 
 describe('Auth', () => {
   describe('Login', () => {
     describe('With valid operator credential', () => {
       it('should return 200', async () => {
-
         // Arrange
         const credentials = getCredentials();
-        if (credentials.length === 0) {
-          console.warn('No credentials available, skipping test');
-          return;
-        } 
         const validCredential = credentials[0];
         const baseUrl = global.__API_SERVICE__.getBaseUrl();
         const loginUrl = `${baseUrl}/api/login`;
@@ -34,10 +30,7 @@ describe('Auth', () => {
       it('should contains access token', async () => {
         // Arrange
         const credentials = getCredentials();
-        if (credentials.length === 0) {
-          console.warn('No credentials available, skipping test');
-          return;
-        }
+
         const validCredential = credentials[0];
         const baseUrl = global.__API_SERVICE__.getBaseUrl();
         const loginUrl = `${baseUrl}/api/login`;
@@ -59,6 +52,19 @@ describe('Auth', () => {
         expect(responseData).toHaveProperty('access_token');
         expect(typeof responseData.access_token).toBe('string');
         expect(responseData.access_token.length).toBeGreaterThan(0);
+      });
+      
+      it('should work with utility function', async () => {
+        // Arrange
+        const baseUrl = global.__API_SERVICE__.getBaseUrl();
+        
+        // Act
+        let token: string;
+          // Assert
+          token = await getAuthToken(baseUrl);
+          expect(typeof token).toBe('string');
+          expect(token.length).toBeGreaterThan(0);
+
       });
     });
 
