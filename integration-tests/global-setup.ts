@@ -16,4 +16,4 @@ export default async function globalSetup(): Promise<void> {
     console.error('❌ Error in global setup:', error);
     throw error;
   }
-}
+} 

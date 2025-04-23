@@ -10,11 +10,11 @@ const config: Config = {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
   testTimeout: 30000,
-  setupFilesAfterEnv: ['./setup.ts'],
+  setupFilesAfterEnv: ['./after-test-setup.ts'],
   detectOpenHandles: true,
   testPathIgnorePatterns: ['<rootDir>/test-suites/'],
-  globalSetup: resolve(__dirname, './globalSetup.ts'),
-  globalTeardown: resolve(__dirname, './globalTeardown.ts')
+  globalSetup: resolve(__dirname, './global-setup.ts'),
+  globalTeardown: resolve(__dirname, './global-teardown.ts')
 };
 
 export default config;

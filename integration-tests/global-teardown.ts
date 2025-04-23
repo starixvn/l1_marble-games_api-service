@@ -1,5 +1,5 @@
 import { apiService } from './_stub/api/setup';
-import { teardownDatabaseStub } from './_stub/data/teardown';
+import mongoose from 'mongoose';
 
 export default async function globalTeardown(): Promise<void> {
   console.log('🧹 Global teardown: cleaning up resources');
@@ -7,7 +7,11 @@ export default async function globalTeardown(): Promise<void> {
   try {
     await apiService.stop();
     
-    await teardownDatabaseStub();
+    if (mongoose.connection && mongoose.connection.readyState !== 0) {
+      console.log('Closing mongoose connection in teardown');
+      await mongoose.connection.close();
+      console.log('Database connection closed');
+    }
     
     console.log('✅ Global teardown complete');
   } catch (error) {
@@ -20,9 +24,11 @@ export default async function globalTeardown(): Promise<void> {
     }
     
     try {
-      await teardownDatabaseStub();
+      if (mongoose.connection && mongoose.connection.readyState !== 0) {
+        await mongoose.connection.close();
+      }
     } catch (e) {
-      console.error('Failed to tear down database:', e);
+      console.error('Failed to close database connection:', e);
     }
   }
-}
+} 

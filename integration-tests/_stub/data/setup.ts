@@ -47,6 +47,10 @@ function getCredentials() {
   return credentials;
 }
 
+async function closeDatabaseConnection() {
+  await mongoose.connection.close();
+}
+
 async function clearDatabase() {
   const connection = mongoose.connection;
   if (!connection) {
@@ -80,6 +84,7 @@ async function setupDatabaseStub() {
   await connectToDatabase();  
   await clearDatabase();
   await createOperator();
+  await closeDatabaseConnection();
 }
 
 export { getCredentials, setupDatabaseStub };
