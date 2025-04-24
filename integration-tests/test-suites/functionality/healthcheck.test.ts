@@ -1,4 +1,4 @@
-describe('Health Check API', () => {
+describe(('Healthcheck'), () => {
   it('should return 200 status for root endpoint', async () => {
     
     // Arrange
