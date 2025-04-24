@@ -42,7 +42,8 @@ export class GameIntegrationService {
 
   async processEvent(args: IntegrationArgs) {
     const gameIntegration = await this.getGameIntegrationWithCache(args.query);
-    const merged = this.mergeEventWithGameIntegration(args.targets, gameIntegration);
+    const eventDetailMerged = await this.mergeEventWithEventDetails(args);
+    const merged = this.mergeEventWithGameIntegration(eventDetailMerged, gameIntegration);
     return this.patchEventWithGameIntegration(merged, gameIntegration);
   }
 
@@ -87,7 +88,7 @@ export class GameIntegrationService {
     const event = args.targets;
     const gameIntegration = await this.getGameIntegrationWithCache(args.query);
     const merge = gameIntegration?.mergeEvent ?? {};
-    const eventDetails = event.eventDetails as EventDetail[];
+    const eventDetails = (event.eventDetails ?? []) as EventDetail[];
 
     const mergedEventDetails = eventDetails.map((eventDetail, index) => this.composeMergedEventDetail(gameIntegration, eventDetail, index));
 
@@ -101,20 +102,13 @@ export class GameIntegrationService {
   private composeMergedEventDetail(gameIntegration: GameIntegration, eventDetail: EventDetail, index: number) {
     
     const markets = this.composeMergedMarkets(gameIntegration, eventDetail.selections);
-    const liveServer = gameIntegration.streamServer ? `${gameIntegration.streamServer}/` : "";
-    const videoExtension = gameIntegration.videoExtension ? `.${gameIntegration.videoExtension}` : "";
-    const playlist = eventDetail.playlist ? `${liveServer}${eventDetail.playlist}${videoExtension}` : "";
-    const goalInfo = eventDetail.goalInfo ? `${liveServer}${eventDetail.goalInfo}.json` : "";
     
     const mergeEventDetails = gameIntegration?.mergeEventDetails?.[index] ?? {};
-
-    return apply({ ...eventDetail,
-      playlist,
-      goalInfo
-    }, {
+    return apply({ ...eventDetail }, {
       markets,
       ...mergeEventDetails
     })
+ 
   }
 
   private composeMergedMarkets(gameIntegration: GameIntegration, selections: Selection[] = []) {

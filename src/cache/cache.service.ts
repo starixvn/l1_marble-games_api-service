@@ -34,6 +34,10 @@ export class MemoryCacheService {
     return value as TReturnType;
   }
 
+  public has(key: string) {
+    return this.cache.has(key);
+  }
+
   public async set(key: string, value: any, options?: CacheOptions) {
     this.cache.set(key, value, options?.ttl);
   }
