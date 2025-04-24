@@ -14,7 +14,11 @@ const config: Config = {
   detectOpenHandles: true,
   testPathIgnorePatterns: ['<rootDir>/test-suites/'],
   globalSetup: resolve(__dirname, './global-setup.ts'),
-  globalTeardown: resolve(__dirname, './global-teardown.ts')
+  globalTeardown: resolve(__dirname, './global-teardown.ts'),
+  testResultsProcessor: "jest-sonar-reporter",
+  reporters: ["default", ["jest-junit", { outputDirectory: "coverage", outputName: "integration-tests.xml" }]],
+  coverageReporters: ["clover", "lcov", "text-summary", "cobertura"],
+  coverageDirectory: "coverage",
 };
 
 export default config;
