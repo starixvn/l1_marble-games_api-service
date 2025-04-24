@@ -5,7 +5,7 @@ include:
 variables:  
   ENABLE_NODEJS_INTEGRATION_TEST: "true"
   NODEJS_INTEGRATION_TEST_IMAGE_VERSION: hub.lumigame.com/base/node:22-alpine-25h1.1
-  NODEJS_IMAGE: $DOCKER_REG_LOCAL_URL/docker-hub/library/node:22-alpine-25h1.1
+  NODEJS_IMAGE: hub.lumigame.com/base/node:22-alpine-25h1.1
   NODEJS_INTEGRATION_TEST_DB_IMAGE_VERSION: hub.lumigame.com/docker-hub/library/mongo:8.0.8
 integration_test_js:
   before_script:
