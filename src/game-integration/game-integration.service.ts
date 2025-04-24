@@ -104,8 +104,7 @@ export class GameIntegrationService {
     const markets = this.composeMergedMarkets(gameIntegration, eventDetail.selections);
     
     const mergeEventDetails = gameIntegration?.mergeEventDetails?.[index] ?? {};
-    return apply({ ...eventDetail }, {
-      markets,
+    return apply({ ...eventDetail,markets }, {
       ...mergeEventDetails
     })
  
