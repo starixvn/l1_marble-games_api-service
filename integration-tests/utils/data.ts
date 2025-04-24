@@ -7,7 +7,6 @@ async function tryConnect() {
     if (!process.env.DATABASE_URI) {
         throw new Error('DATABASE_URI environment variable is not set');
     }
-    console.log('Connecting to database... ', process.env.DATABASE_URI);
     await mongoose.connect(process.env.DATABASE_URI);
   }
 }
@@ -38,7 +37,6 @@ export async function setupGameIntegrationForTest(
             { $set: baseUpdate },
         );
  
-        console.log(`Updated game integration for operator ID: ${operatorId}`);
     } catch (error) {
         console.error('Failed to update game integration:', error);
         throw error;
@@ -48,33 +46,55 @@ export async function setupGameIntegrationForTest(
 } 
 
 export async function setupMarketIntegrationForTest(
-    operatorId: string,
     objectId: string,
     merge: Record<string, any>,
     selections: Array<any>
 ): Promise<void> {
     try {
         await tryConnect();
+        
+        const collection = mongoose.connection.collection('market_integrations');
+        
+        const cleanSelections = selections.map(sel => ({
+            selectionID: sel.selectionID,
+            column: sel.column,
+            name: sel.name,
+            selectionNameKey: sel.selectionNameKey,
+            selectionName: sel.selectionName,
+            selectionNameLongKey: sel.selectionNameLongKey,
+        }));
+        
 
-        const MarketIntegrationModel = mongoose.connection.model<MarketIntegration>(
-            'MarketIntegration', MarketIntegrationSchema, 'market_integrations'
-        );
-
-        await MarketIntegrationModel.updateOne(
-            { operatorId: new mongoose.Types.ObjectId(operatorId), _id: new mongoose.Types.ObjectId(objectId) },
-            {
-                $set: {
+        await collection.updateOne(
+            { _id: new mongoose.Types.ObjectId(objectId) },
+            { 
+                $set: { 
                     merge,
-                    selections
-                }
+                    selections: cleanSelections
+                } 
             }
         );
 
-        console.log(`Updated market integration for operator ID: ${operatorId}, object ID: ${objectId}`);
     } catch (error) {
         console.error('Failed to update market integration:', error);
         throw error;
     } finally {
         await mongoose.connection.close();
     }
+}
+
+export async function getMarketIntegrations(operatorId: string) {
+  try {
+    await tryConnect();
+
+    const MarketIntegrationModel = mongoose.connection.model<MarketIntegration>(
+      'MarketIntegration', MarketIntegrationSchema, 'market_integrations'
+    );
+
+    const marketIntegrations = await MarketIntegrationModel.find({ operatorId: new mongoose.Types.ObjectId(operatorId) });
+    return marketIntegrations;
+  } catch (error) {
+    console.error('Failed to get market integration:', error);
+    throw error;
+  }
 }

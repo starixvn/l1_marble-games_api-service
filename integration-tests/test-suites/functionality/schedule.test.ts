@@ -1,6 +1,6 @@
 import { getCredentials } from "../../_stub/data/setup";
 import { getAuthToken, getAuthHeader } from "../../utils/auth";
-import { setupGameIntegrationForTest } from "../../utils/database-helper";
+import { setupGameIntegrationForTest } from "../../utils/data";
 
 
 describe('Schedule - With time range - Using invalid token', () => {

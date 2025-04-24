@@ -77,33 +77,9 @@ async function createGameAndMarketIntegration(operator: OperatorDocument) {
 
   const marketIntegrationData = {
     merge: {
-      marketID: 4,
-      marketNameKey: "MARKET_1X2",
-      marketName: "1X2"
-    },
-    selections: [
-      {
-        selectionID: 1,
-        column: 1,
-        selectionOrder: 1,
-        selectionNameLongKey: "HOME",
-        name: "HOME"
-      },
-      {
-        selectionID: 2,
-        column: 2,
-        selectionOrder: 1,
-        selectionNameLongKey: "AWAY",
-        name: "AWAY"
-      },
-      {
-        selectionID: 3,
-        column: 3,
-        selectionOrder: 1,
-        selectionNameLongKey: "TIE",
-        name: "DRAW"
-      }
-    ]
+      marketID: 1,
+      name: "SAMPLE_MARKET"
+    }
   };
 
   const marketIntegration = new MarketIntegrationModel({
@@ -163,8 +139,8 @@ async function createEventAndEventDetails() {
       playlist: "529722ee2e00df1acf61aa94f8194ab24f98ce7325c571f4efda68e57e6a24d2",
       goalInfo: "529722ee2e00df1acf61aa94f8194ab24f98ce7325c571f4efda68e57e6a24d2",
       selections: [
-        { name: "HOME_WIN", price: 1.24, point: 0, settlementStatus: "W" },
-        { name: "AWAY_WIN", price: 4.47, point: 0, settlementStatus: "L" }
+        { name: "HOME", price: 1.24, point: 0, settlementStatus: "W" },
+        { name: "AWAY", price: 4.47, point: 0, settlementStatus: "L" }
       ],
       result: "1-1"
     }
