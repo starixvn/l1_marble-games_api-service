@@ -1422,14 +1422,11 @@
   resolved "https://npm.lumigame.com/@sentry/core/-/core-9.12.0.tgz#164a88af070cd77191ca14c88914e008c7ce7716"
   integrity sha512-jOqQK/90uzHmsBvkPTj/DAEFvA5poX4ZRyC7LE1zjg4F5jdOp3+M4W3qCy0CkSTu88Zu5VWBoppCU2Bs34XEqg==
 
-<<<<<<< HEAD
 "@sentry/core@9.13.0":
   version "9.13.0"
   resolved "https://npm.lumigame.com/@sentry/core/-/core-9.13.0.tgz#3269cab4ba34fa0928f04936ddb82182069cb568"
   integrity sha512-Zn1Qec5XNkNRE/M5QjL6YJLghETg6P188G/v2OzdHdHIRf0Y58/SnJilu3louF+ogos6kaSqqdMgzqKgZ8tCdg==
 
-=======
->>>>>>> a0d6aa5 (feat: move to yarn, add sentry config)
 "@sentry/nestjs@^9.12.0":
   version "9.12.0"
   resolved "https://npm.lumigame.com/@sentry/nestjs/-/nestjs-9.12.0.tgz#9944aad34416902ed0fc1b34cd6d039d976d45f4"
@@ -1443,11 +1440,7 @@
     "@sentry/core" "9.12.0"
     "@sentry/node" "9.12.0"
 
-<<<<<<< HEAD
 "@sentry/node@9.12.0":
-=======
-"@sentry/node@9.12.0", "@sentry/node@^9.12.0":
->>>>>>> a0d6aa5 (feat: move to yarn, add sentry config)
   version "9.12.0"
   resolved "https://npm.lumigame.com/@sentry/node/-/node-9.12.0.tgz#1973bd457a0b1ce82ae843290bc86ca2eb88532a"
   integrity sha512-NZHneJovlLOdde85vJAIs7vIki36EfJ234d6YXHUE+874sxKMknB/wrzAZi5XS5nqT3kqIXD5KgjgDTjrhAENQ==
@@ -1487,7 +1480,6 @@
     "@sentry/opentelemetry" "9.12.0"
     import-in-the-middle "^1.13.0"
 
-<<<<<<< HEAD
 "@sentry/node@^9.13.0":
   version "9.13.0"
   resolved "https://npm.lumigame.com/@sentry/node/-/node-9.13.0.tgz#5b345c3400e88415617ba52a03b269c3a621a928"
@@ -1528,8 +1520,6 @@
     "@sentry/opentelemetry" "9.13.0"
     import-in-the-middle "^1.13.0"
 
-=======
->>>>>>> a0d6aa5 (feat: move to yarn, add sentry config)
 "@sentry/opentelemetry@9.12.0":
   version "9.12.0"
   resolved "https://npm.lumigame.com/@sentry/opentelemetry/-/opentelemetry-9.12.0.tgz#5e7692b992a6af26a3bcbc840e8ca8d1180750f0"
@@ -1537,7 +1527,6 @@
   dependencies:
     "@sentry/core" "9.12.0"
 
-<<<<<<< HEAD
 "@sentry/opentelemetry@9.13.0":
   version "9.13.0"
   resolved "https://npm.lumigame.com/@sentry/opentelemetry/-/opentelemetry-9.13.0.tgz#5c04e9b391cf4085aa05b5e7a08b5c6220ac5dd4"
@@ -1545,8 +1534,6 @@
   dependencies:
     "@sentry/core" "9.13.0"
 
-=======
->>>>>>> a0d6aa5 (feat: move to yarn, add sentry config)
 "@sinclair/typebox@^0.27.8":
   version "0.27.8"
   resolved "https://npm.lumigame.com/@sinclair/typebox/-/typebox-0.27.8.tgz#6667fac16c436b5434a387a34dedb013198f6e6e"
@@ -3799,7 +3786,7 @@ glob-to-regexp@^0.4.1:
   resolved "https://npm.lumigame.com/glob-to-regexp/-/glob-to-regexp-0.4.1.tgz#c75297087c851b9a578bd217dd59a92f59fe546e"
   integrity sha512-lkX1HJXwyMcprw/5YUZc2s7DrpAiHB21/V+E1rHUrVNokkvB6bqMzT0VfV6/86ZNabt1k14YOIaT7nDvOX3Iiw==
 
-glob@11.0.1:
+glob@11.0.1, glob@^11.0.0:
   version "11.0.1"
   resolved "https://npm.lumigame.com/glob/-/glob-11.0.1.tgz#1c3aef9a59d680e611b53dcd24bb8639cef064d9"
   integrity sha512-zrQDm8XPnYEKawJScsnM0QzobJxlT/kHOOlRTio8IH/GrmxRE5fjllkzdaHclIuNjUQTJYH2xHNIGfdpJkDJUw==
@@ -4606,6 +4593,11 @@ json5@^2.2.2, json5@^2.2.3:
   resolved "https://npm.lumigame.com/json5/-/json5-2.2.3.tgz#78cd6f1a19bdc12b73db5ad0c61efd66c1e29283"
   integrity sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==
 
+jsonata@^2.0.6:
+  version "2.0.6"
+  resolved "https://npm.lumigame.com/jsonata/-/jsonata-2.0.6.tgz#1187ec97f4662d6857b1cc40770f3ea61345d04c"
+  integrity sha512-WhQB5tXQ32qjkx2GYHFw2XbL90u+LLzjofAYwi+86g6SyZeXHz9F1Q0amy3dWRYczshOC3Haok9J4pOCgHtwyQ==
+
 jsonc-parser@3.3.1:
   version "3.3.1"
   resolved "https://npm.lumigame.com/jsonc-parser/-/jsonc-parser-3.3.1.tgz#f2a524b4f7fd11e3d791e559977ad60b98b798b4"
@@ -4619,6 +4611,11 @@ jsonfile@^6.0.1:
     universalify "^2.0.0"
   optionalDependencies:
     graceful-fs "^4.1.6"
+
+jsonpointer@^5.0.1:
+  version "5.0.1"
+  resolved "https://npm.lumigame.com/jsonpointer/-/jsonpointer-5.0.1.tgz#2110e0af0900fd37467b5907ecd13a7884a1b559"
+  integrity sha512-p/nXbhSEcu3pZRdkW1OfJhpsVtW1gd4Wa1fnQc9YLiTfAjn0312eMKimbdIQzuZl9aa9xUGaRlP9T/CJE/ditQ==
 
 jsonwebtoken@9.0.2, jsonwebtoken@^9.0.0:
   version "9.0.2"
@@ -5645,6 +5642,14 @@ reusify@^1.0.4:
   version "1.1.0"
   resolved "https://npm.lumigame.com/reusify/-/reusify-1.1.0.tgz#0fe13b9522e1473f51b558ee796e08f11f9b489f"
   integrity sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw==
+
+rimraf@^6.0.1:
+  version "6.0.1"
+  resolved "https://npm.lumigame.com/rimraf/-/rimraf-6.0.1.tgz#ffb8ad8844dd60332ab15f52bc104bc3ed71ea4e"
+  integrity sha512-9dkvaxAsk/xNXSJzMgFqqMCuFgt2+KsOFek3TMLfo8NCPfWpBmqwyNn5Y+NX56QUYfCtsyhF3ayiboEoUmJk/A==
+  dependencies:
+    glob "^11.0.0"
+    package-json-from-dist "^1.0.0"
 
 router@^2.2.0:
   version "2.2.0"

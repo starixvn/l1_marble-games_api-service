@@ -63,7 +63,7 @@ export class EventsController {
 
     const rawEventData = await this.eventService.getEventById(eventId); 
     
-    return this.gameIntegrationService.mergeEventWithEventDetails({
+    return this.gameIntegrationService.processEvent({
       query: {
         operatorId,
         gameId: rawEventData.gameId,

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger, LoggerService, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   GameIntegration,
@@ -6,17 +6,20 @@ import {
 import { Model, Types } from 'mongoose';
 import { MemoryCacheService } from '../cache/cache.service';
 import { apply } from 'json-merge-patch';
-import { MarketIntegrationDocument } from './schema/market-integration.schema';
+import { MarketIntegration } from './schema/market-integration.schema';
 import { Event } from '../events/schema/event.schema';
 import { Selection } from '../events/schema/selection.schema';
 import { MergeSelection } from './schema/merge-selection.schema';
 import { EventDetail } from '../events/schema/event-detail.schema';
+import { applyPatch, deepClone, validatePatch } from '../utils/json-patch';
+
+
 interface GameIntegrationQuery {
   operatorId: string;
   gameId: number;
 }
 
-interface MergeArgs {
+interface IntegrationArgs {
   targets: Partial<Event>;
   query: GameIntegrationQuery;
 }
@@ -27,22 +30,65 @@ export class GameIntegrationService {
     @InjectModel(GameIntegration.name)
     private readonly gameIntegrationModel: Model<GameIntegration>,
     private readonly cacheService: MemoryCacheService,
+    @Inject(Logger) private readonly logger: LoggerService,
   ) {}
 
-  async mergeWithEvents(args: MergeArgs) {
-    const gameIntegration =
-      await this.getGameIntegrationWithCache(args.query);
-
-    const merge = gameIntegration?.mergeEvent ?? {};
-
-    return apply(args.targets, merge);
+  async processForScheduleEvents(args: IntegrationArgs) {
+    const processed = await this.processEvent(args);
+    return apply(processed, {
+      eventDetails: null
+    });
   }
 
-  async mergeEventWithEventDetails(args: MergeArgs) {
+  async processEvent(args: IntegrationArgs) {
+    const gameIntegration = await this.getGameIntegrationWithCache(args.query);
+    const eventDetailMerged = await this.mergeEventWithEventDetails(args);
+    const merged = this.mergeEventWithGameIntegration(eventDetailMerged, gameIntegration);
+    return this.patchEventWithGameIntegration(merged, gameIntegration);
+  }
+
+  async mergeWithEvents(args: IntegrationArgs) {
+    const gameIntegration =
+      await this.getGameIntegrationWithCache(args.query);
+    return this.mergeEventWithGameIntegration(args.targets, gameIntegration);
+  }
+
+  async patchEvent(args: IntegrationArgs) {
+    const gameIntegration =
+      await this.getGameIntegrationWithCache(args.query);
+    return this.patchEventWithGameIntegration(args.targets, gameIntegration);
+  }
+
+  private mergeEventWithGameIntegration(target: Partial<Event>, gameIntegration: GameIntegration) {
+    const merge = gameIntegration?.mergeEvent ?? {};
+    return apply(target, merge);
+  }
+
+  private async patchEventWithGameIntegration(target: Partial<Event>, gameIntegration: GameIntegration) {
+    const patches = gameIntegration?.patches ?? [];
+
+    if (patches.length === 0) {
+      return target;
+    }
+    let result = deepClone(target)
+    
+    for (const patch of patches) {
+      const patchError = validatePatch(result, patch);
+      if (patchError) {
+        this.logger.error(`Patch error: ${patchError.message}`, GameIntegrationService.name);
+        continue;
+      }
+      result = await applyPatch(result, patch);
+    }
+
+    return result;
+  }
+
+  async mergeEventWithEventDetails(args: IntegrationArgs) {
     const event = args.targets;
     const gameIntegration = await this.getGameIntegrationWithCache(args.query);
     const merge = gameIntegration?.mergeEvent ?? {};
-    const eventDetails = event.eventDetails as EventDetail[];
+    const eventDetails = (event.eventDetails ?? []) as EventDetail[];
 
     const mergedEventDetails = eventDetails.map((eventDetail, index) => this.composeMergedEventDetail(gameIntegration, eventDetail, index));
 
@@ -56,20 +102,13 @@ export class GameIntegrationService {
   private composeMergedEventDetail(gameIntegration: GameIntegration, eventDetail: EventDetail, index: number) {
     
     const markets = this.composeMergedMarkets(gameIntegration, eventDetail.selections);
-    const liveServer = gameIntegration.streamServer ? `${gameIntegration.streamServer}/` : "";
-    const videoExtension = gameIntegration.videoExtension ? `.${gameIntegration.videoExtension}` : "";
-    const playlist = eventDetail.playlist ? `${liveServer}${eventDetail.playlist}${videoExtension}` : "";
-    const goalInfo = eventDetail.goalInfo ? `${liveServer}${eventDetail.goalInfo}.json` : "";
     
     const mergeEventDetails = gameIntegration?.mergeEventDetails?.[index] ?? {};
-
-    return apply({ ...eventDetail,
-      playlist,
-      goalInfo
-    }, {
+    return apply({ ...eventDetail }, {
       markets,
       ...mergeEventDetails
     })
+ 
   }
 
   private composeMergedMarkets(gameIntegration: GameIntegration, selections: Selection[] = []) {
@@ -84,9 +123,9 @@ export class GameIntegrationService {
       selectionMap[selection.name] = selection;
     }
 
-    return (markets as MarketIntegrationDocument[]).map(market => {
-      const marketMergeCopy: Record<string, any> = JSON.parse(JSON.stringify(market.merge || {}));
-      const marketSelectionsCopy: MergeSelection[] = JSON.parse(JSON.stringify(market.selections || []));
+    return markets.map((market) => {
+      const marketMergeCopy: Record<string, any> = JSON.parse(JSON.stringify((market as MarketIntegration)?.merge ?? {}));
+      const marketSelectionsCopy: MergeSelection[] = JSON.parse(JSON.stringify((market as MarketIntegration)?.selections ?? []));
       
       return apply(marketMergeCopy, {
         selections: marketSelectionsCopy

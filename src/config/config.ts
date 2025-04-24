@@ -1,4 +1,3 @@
-const MAX_CACHE_TTL = 24 * 60 * 60 * 1000; // one day
 
 const config = () => ({
   database: {
@@ -12,7 +11,7 @@ const config = () => ({
     },
   },
   cache: {
-    ttl: MAX_CACHE_TTL,
+    ttl: process.env.DEFAULT_CACHE_TTL ?? 5000,
   },
   sentry: {
     dsn: process.env.SENTRY_DSN,

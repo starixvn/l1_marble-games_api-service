@@ -11,7 +11,7 @@ const mockEventService = {
 };
 
 const mockGameIntegrationService = {
-  mergeWithEvents: jest.fn(),
+  processForScheduleEvents: jest.fn(),
 };
 
 describe('ScheduleController', () => {
@@ -60,7 +60,7 @@ describe('ScheduleController', () => {
         },
       ];
 
-      const mockMergedEvents = [
+      const mockProcessedEvents = [
         {
           eventID: '1',
           eventNameAKey: 'Manchester United',
@@ -69,6 +69,7 @@ describe('ScheduleController', () => {
           startTime: mockEvents[0].startTime,
           productCode: 'Spinner_Soccer',
           productTypeKey: 'Marble_RNG',
+          patchedField: 'patched-value',
         },
         {
           eventID: '2',
@@ -78,16 +79,20 @@ describe('ScheduleController', () => {
           startTime: mockEvents[1].startTime,
           productCode: 'Spinner_Soccer',
           productTypeKey: 'Marble_RNG',
+          patchedField: 'patched-value',
         },
       ];
 
       mockEventService.getEventByTimeSpan.mockResolvedValue(mockEvents);
-      mockGameIntegrationService.mergeWithEvents.mockImplementation(
+      
+      // Mock the new processForScheduleEvents method
+      mockGameIntegrationService.processForScheduleEvents.mockImplementation(
         ({ targets, query }) =>
           Promise.resolve({
             ...targets,
             productCode: 'Spinner_Soccer',
             productTypeKey: 'Marble_RNG',
+            patchedField: 'patched-value',
           }),
       );
 
@@ -111,10 +116,8 @@ describe('ScheduleController', () => {
         endTime: query.toDate,
       });
 
-      expect(mockGameIntegrationService.mergeWithEvents).toHaveBeenCalledTimes(
-        2,
-      );
-      expect(mockGameIntegrationService.mergeWithEvents).toHaveBeenCalledWith({
+      expect(mockGameIntegrationService.processForScheduleEvents).toHaveBeenCalledTimes(2);
+      expect(mockGameIntegrationService.processForScheduleEvents).toHaveBeenCalledWith({
         targets: mockEvents[0],
         query: {
           operatorId: 'test-operator',
@@ -122,7 +125,7 @@ describe('ScheduleController', () => {
         },
       });
 
-      expect(mockGameIntegrationService.mergeWithEvents).toHaveBeenCalledWith({
+      expect(mockGameIntegrationService.processForScheduleEvents).toHaveBeenCalledWith({
         targets: mockEvents[1],
         query: {
           operatorId: 'test-operator',
@@ -130,7 +133,7 @@ describe('ScheduleController', () => {
         },
       });
 
-      expect(await Promise.all(result)).toEqual(mockMergedEvents);
+      expect(await Promise.all(result)).toEqual(mockProcessedEvents);
     });
   });
 });

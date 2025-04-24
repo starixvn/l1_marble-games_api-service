@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   GameIntegration,
@@ -27,7 +27,10 @@ import { GameIntegrationService } from './game-integration.service';
     ]),
     CacheModule,
   ],
-  providers: [GameIntegrationService],
+  providers: [
+    GameIntegrationService,
+    Logger
+  ],
   exports: [GameIntegrationService],
 })
 export class GameIntegrationModule {}
