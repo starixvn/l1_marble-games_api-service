@@ -17,25 +17,39 @@ if (!uri) {
 
 console.log(`Connecting to MongoDB: ${uri}`);
 
+function convertObjectIds(obj) {
+  if (!obj || typeof obj !== 'object') return obj;
+  
+  if (Array.isArray(obj)) {
+    return obj.map(item => convertObjectIds(item));
+  }
+  
+  if (obj.$oid) {
+    return mongoose.Types.ObjectId.createFromHexString(obj.$oid);
+  }
+  
+  const result = {};
+  for (const [key, value] of Object.entries(obj)) {
+    result[key] = convertObjectIds(value);
+  }
+  return result;
+}
+
 async function processDocument(model, item) {
-  if (item._id && item._id.$oid) {
-    const objectId = mongoose.Types.ObjectId.createFromHexString(item._id.$oid);
-    
-    const doc = { ...item };
-    doc._id = objectId;
-    delete doc._id.$oid;
-    
-    const existingDoc = await model.findById(objectId);
+  const doc = convertObjectIds(item);
+  
+  if (doc._id) {
+    const existingDoc = await model.findById(doc._id);
     
     if (existingDoc) {
-      await model.findByIdAndUpdate(objectId, doc, { overwrite: true });
+      await model.findByIdAndUpdate(doc._id, doc, { overwrite: true });
       return "updated";
     } else {
       await model.create(doc);
       return "inserted";
     }
   } else {
-    await model.create(item);
+    await model.create(doc);
     return "inserted";
   }
 }
@@ -52,8 +66,6 @@ async function processCollection(file) {
     return { inserted: 0, updated: 0, errors: 0 };
   }
   
-  // Create a dynamic model for the collection
-  // Using a simple schema that accepts any shape
   const schema = new mongoose.Schema({}, { 
     strict: false, 
     collection: collectionName 
