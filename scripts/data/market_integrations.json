@@ -1,0 +1,255 @@
+[{
+  "_id": {
+    "$oid": "67f61fc178c5359a415c8035"
+  },
+  "merge": {
+    "marketID": 4,
+    "marketNameKey": "MARKET_1X2",
+    "marketName": "1X2"
+  },
+  "selections": [
+    {
+      "selectionID": 1,
+      "column": 1,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "HOME",
+      "name": "HOME"
+    },
+    {
+      "selectionID": 2,
+      "column": 2,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "AWAY",
+      "name": "AWAY"
+    },
+    {
+      "selectionID": 3,
+      "column": 3,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "TIE",
+      "name": "DRAW"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6809fce26a798f36657e4c4d"
+  },
+  "merge": {
+    "marketID": 1,
+    "marketNameKey": "hdp",
+    "marketName": "Handicap"
+  },
+  "selections": [
+    {
+      "selectionID": 1,
+      "column": 1,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "ft_hdp_home",
+      "name": "ft_hdp_home"
+    },
+    {
+      "selectionID": 2,
+      "column": 1,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "ft_hdp_away",
+      "name": "ft_hdp_away"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "680a038f6a798f36657e4c51"
+  },
+  "merge": {
+    "marketID": 2,
+    "marketNameKey": "1h_hdp",
+    "marketName": "1H Handicap"
+  },
+  "selections": [
+    {
+      "selectionID": 1,
+      "column": 1,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "h1_hdp_home",
+      "name": "h1_hdp_home"
+    },
+    {
+      "selectionID": 2,
+      "column": 1,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "h1_hdp_away",
+      "name": "h1_hdp_away"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "680a03bf6a798f36657e4c52"
+  },
+  "merge": {
+    "marketID": 3,
+    "marketNameKey": "ou",
+    "marketName": "Over/Under"
+  },
+  "selections": [
+    {
+      "selectionID": 1,
+      "column": 1,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "ft_ou_over",
+      "name": "ft_ou_over"
+    },
+    {
+      "selectionID": 2,
+      "column": 1,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "ft_ou_under",
+      "name": "ft_ou_under"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "680a03d96a798f36657e4c53"
+  },
+  "merge": {
+    "marketID": 4,
+    "marketNameKey": "1h_ou",
+    "marketName": "1H Over/Under"
+  },
+  "selections": [
+    {
+      "selectionID": 1,
+      "column": 1,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "h1_ou_over",
+      "name": "h1_ou_over"
+    },
+    {
+      "selectionID": 2,
+      "column": 1,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "h1_ou_under",
+      "name": "h1_ou_under"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "680a03fc6a798f36657e4c54"
+  },
+  "merge": {
+    "marketID": 5,
+    "marketNameKey": "oe",
+    "marketName": "Odd/Even"
+  },
+  "selections": [
+    {
+      "selectionID": 1,
+      "column": 1,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "ft_oe_odd",
+      "name": "ft_oe_odd"
+    },
+    {
+      "selectionID": 2,
+      "column": 1,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "ft_oe_even",
+      "name": "ft_oe_even"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "680a04126a798f36657e4c55"
+  },
+  "merge": {
+    "marketID": 6,
+    "marketNameKey": "1h_oe",
+    "marketName": "1H Odd/Even"
+  },
+  "selections": [
+    {
+      "selectionID": 1,
+      "column": 1,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "h1_oe_odd",
+      "name": "h1_oe_odd"
+    },
+    {
+      "selectionID": 2,
+      "column": 1,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "h1_oe_even",
+      "name": "h1_oe_even"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "680a04266a798f36657e4c56"
+  },
+  "merge": {
+    "marketID": 7,
+    "marketNameKey": "1X2",
+    "marketName": "1X2"
+  },
+  "selections": [
+    {
+      "selectionID": 1,
+      "column": 1,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "ft_1x2_home",
+      "name": "ft_1x2_home"
+    },
+    {
+      "selectionID": 2,
+      "column": 1,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "ft_1x2_draw",
+      "name": "ft_1x2_draw"
+    },
+    {
+      "selectionID": 3,
+      "column": 1,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "ft_1x2_away",
+      "name": "ft_1x2_away"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "680a043a6a798f36657e4c57"
+  },
+  "merge": {
+    "marketID": 8,
+    "marketNameKey": "1h_1X2",
+    "marketName": "1H 1X2"
+  },
+  "selections": [
+    {
+      "selectionID": 1,
+      "column": 1,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "h1_1x2_home",
+      "name": "h1_1x2_home"
+    },
+    {
+      "selectionID": 2,
+      "column": 1,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "h1_1x2_draw",
+      "name": "h1_1x2_draw"
+    },
+    {
+      "selectionID": 3,
+      "column": 1,
+      "selectionOrder": 1,
+      "selectionNameLongKey": "h1_1x2_away",
+      "name": "h1_1x2_away"
+    }
+  ]
+}]

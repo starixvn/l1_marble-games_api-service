@@ -25,4 +25,4 @@ COPY --from=builder /app/package.json ./
 COPY --from=builder /app/yarn.lock ./
 COPY --from=builder /app/.env ./
 
-CMD [ "node", "dist/src/main.js" ]
+CMD [ "yarn", "start:prod" ]
