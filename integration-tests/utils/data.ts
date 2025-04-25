@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { GameIntegration, GameIntegrationSchema } from "../../src/game-integration/schema/game-integration.schema";
 import { MarketIntegration, MarketIntegrationSchema } from "../../src/game-integration/schema/market-integration.schema";
+import { sleep } from './timing';
 
 async function tryConnect() {
   if (mongoose.connection.readyState !== 1) {
@@ -9,6 +10,11 @@ async function tryConnect() {
     }
     await mongoose.connect(process.env.DATABASE_URI);
   }
+}
+
+async function closeConnection() {
+  await mongoose.connection.close();
+  await sleep(50);
 }
 
 export async function setupGameIntegrationForTest(
@@ -41,7 +47,7 @@ export async function setupGameIntegrationForTest(
         console.error('Failed to update game integration:', error);
         throw error;
     } finally {
-        await mongoose.connection.close();
+        await closeConnection();
     }
 } 
 
@@ -79,7 +85,7 @@ export async function setupMarketIntegrationForTest(
         console.error('Failed to update market integration:', error);
         throw error;
     } finally {
-        await mongoose.connection.close();
+        await closeConnection();
     }
 }
 
@@ -96,5 +102,7 @@ export async function getMarketIntegrations(operatorId: string) {
   } catch (error) {
     console.error('Failed to get market integration:', error);
     throw error;
+  } finally {
+    await closeConnection();
   }
 }
