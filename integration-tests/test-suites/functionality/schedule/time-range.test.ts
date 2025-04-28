@@ -23,7 +23,7 @@ describe('With time range', () => {
     
     // Assert
     for (const event of scheduleData) {
-      const eventStartTime = new Date(event.startTime);
+      const eventStartTime = new Date(event.scheduleStartTs);
       expect(eventStartTime >= fromDate && eventStartTime <= toDate).toBeTruthy();
     }
   });
@@ -47,7 +47,7 @@ describe('Without time range', () => {
     const now = new Date();
     
     for (const event of events) {
-      const eventEndTime = new Date(event.endTime);
+      const eventEndTime = new Date(event.scheduleEndTs);
       expect(eventEndTime > now).toBeTruthy();
     }
   });

@@ -19,13 +19,13 @@ export class EventService {
 
     const timeQuery = query.startTime 
     ? {
-        startTime: {
+        scheduleStartTs: {
           $gte: query.startTime,
           $lte: query.endTime,
         },
     }
     : {
-        endTime: {
+        scheduleEndTs: {
           $gte: new Date(),
         },
     }

@@ -157,8 +157,8 @@ async function createEventAndEventDetails() {
       eventNameBKey: "Cambodia",
       gameId: 1,
       eventDetails: eventDetailIds,
-      startTime: new Date("2025-03-13T10:23:14.527Z"),
-      endTime: new Date("2025-03-13T10:25:14.527Z")
+      scheduleStartTs: new Date("2025-03-13T10:23:14.527Z"),
+      scheduleEndTs: new Date("2025-03-13T10:25:14.527Z")
     },
     {
       eventID: 2,
@@ -166,8 +166,8 @@ async function createEventAndEventDetails() {
       eventNameBKey: "Laos",
       gameId: 1,
       eventDetails: [],
-      startTime: new Date("2025-03-13T10:27:14.527Z"),
-      endTime: new Date("2025-03-13T10:29:14.527Z")
+      scheduleStartTs: new Date("2025-03-13T10:27:14.527Z"),
+      scheduleEndTs: new Date("2025-03-13T10:29:14.527Z")
     }
   ];
 
@@ -182,8 +182,8 @@ async function createEventAndEventDetails() {
       eventNameBKey: "Test",
       gameId: 1,
       eventDetails: [],
-      startTime: now,
-      endTime: oneHourLater
+      scheduleStartTs: now,
+      scheduleEndTs: oneHourLater
   };
   const thirdEvent = new EventModel(thirdEventData);
   await thirdEvent.save();
