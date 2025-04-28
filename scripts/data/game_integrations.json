@@ -43,16 +43,6 @@
   ],
   "patches": [
     {
-      "op": "move",
-      "from": "/startTime",
-      "path": "/scheduleStartTs"
-    },
-    {
-      "op": "move",
-      "from": "/endTime",
-      "path": "/scheduleEndTs"
-    },
-    {
       "op": "jsonata",
       "path": "/eventName",
       "expression": "eventNameAKey & ' v ' & eventNameBKey"

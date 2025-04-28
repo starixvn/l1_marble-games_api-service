@@ -19,10 +19,10 @@ export class Event {
   gameId: number;
 
   @Prop({ type: Date })
-  startTime: Date;
+  scheduleStartTs: Date;
 
   @Prop({ type: Date })
-  endTime: Date;
+  scheduleEndTs: Date;
 
   @Prop({
     type: [{ type: MongooseSchema.Types.ObjectId, ref: EventDetail.name }],
