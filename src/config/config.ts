@@ -2,7 +2,6 @@
 const config = () => ({
   database: {
     uri: process.env.DATABASE_URI,
-    dbName: 'marble_odds_feed',
   },
   jwt: {
     secret: process.env.JWT_SECRET,

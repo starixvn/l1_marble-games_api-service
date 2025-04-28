@@ -43,8 +43,8 @@ export class EventService {
 
   async getEventById(eventId: number) {
     const event = await this.eventModel
-      .findOne({ eventID: eventId }, { _id: 0 })
-      .populate('eventDetails', '-_id')
+      .findOne({ eventID: eventId }, { _id: 0, __v: 0 })
+      .populate('eventDetails', '-_id -__v')
       .lean()
       .exec();
     

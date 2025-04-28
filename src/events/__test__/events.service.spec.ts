@@ -160,8 +160,8 @@ describe('EventService', () => {
 
       // Assert
       expect(result).toEqual(event);
-      expect(eventModel.findOne).toHaveBeenCalledWith({ eventID: eventId }, { _id: 0 });
-      expect(populateMock).toHaveBeenCalledWith('eventDetails', '-_id');
+      expect(eventModel.findOne).toHaveBeenCalledWith({ eventID: eventId }, { _id: 0, __v: 0 });
+      expect(populateMock).toHaveBeenCalledWith('eventDetails', '-_id -__v');
     });
 
     it('should throw NotFoundException when event does not exist', async () => {
@@ -182,8 +182,8 @@ describe('EventService', () => {
       await expect(service.getEventById(eventId)).rejects.toThrow(
         NotFoundException,
       );
-      expect(eventModel.findOne).toHaveBeenCalledWith({ eventID: eventId }, { _id: 0 });
-      expect(populateMock).toHaveBeenCalledWith('eventDetails', '-_id');
+      expect(eventModel.findOne).toHaveBeenCalledWith({ eventID: eventId }, { _id: 0, __v: 0 });
+      expect(populateMock).toHaveBeenCalledWith('eventDetails', '-_id -__v');
     });
   });
 });
