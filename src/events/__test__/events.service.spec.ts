@@ -37,8 +37,8 @@ describe('EventService', () => {
           eventNameBKey: 'Laos',
           gameId: 1,
           eventDetails: [],
-          startTime: new Date('2025-03-13T10:27:15.527Z'),
-          endTime: new Date('2025-03-13T10:29:14.527Z'),
+          scheduleStartTs: new Date('2025-03-13T10:27:15.527Z'),
+          scheduleEndTs: new Date('2025-03-13T10:29:14.527Z'),
         },
         {
           eventID: 2,
@@ -46,8 +46,8 @@ describe('EventService', () => {
           eventNameBKey: 'Vietnam',
           gameId: 1,
           eventDetails: [],
-          startTime: new Date('2025-03-13T10:29:15.527Z'),
-          endTime: new Date('2025-03-13T10:31:14.527Z'),
+          scheduleStartTs: new Date('2025-03-13T10:29:15.527Z'),
+          scheduleEndTs: new Date('2025-03-13T10:31:14.527Z'),
         },
       ];
 
@@ -56,7 +56,7 @@ describe('EventService', () => {
         endTime: new Date('2025-03-13T10:29:15.527Z'),
       };
       const expectedQueryCalled = {
-        startTime: {
+        scheduleStartTs: {
           $gte: query.startTime,
           $lte: query.endTime,
         },
@@ -92,8 +92,8 @@ describe('EventService', () => {
           eventNameBKey: 'Laos',
           gameId: 1,
           eventDetails: [],
-          startTime: new Date('2025-03-13T10:27:15.527Z'),
-          endTime: new Date('2025-03-13T10:29:14.527Z'),
+          scheduleStartTs: new Date('2025-03-13T10:27:15.527Z'),
+          scheduleEndTs: new Date('2025-03-13T10:29:14.527Z'),
         },
       ];
 
@@ -114,7 +114,7 @@ describe('EventService', () => {
       // Verify that find was called with a query containing startTime with $gte property
       expect(eventModel.find).toHaveBeenCalled();
       const calledArgs = eventModel.find.mock.calls[0];
-      expect(calledArgs[0]).toHaveProperty('endTime.$gte');
+      expect(calledArgs[0]).toHaveProperty('scheduleEndTs.$gte');
       expect(calledArgs[1]).toEqual({ eventDetails: 0 });
     });
   });
@@ -141,8 +141,8 @@ describe('EventService', () => {
         eventNameBKey: 'Laos',
         gameId: 1,
         eventDetails: populatedEventDetails,
-        startTime: new Date('2025-03-13T10:27:15.527Z'),
-        endTime: new Date('2025-03-13T10:29:14.527Z'),
+        scheduleStartTs: new Date('2025-03-13T10:27:15.527Z'),
+        scheduleEndTs: new Date('2025-03-13T10:29:14.527Z'),
       };
 
       const populateMock = jest.fn().mockReturnValue({
