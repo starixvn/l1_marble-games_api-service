@@ -9,8 +9,8 @@
   "mergeEvent": {
     "productCode": "SOCCER_MARBLE",
     "productTypeKey": "MARBLE",
-    "productName": "PinGoal Soccer Speed Max",
     "_id": null,
+    "__v": null,
     "streamServer": "https://d1aof1lwumql9k.cloudfront.net/2001",
     "videoExtension": "mp4"
   },
@@ -42,11 +42,6 @@
     }
   ],
   "patches": [
-    {
-      "op": "jsonata",
-      "path": "/eventName",
-      "expression": "eventNameAKey & ' v ' & eventNameBKey"
-    },
     {
       "op": "jsonata",
       "path": "/eventDetails/0/playlist",
@@ -87,6 +82,10 @@
       "op": "jsonata",
       "path": "/eventDetails/0/hasResult",
       "expression": "$toMillis(eventDetails[0].resultsAvailableTs) <= $millis()"
+    },
+    {
+      "op": "remove",
+      "path": "/gameID"
     }
   ]
 }]
