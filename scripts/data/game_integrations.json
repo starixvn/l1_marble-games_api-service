@@ -87,11 +87,6 @@
       "op": "jsonata",
       "path": "/eventDetails/0/hasResult",
       "expression": "$toMillis(eventDetails[0].resultsAvailableTs) <= $millis()"
-    },
-    {
-      "op": "jsonata",
-      "path": "/eventDetails/1/hasResult",
-      "expression": "$toMillis(eventDetails[1].resultsAvailableTs) <= $millis()"
     }
   ]
 }]
