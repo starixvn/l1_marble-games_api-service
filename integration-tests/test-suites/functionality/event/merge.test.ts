@@ -158,7 +158,6 @@ describe('Merge', () => {
       const expectedHome = {
         selectionID: 1,
         column: 1,
-        name: 'HOME',
         selectionNameKey: 'key1',
         selectionName: 'Display Name 1',
         selectionNameLongKey: 'long_key1',
@@ -170,7 +169,6 @@ describe('Merge', () => {
       const expectedAway = {                                                                                                                                                           
         selectionID: 2,
         column: 2,
-        name: 'AWAY',
         selectionNameKey: 'key2',
         selectionName: 'Display Name 2',
         selectionNameLongKey: 'long_key2',
@@ -187,9 +185,9 @@ describe('Merge', () => {
       const eventDetails = eventData.eventDetails;
   
       const actualMarketEvent1 = eventDetails[0].markets[0];
-      const actualHomeSelection = actualMarketEvent1.selections.find((s: { name: string }) => s.name === "HOME");
-      const actualAwaySelection = actualMarketEvent1.selections.find((s: { name: string }) => s.name === "AWAY");
-      const actualInvalidSelection = actualMarketEvent1.selections.find((s: { name: string }) => s.name === "INVALID");
+      const actualHomeSelection = actualMarketEvent1.selections.find((s: { selectionNameKey: string }) => s.selectionNameKey === "key1");
+      const actualAwaySelection = actualMarketEvent1.selections.find((s: { selectionNameKey: string }) => s.selectionNameKey === "key2");
+      const actualInvalidSelection = actualMarketEvent1.selections.find((s: { selectionNameKey: string }) => s.selectionNameKey === "key3");
   
   
       // Assert
