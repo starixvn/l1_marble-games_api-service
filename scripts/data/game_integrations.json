@@ -85,7 +85,17 @@
     },
     {
       "op": "remove",
-      "path": "/gameID"
+      "path": "/gameId"
+    },
+    {
+      "op": "move",
+      "from": "/eventDetails/0/result/finalScore",
+      "path": "/eventDetails/0/result"
+    },
+    {
+      "op": "move",
+      "from": "/eventDetails/1/result/finalScore",
+      "path": "/eventDetails/1/result"
     }
   ]
 }]

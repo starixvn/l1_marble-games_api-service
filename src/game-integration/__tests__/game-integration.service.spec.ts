@@ -149,7 +149,7 @@ describe('GameIntegrationService', () => {
 
     it('should handle invalid patches correctly after merge', async () => {
       // Arrange
-      const loggerSpy = jest.spyOn((service as any).logger, 'error');
+      const loggerSpy = jest.spyOn((service as any).logger, 'warn');
       
       const args = {
         targets: { 
@@ -349,7 +349,7 @@ describe('GameIntegrationService', () => {
 
     it('should skip invalid patches and log errors', async () => {
       // Arrange
-      const loggerSpy = jest.spyOn((service as any).logger, 'error');
+      const loggerSpy = jest.spyOn((service as any).logger, 'warn');
       
       const args = {
         targets: mockEvent,
@@ -588,7 +588,6 @@ describe('GameIntegrationService', () => {
                 name: 'Market1',
                 selections: [
                   {
-                    name: 'selection1',
                     price: 1.5,
                     point: 1.0,
                     settlementStatus: 'pending',

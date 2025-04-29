@@ -44,7 +44,8 @@ export class LoggerInterceptor implements NestInterceptor {
       const logRecord = {
         request: {
           method: request.method,
-          url: request.url,
+          path: request.path,
+          query: request.query,
           body: request.body,
         },
         response: {

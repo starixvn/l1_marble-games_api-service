@@ -75,7 +75,7 @@ export class GameIntegrationService {
     for (const patch of patches) {
       const patchError = validatePatch(result, patch);
       if (patchError) {
-        this.logger.error(`Patch error: ${patchError.message}`, GameIntegrationService.name);
+        this.logger.warn(`Patch error: ${patchError.message}`, GameIntegrationService.name);
         continue;
       }
       result = await applyPatch(result, patch);
@@ -138,7 +138,9 @@ export class GameIntegrationService {
   }
 
   private composeMergedSelection(source: MergeSelection, target: Selection) {
-    return apply(source, target);
+    return apply(apply(source, target), {
+      name: null
+    });
   }
 
   private async getGameIntegrationWithCache(query: GameIntegrationQuery) {
