@@ -45,7 +45,7 @@
     {
       "op": "jsonata",
       "path": "/eventDetails/0/playlist",
-      "expression": "$exists(eventDetails[0].playlist) and $trim(eventDetails[0].playlist) != \"\" ? streamServer & '/' & eventDetails[0].playlist & videoExtension : \"\""
+      "expression": "$exists(eventDetails[0].playlist) and $trim(eventDetails[0].playlist) != \"\" ? streamServer & '/' & eventDetails[0].playlist & '.' & videoExtension : \"\""
     },
     {
       "op": "jsonata",
@@ -55,7 +55,7 @@
     {
       "op": "jsonata",
       "path": "/eventDetails/1/playlist",
-      "expression": "$exists(eventDetails[1].playlist) and $trim(eventDetails[1].playlist) != \"\" ? streamServer & '/' & eventDetails[1].playlist & videoExtension : \"\""
+      "expression": "$exists(eventDetails[1].playlist) and $trim(eventDetails[1].playlist) != \"\" ? streamServer & '/' & eventDetails[1].playlist & '.' & videoExtension : \"\""
     },
     {
       "op": "jsonata",
