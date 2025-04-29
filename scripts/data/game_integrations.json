@@ -79,11 +79,6 @@
       "path": "/eventDetails/1/selections"
     },
     {
-      "op": "jsonata",
-      "path": "/eventDetails/0/hasResult",
-      "expression": "$toMillis(eventDetails[0].resultsAvailableTs) <= $millis()"
-    },
-    {
       "op": "remove",
       "path": "/gameId"
     },
