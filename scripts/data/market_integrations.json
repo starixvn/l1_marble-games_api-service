@@ -1,38 +1,5 @@
 [{
   "_id": {
-    "$oid": "67f61fc178c5359a415c8035"
-  },
-  "merge": {
-    "marketID": 4,
-    "marketNameKey": "MARKET_1X2",
-    "marketName": "1X2"
-  },
-  "selections": [
-    {
-      "selectionID": 1,
-      "column": 1,
-      "selectionOrder": 1,
-      "selectionNameLongKey": "HOME",
-      "name": "HOME"
-    },
-    {
-      "selectionID": 2,
-      "column": 2,
-      "selectionOrder": 1,
-      "selectionNameLongKey": "AWAY",
-      "name": "AWAY"
-    },
-    {
-      "selectionID": 3,
-      "column": 3,
-      "selectionOrder": 1,
-      "selectionNameLongKey": "TIE",
-      "name": "DRAW"
-    }
-  ]
-},
-{
-  "_id": {
     "$oid": "6809fce26a798f36657e4c4d"
   },
   "merge": {
