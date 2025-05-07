@@ -65,7 +65,7 @@ export class GameIntegrationService {
     return apply(target, merge);
   }
 
-  private async patchEventWithGameIntegration(target: Partial<Event>, gameIntegration: GameIntegration, forSchedule: boolean = false) {
+  private async patchEventWithGameIntegration(target: Partial<Event>, gameIntegration: GameIntegration, forSchedule = false) {
     const patches = gameIntegration?.patches ?? [];
 
     if (patches.length === 0) {
