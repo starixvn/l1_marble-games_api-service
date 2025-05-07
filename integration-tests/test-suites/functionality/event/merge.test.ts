@@ -90,16 +90,7 @@ describe('Merge', () => {
   
       await setupMarketIntegrationForTest(marketIntegrationId.toString(), {
         moreField: "example"
-      }, [
-        {
-          selectionID: 1,
-          column: 1,
-          name: "TEST_SELECTION",
-          selectionNameKey: "test_key",
-          selectionName: "Test Selection",
-          selectionNameLongKey: "test_long_key"
-        }
-      ]);
+      }, []);
       
       // Act
       const { data: eventData } = await retryFetch(
