@@ -21,8 +21,8 @@ describe('GameIntegrationService', () => {
       eventNameAKey: 'team_a',
       eventNameBKey: 'team_b',
       gameId: 1,
-      startTime: new Date(),
-      endTime: new Date(),
+      scheduleStartTs: new Date(),
+      scheduleEndTs: new Date(),
       eventDetails: []
     };
     
@@ -149,7 +149,7 @@ describe('GameIntegrationService', () => {
 
     it('should handle invalid patches correctly after merge', async () => {
       // Arrange
-      const loggerSpy = jest.spyOn((service as any).logger, 'error');
+      const loggerSpy = jest.spyOn((service as any).logger, 'warn');
       
       const args = {
         targets: { 
@@ -349,7 +349,7 @@ describe('GameIntegrationService', () => {
 
     it('should skip invalid patches and log errors', async () => {
       // Arrange
-      const loggerSpy = jest.spyOn((service as any).logger, 'error');
+      const loggerSpy = jest.spyOn((service as any).logger, 'warn');
       
       const args = {
         targets: mockEvent,
@@ -520,6 +520,37 @@ describe('GameIntegrationService', () => {
         'GameIntegrationService'
       );
     });
+
+    it('should skip patches that include eventDetails when forSchedule is true', async () => {
+      // Arrange
+      const eventWithDetails = { 
+        ...mockEvent,
+        counter: 0,
+        eventDetails: [{ id: 1, data: 'sample' } as any]
+      };
+      
+      const args = {
+        targets: eventWithDetails,
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+        forSchedule: true
+      };
+      
+      const gameIntegration = {
+        patches: [
+          { op: 'replace', path: '/counter', value: 10 },
+          { op: 'replace', path: '/eventDetails/0/data', value: 'modified' }
+        ]
+      };
+      
+      cacheGetMock.mockResolvedValue(gameIntegration);
+
+      // Act
+      const result = await service.patchEvent(args);
+
+      // Assert
+      expect(result.counter).toEqual(10);
+      expect((result.eventDetails)[0].data).toEqual('sample'); // Should remain unchanged
+    });
   });
 
   describe('mergeEventWithEventDetails', () => {
@@ -588,7 +619,6 @@ describe('GameIntegrationService', () => {
                 name: 'Market1',
                 selections: [
                   {
-                    name: 'selection1',
                     price: 1.5,
                     point: 1.0,
                     settlementStatus: 'pending',
@@ -1038,6 +1068,93 @@ describe('GameIntegrationService', () => {
       
       // Assert
       expect(result).toEqual(expectedResult);
+    });
+  });
+
+  describe('processForScheduleEvents', () => {
+    it('should process events for schedule and remove eventDetails', async () => {
+      // Arrange
+      const eventDetailMock: Partial<EventDetail> = {
+        scheduleStartTs: new Date(),
+        resultsAvailableTs: new Date(),
+        oddsAvailableTs: new Date(),
+        selections: [],
+        result: {}
+      };
+      
+      const eventWithDetails = { 
+        ...mockEvent,
+        eventNameAKey: 'team_a',
+        eventDetails: [eventDetailMock as EventDetail]
+      };
+
+      const args = {
+        targets: eventWithDetails,
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      
+      const gameIntegration = {
+        mergeEvent: { 
+          customField: 'customValue',
+          eventNameAKey: 'modified_team_a'
+        },
+        patches: [
+          { op: 'replace', path: '/eventDetails/0/customDetailField', value: 'should be skipped' }
+        ]
+      };
+      
+      const processedEvent = {
+        ...eventWithDetails,
+        customField: 'customValue',
+        eventNameAKey: 'modified_team_a'
+      };
+      
+      // Mock the processEvent method to return expected data
+      jest.spyOn(service, 'processEvent').mockResolvedValue(processedEvent);
+      
+      cacheGetMock.mockResolvedValue(gameIntegration);
+
+      // Act
+      const result = await service.processForScheduleEvents(args);
+
+      // Assert
+      // Use an appropriate type assertion
+      expect((result as any).eventNameAKey).toEqual('modified_team_a');
+      expect((result as any).customField).toEqual('customValue');
+      expect(result.eventDetails).toBeUndefined();
+    });
+
+    it('should skip patches targeting eventDetails when forSchedule is true', async () => {
+      // Arrange
+      const args = {
+        targets: mockEvent,
+        query: { operatorId: '507f1f77bcf86cd799439011', gameId: 1 },
+      };
+      
+      const gameIntegration = {
+        patches: [
+          { op: 'replace', path: '/eventNameAKey', value: 'patched_team_a' },
+          { op: 'add', path: '/eventDetails/0/field', value: 'should be skipped' }
+        ]
+      };
+      
+      // Mock the processEvent method to return expected data
+      jest.spyOn(service, 'processEvent').mockResolvedValue({
+        ...mockEvent,
+        eventNameAKey: 'patched_team_a'
+      });
+      
+      cacheGetMock.mockResolvedValue(gameIntegration);
+
+      // Act
+      const result = await service.processForScheduleEvents(args);
+
+      // Assert
+      expect(result.eventDetails).toBeUndefined();
+      expect(service.processEvent).toHaveBeenCalledWith({
+        ...args,
+        forSchedule: true
+      });
     });
   });
 }); 

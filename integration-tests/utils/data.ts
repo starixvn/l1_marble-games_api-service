@@ -43,9 +43,6 @@ export async function setupGameIntegrationForTest(
             { $set: baseUpdate },
         );
  
-    } catch (error) {
-        console.error('Failed to update game integration:', error);
-        throw error;
     } finally {
         await closeConnection();
     }
@@ -60,30 +57,17 @@ export async function setupMarketIntegrationForTest(
         await tryConnect();
         
         const collection = mongoose.connection.collection('market_integrations');
-        
-        const cleanSelections = selections.map(sel => ({
-            selectionID: sel.selectionID,
-            column: sel.column,
-            name: sel.name,
-            selectionNameKey: sel.selectionNameKey,
-            selectionName: sel.selectionName,
-            selectionNameLongKey: sel.selectionNameLongKey,
-        }));
-        
 
+        
         await collection.updateOne(
             { _id: new mongoose.Types.ObjectId(objectId) },
             { 
                 $set: { 
                     merge,
-                    selections: cleanSelections
+                    selections
                 } 
             }
         );
-
-    } catch (error) {
-        console.error('Failed to update market integration:', error);
-        throw error;
     } finally {
         await closeConnection();
     }
@@ -99,9 +83,6 @@ export async function getMarketIntegrations(operatorId: string) {
 
     const marketIntegrations = await MarketIntegrationModel.find({ operatorId: new mongoose.Types.ObjectId(operatorId) });
     return marketIntegrations;
-  } catch (error) {
-    console.error('Failed to get market integration:', error);
-    throw error;
   } finally {
     await closeConnection();
   }

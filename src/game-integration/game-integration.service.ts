@@ -22,6 +22,7 @@ interface GameIntegrationQuery {
 interface IntegrationArgs {
   targets: Partial<Event>;
   query: GameIntegrationQuery;
+  forSchedule?: boolean;
 }
 
 @Injectable()
@@ -34,7 +35,7 @@ export class GameIntegrationService {
   ) {}
 
   async processForScheduleEvents(args: IntegrationArgs) {
-    const processed = await this.processEvent(args);
+    const processed = await this.processEvent({...args, forSchedule: true});
     return apply(processed, {
       eventDetails: null
     });
@@ -56,7 +57,7 @@ export class GameIntegrationService {
   async patchEvent(args: IntegrationArgs) {
     const gameIntegration =
       await this.getGameIntegrationWithCache(args.query);
-    return this.patchEventWithGameIntegration(args.targets, gameIntegration);
+    return this.patchEventWithGameIntegration(args.targets, gameIntegration, args.forSchedule);
   }
 
   private mergeEventWithGameIntegration(target: Partial<Event>, gameIntegration: GameIntegration) {
@@ -64,7 +65,7 @@ export class GameIntegrationService {
     return apply(target, merge);
   }
 
-  private async patchEventWithGameIntegration(target: Partial<Event>, gameIntegration: GameIntegration) {
+  private async patchEventWithGameIntegration(target: Partial<Event>, gameIntegration: GameIntegration, forSchedule = false) {
     const patches = gameIntegration?.patches ?? [];
 
     if (patches.length === 0) {
@@ -73,9 +74,15 @@ export class GameIntegrationService {
     let result = deepClone(target)
     
     for (const patch of patches) {
+      if (forSchedule) {
+        const path = patch.path;
+        if (path.includes('eventDetails')) {
+          continue;
+        }
+      }
       const patchError = validatePatch(result, patch);
       if (patchError) {
-        this.logger.error(`Patch error: ${patchError.message}`, GameIntegrationService.name);
+        this.logger.warn(`Patch error: ${patchError.message}`, GameIntegrationService.name);
         continue;
       }
       result = await applyPatch(result, patch);
@@ -138,7 +145,9 @@ export class GameIntegrationService {
   }
 
   private composeMergedSelection(source: MergeSelection, target: Selection) {
-    return apply(source, target);
+    return apply(apply(source, target), {
+      name: null
+    });
   }
 
   private async getGameIntegrationWithCache(query: GameIntegrationQuery) {

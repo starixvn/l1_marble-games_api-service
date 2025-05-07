@@ -1,34 +1,11 @@
-import { getCredentials } from "../../../_stub/data/setup";
 import { getAuthToken, getAuthHeader } from "../../../utils/auth";
-import { setupGameIntegrationForTest } from "../../../utils/data";
 
 describe('Patch', () => {
   describe('event details', () => {
     it('should apply patches from patches of game integration document', async () => {
       // Arrange
-      const operator = getCredentials()[0];
-      const operatorId = operator.operatorId;
       const eventId = 1;
-      
-      const mergeEvent = {
-        streamServer: "https://streams.example.com"
-      };
-      
-      const patches = [
-        {
-          "op": "jsonata",
-          "path": "/eventDetails/0/goalInfo",
-          "expression": "streamServer & '/' & eventDetails[0].goalInfo & '.json'"
-        }
-      ];
-      
-      await setupGameIntegrationForTest(
-        operatorId,
-        mergeEvent,
-        patches,
-        []
-      );
-      
+
       // Act
       const baseUrl = global.__API_SERVICE__.getBaseUrl();
       const token = await getAuthToken(baseUrl);

@@ -1,6 +1,7 @@
 import { getAuthToken, getAuthHeader } from "../../../utils/auth";
 
 describe(('Event'), () => {
+
   describe('Invalid auth token', () => {
     it('should return 401', async () => {
       // Arrange
@@ -37,6 +38,6 @@ describe(('Event'), () => {
       expect(response.status).toBe(404);
     });
   });
-  require('./merge.test');
-  require('./patch.test');
+  require('./merge');
+  require('./patch');
 });

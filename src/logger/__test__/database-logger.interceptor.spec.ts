@@ -19,7 +19,8 @@ describe('LoggerInterceptor', () => {
       switchToHttp: jest.fn().mockReturnValue({
         getRequest: jest.fn().mockReturnValue({
           method: 'GET',
-          url: '/test-endpoint',
+          path: '/test-endpoint',
+          query: {},
           body: { key: 'value' },
         }),
         getResponse: jest.fn().mockReturnValue({
@@ -42,7 +43,8 @@ describe('LoggerInterceptor', () => {
         .mockImplementationOnce(() => 100);
       const mockRequest = {
         method: 'GET',
-        url: '/test-endpoint',
+        path: '/test-endpoint',
+        query: {},
         body: { key: 'value' },
       };
 
