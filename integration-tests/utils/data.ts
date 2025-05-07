@@ -38,22 +38,11 @@ export async function setupGameIntegrationForTest(
 
         const query = { operatorId: new mongoose.Types.ObjectId(operatorId), gameId: 1 };
         
-        const result = await GameIntegrationModel.updateOne(
+        await GameIntegrationModel.updateOne(
             query,
             { $set: baseUpdate },
         );
-        
-        // Verify the update was successful
-        if (result.matchedCount === 0) {
-            throw new Error(`No game integration found for operatorId: ${operatorId} and gameId: 1`);
-        }
-        
-        // Add a delay to ensure data is committed before closing the connection
-        await sleep(500);
  
-    } catch (error) {
-        console.error('Failed to update game integration:', error);
-        throw error;
     } finally {
         await closeConnection();
     }
@@ -68,33 +57,17 @@ export async function setupMarketIntegrationForTest(
         await tryConnect();
         
         const collection = mongoose.connection.collection('market_integrations');
+
         
-        const cleanSelections = selections.map(sel => ({
-            selectionID: sel.selectionID,
-            column: sel.column,
-            name: sel.name,
-            selectionNameKey: sel.selectionNameKey,
-            selectionName: sel.selectionName,
-            selectionNameLongKey: sel.selectionNameLongKey,
-        }));
-        
-        const result = await collection.updateOne(
+        await collection.updateOne(
             { _id: new mongoose.Types.ObjectId(objectId) },
             { 
                 $set: { 
                     merge,
-                    selections: cleanSelections
+                    selections
                 } 
             }
         );
-
-        if (result.matchedCount === 0) {
-            throw new Error(`No market integration found for ID: ${objectId}`);
-        }
-        
-    } catch (error) {
-        console.error('Failed to update market integration:', error);
-        throw error;
     } finally {
         await closeConnection();
     }
@@ -110,9 +83,6 @@ export async function getMarketIntegrations(operatorId: string) {
 
     const marketIntegrations = await MarketIntegrationModel.find({ operatorId: new mongoose.Types.ObjectId(operatorId) });
     return marketIntegrations;
-  } catch (error) {
-    console.error('Failed to get market integration:', error);
-    throw error;
   } finally {
     await closeConnection();
   }

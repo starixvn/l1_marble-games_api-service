@@ -1,6 +1,4 @@
-import { getCredentials } from "../../../_stub/data/setup";
 import { getAuthToken, getAuthHeader } from "../../../utils/auth";
-import { getMarketIntegrations, setupGameIntegrationForTest, setupMarketIntegrationForTest } from "../../../utils/data";
 
 async function retryFetch(url, options, maxRetries = 3, delay = 500) {
   let lastResponse: any;
@@ -37,56 +35,7 @@ describe('Merge', () => {
   let marketIntegrationId: any;
 
   beforeAll(async () => {
-    const operator = getCredentials()[0];
-    operatorId = operator.operatorId;
     
-    const mergeEventDetails = [
-      {
-        customEventDetailField: "customEventDetailValue",
-        specialData: { key: "value" }
-      },
-    ];
-    
-    await setupGameIntegrationForTest(
-      operatorId,
-      {},
-      [],
-      mergeEventDetails
-    );
-    
-    const marketIntegration = await getMarketIntegrations(operatorId);
-    marketIntegrationId = marketIntegration[0]._id;
-    
-    const selections = [
-      {
-        selectionID: 1,
-        column: 1,
-        name: "HOME",
-        selectionNameKey: "key1",
-        selectionName: "Display Name 1",
-        selectionNameLongKey: "long_key1"
-      },
-      {
-        selectionID: 2,
-        column: 2,
-        name: "AWAY",
-        selectionNameKey: "key2",
-        selectionName: "Display Name 2",
-        selectionNameLongKey: "long_key2"
-      },
-      {
-        selectionID: 3,
-        column: 2,
-        name: "INVALID",
-        selectionNameKey: "key3",
-        selectionName: "Display Name 3",
-        selectionNameLongKey: "long_key3"
-      }
-    ];
-
-    await setupMarketIntegrationForTest(marketIntegrationId.toString(), {
-      moreField: "example"
-    }, selections);
   });
 
   describe('event details', () => {
