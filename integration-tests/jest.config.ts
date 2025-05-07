@@ -12,7 +12,6 @@ const config: Config = {
   testTimeout: 30000,
   setupFilesAfterEnv: ['./after-test-setup.ts'],
   detectOpenHandles: true,
-  testPathIgnorePatterns: ['<rootDir>/test-suites/'],
   globalSetup: resolve(__dirname, './global-setup.ts'),
   globalTeardown: resolve(__dirname, './global-teardown.ts'),
   testResultsProcessor: "jest-sonar-reporter",

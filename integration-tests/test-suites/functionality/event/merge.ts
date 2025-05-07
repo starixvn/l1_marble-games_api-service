@@ -31,12 +31,6 @@ async function retryFetch(url, options, maxRetries = 3, delay = 500) {
 
 describe('Merge', () => {
   const eventId = 1;
-  let operatorId: string;
-  let marketIntegrationId: any;
-
-  beforeAll(async () => {
-    
-  });
 
   describe('event details', () => {
     it('should apply merge event details from mergeEventDetails of game integration document', async () => {
@@ -123,6 +117,7 @@ describe('Merge', () => {
       });
       
       const eventDetails = eventData.eventDetails;
+
       const actualMarketEvent1 = eventDetails[0].markets[0];
       const actualHomeSelection = actualMarketEvent1.selections.find((s: { selectionNameKey: string }) => s.selectionNameKey === "key1");
       const actualAwaySelection = actualMarketEvent1.selections.find((s: { selectionNameKey: string }) => s.selectionNameKey === "key2");

@@ -549,7 +549,7 @@ describe('GameIntegrationService', () => {
 
       // Assert
       expect(result.counter).toEqual(10);
-      expect((result.eventDetails as any)[0].data).toEqual('sample'); // Should remain unchanged
+      expect((result.eventDetails)[0].data).toEqual('sample'); // Should remain unchanged
     });
   });
 

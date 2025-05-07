@@ -78,24 +78,68 @@ async function createGameAndMarketIntegration(operator: OperatorDocument) {
   const marketIntegrationData = {
     merge: {
       marketID: 1,
-      name: "SAMPLE_MARKET"
-    }
+      name: "SAMPLE_MARKET",
+      moreField: "example"
+    },
+    selections: [
+      {
+        selectionID: 1,
+        column: 1,
+        name: "HOME",
+        selectionNameKey: "key1",
+        selectionName: "Display Name 1",
+        selectionNameLongKey: "long_key1"
+      },
+      {
+        selectionID: 2,
+        column: 2,
+        name: "AWAY",
+        selectionNameKey: "key2",
+        selectionName: "Display Name 2",
+        selectionNameLongKey: "long_key2"
+      },
+      {
+        selectionID: 3,
+        column: 2,
+        name: "INVALID",
+        selectionNameKey: "key3",
+        selectionName: "Display Name 3",
+        selectionNameLongKey: "long_key3"
+      }
+    ]
   };
 
   const marketIntegration = new MarketIntegrationModel({
-    ...marketIntegrationData,
-    operatorId: operator._id, 
+    merge: marketIntegrationData.merge,
+    operatorId: operator._id
   });
+  
   const savedMarketIntegration = await marketIntegration.save();
+  
+  await mongoose.connection.collection('market_integrations').updateOne(
+    { _id: savedMarketIntegration._id },
+    { $set: { selections: marketIntegrationData.selections } }
+  );
+  
   console.log(`Created market integration with ID: ${savedMarketIntegration._id.toString()}`);
 
   const gameIntegrationData = {
     gameId: 1,
     mergeEvent: {
+      streamServer: "https://streams.example.com"
     },
     mergeEventDetails: [
+      {
+        customEventDetailField: "customEventDetailValue",
+        specialData: { key: "value" }
+      },
     ],
     patches: [
+      {
+        "op": "jsonata",
+        "path": "/eventDetails/0/goalInfo",
+        "expression": "streamServer & '/' & eventDetails[0].goalInfo & '.json'"
+      }
     ]
   };
 

@@ -17,7 +17,7 @@ describe(('Schedule'), () => {
       expect(response.status).toBe(401);
     });
   });
-  require('./time-range.test');
-  require('./merge.test');
-  require('./patch.test');
+  require('./time-range');
+  require('./merge');
+  require('./patch');
 })
