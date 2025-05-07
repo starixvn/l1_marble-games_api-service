@@ -92,8 +92,6 @@ export async function setupMarketIntegrationForTest(
             throw new Error(`No market integration found for ID: ${objectId}`);
         }
         
-        await sleep(500);
-
     } catch (error) {
         console.error('Failed to update market integration:', error);
         throw error;
