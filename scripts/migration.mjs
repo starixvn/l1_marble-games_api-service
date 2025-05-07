@@ -15,7 +15,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const dataDirectory = path.join(__dirname, "data");
 
-const uri = process.env.DATABASE_URI;
+const uri = process.env.MIGRATION_DB_URI;
 
 if (!uri) {
   Sentry.captureMessage("DATABASE_URI environment variable is not set", "error");
