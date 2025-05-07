@@ -18,7 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "integration-test": "npm run build && jest --config ./integration-tests/jest.config.ts",
+    "integration-test": "npm run build && jest --config ./integration-tests/jest.config.ts --runInBand",
     "reg": "npm set registry http://npm.lumigame.com",
     "test-coverage": "jest --coverage",
     "migrate": "node scripts/migration.mjs"

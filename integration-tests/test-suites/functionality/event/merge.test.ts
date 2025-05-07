@@ -70,8 +70,8 @@ describe('Merge', () => {
       // Assert
       expect(response.status).toBe(200);
       expect(eventData.eventDetails[0]).toMatchObject({
-        customEventDetailField: mergeEventDetails[0].customEventDetailField,
-        specialData: mergeEventDetails[0].specialData
+        customEventDetailField: "customEventDetailValue",
+        specialData: { key: "value" }
       });
     });
   });
