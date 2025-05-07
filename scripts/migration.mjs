@@ -18,11 +18,13 @@ const dataDirectory = path.join(__dirname, "data");
 const uri = process.env.MIGRATION_DB_URI;
 
 function log(message) {
-  Sentry.captureMessage(message, "info");
+  //Sentry.captureMessage(message, "info");
+  console.log(message);
 }
 
 function captureError(exception) {
-  Sentry.captureException(exception);
+  //Sentry.captureException(exception);
+  console.error(exception);
 }
 
 if (!uri) {
@@ -110,7 +112,9 @@ async function processCollection(file) {
 
 async function migrateData() {
   try {
-    await mongoose.connect(uri);
+    await mongoose.connect(uri, {
+      dbName: "marble_odds_feed"
+    });
     log("Connected to MongoDB with Mongoose");
     
     const files = fs.readdirSync(dataDirectory).filter(file => file.endsWith(".json"));

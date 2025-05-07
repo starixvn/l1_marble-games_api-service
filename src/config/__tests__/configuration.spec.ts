@@ -3,7 +3,7 @@ import config from '../config';
 describe('Config function', () => {
   beforeEach(() => {
     // Reset environment variables before each test
-    process.env.DATABASE_URI = 'mongodb://localhost:27017/testdb';
+    process.env.DATABASE_URI = 'mongodb://localhost:27017';
     process.env.JWT_SECRET = 'test-secret';
     process.env.JWT_EXPIREIN = '1h';
   });
@@ -18,7 +18,8 @@ describe('Config function', () => {
   it('should return the correct database config', () => {
     const result = config();
     expect(result.database).toEqual({
-      uri: 'mongodb://localhost:27017/testdb',
+      uri: 'mongodb://localhost:27017',
+      dbName: 'marble_odds_feed'
     });
   });
 
