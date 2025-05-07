@@ -38,10 +38,18 @@ export async function setupGameIntegrationForTest(
 
         const query = { operatorId: new mongoose.Types.ObjectId(operatorId), gameId: 1 };
         
-        await GameIntegrationModel.updateOne(
+        const result = await GameIntegrationModel.updateOne(
             query,
             { $set: baseUpdate },
         );
+        
+        // Verify the update was successful
+        if (result.matchedCount === 0) {
+            throw new Error(`No game integration found for operatorId: ${operatorId} and gameId: 1`);
+        }
+        
+        // Add a delay to ensure data is committed before closing the connection
+        await sleep(500);
  
     } catch (error) {
         console.error('Failed to update game integration:', error);
@@ -70,8 +78,7 @@ export async function setupMarketIntegrationForTest(
             selectionNameLongKey: sel.selectionNameLongKey,
         }));
         
-
-        await collection.updateOne(
+        const result = await collection.updateOne(
             { _id: new mongoose.Types.ObjectId(objectId) },
             { 
                 $set: { 
@@ -80,6 +87,12 @@ export async function setupMarketIntegrationForTest(
                 } 
             }
         );
+
+        if (result.matchedCount === 0) {
+            throw new Error(`No market integration found for ID: ${objectId}`);
+        }
+        
+        await sleep(500);
 
     } catch (error) {
         console.error('Failed to update market integration:', error);
