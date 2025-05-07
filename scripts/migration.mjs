@@ -3,6 +3,13 @@ import mongoose from "mongoose";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import * as Sentry from "@sentry/node";
+
+// Initialize Sentry
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  environment: process.env.ENVIRONMENT
+});
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -11,11 +18,11 @@ const dataDirectory = path.join(__dirname, "data");
 const uri = process.env.DATABASE_URI;
 
 if (!uri) {
-  console.error("DATABASE_URI environment variable is not set");
+  Sentry.captureMessage("DATABASE_URI environment variable is not set", "error");
   process.exit(1);
 }
 
-console.log(`Connecting to MongoDB: ${uri}`);
+Sentry.captureMessage(`Connecting to MongoDB: ${uri}`, "info");
 
 function convertObjectIds(obj) {
   if (!obj || typeof obj !== 'object') return obj;
@@ -56,13 +63,13 @@ async function processDocument(model, item) {
 
 async function processCollection(file) {
   const collectionName = path.basename(file, ".json");
-  console.log(`Processing collection: ${collectionName}`);
+  Sentry.captureMessage(`Processing collection: ${collectionName}`, "info");
   
   const filePath = path.join(dataDirectory, file);
   const jsonData = JSON.parse(fs.readFileSync(filePath, "utf8"));
   
   if (!Array.isArray(jsonData)) {
-    console.error(`Data in ${file} is not an array. Skipping.`);
+    Sentry.captureMessage(`Data in ${file} is not an array. Skipping.`, "error");
     return { inserted: 0, updated: 0, errors: 0 };
   }
   
@@ -83,20 +90,20 @@ async function processCollection(file) {
       if (result === "inserted") inserted++;
       if (result === "updated") updated++;
     } catch (err) {
-      console.error(`Error processing document:`, err);
-      console.error(item);
+      Sentry.captureException(err);
+      Sentry.captureMessage(`Error processing document: ${JSON.stringify(item)}`, "error");
       errors++;
     }
   }
   
-  console.log(`Collection ${collectionName}: ${inserted} inserted, ${updated} updated, ${errors} errors`);
+  Sentry.captureMessage(`Collection ${collectionName}: ${inserted} inserted, ${updated} updated, ${errors} errors`, "info");
   return { inserted, updated, errors };
 }
 
 async function migrateData() {
   try {
     await mongoose.connect(uri);
-    console.log("Connected to MongoDB with Mongoose");
+    Sentry.captureMessage("Connected to MongoDB with Mongoose", "info");
     
     const files = fs.readdirSync(dataDirectory).filter(file => file.endsWith(".json"));
     
@@ -104,13 +111,16 @@ async function migrateData() {
       await processCollection(file);
     }
     
-    console.log("Migration completed successfully");
+    Sentry.captureMessage("Migration completed successfully", "info");
   } catch (err) {
-    console.error("Migration failed:", err);
+    Sentry.captureException(err);
+    Sentry.captureMessage("Migration failed", "error");
   } finally {
     await mongoose.connection.close();
-    console.log("MongoDB connection closed");
+    Sentry.captureMessage("MongoDB connection closed", "info");
   }
 }
 
-migrateData().catch(console.error);
+migrateData().catch(err => {
+  Sentry.captureException(err);
+});
