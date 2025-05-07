@@ -1,6 +1,6 @@
 import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
 import mongoose, { ObjectId } from 'mongoose';
-import { MergeSelection, MergeSelectionSchema } from './merge-selection.schema';
+import { MergeSelection } from './merge-selection.schema';
 
 @Schema()
 export class MarketIntegration {
@@ -10,7 +10,7 @@ export class MarketIntegration {
   @Prop({ type: mongoose.Schema.Types.Mixed })
   merge: Record<string, any>;
 
-  @Prop({ type: [MergeSelectionSchema] })
+  @Prop({ type: [mongoose.Schema.Types.Mixed] })
   selections: Array<MergeSelection>;
 }
 

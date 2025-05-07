@@ -5,7 +5,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import * as Sentry from "@sentry/node";
 
-// Initialize Sentry
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.ENVIRONMENT
@@ -16,19 +15,20 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dataDirectory = path.join(__dirname, "data");
 
 const uri = process.env.MIGRATION_DB_URI;
+const dbName = process.env.DATABASE_NAME;
 
 function log(message) {
-  //Sentry.captureMessage(message, "info");
+  Sentry.captureMessage(message, "info");
   console.log(message);
 }
 
 function captureError(exception) {
-  //Sentry.captureException(exception);
+  Sentry.captureException(exception);
   console.error(exception);
 }
 
-if (!uri) {
-  log("DATABASE_URI environment variable is not set");
+if (!uri || !dbName) {
+  log("DATABASE_URI or DATABASE_NAME environment variable is not set");
   process.exit(1);
 }
 
@@ -113,7 +113,7 @@ async function processCollection(file) {
 async function migrateData() {
   try {
     await mongoose.connect(uri, {
-      dbName: "marble_odds_feed"
+      dbName
     });
     log("Connected to MongoDB with Mongoose");
     

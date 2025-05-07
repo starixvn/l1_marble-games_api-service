@@ -1,4 +1,5 @@
 const CONNECTION_STRING = process.env.DATABASE_URI;
+const DATABASE_NAME = process.env.DATABASE_NAME;
 import mongoose from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { Operator, OperatorSchema } from '../../../src/operator/schema/operator.schema';
@@ -27,7 +28,7 @@ async function connectToDatabase() {
       throw new Error('DATABASE_URI environment variable is not set');
     }
 
-    await mongoose.connect(CONNECTION_STRING);
+    await mongoose.connect(CONNECTION_STRING, { dbName: DATABASE_NAME });
     
     console.log('Connected to MongoDB successfully');
   } catch (error) {
@@ -110,23 +111,21 @@ async function createGameAndMarketIntegration(operator: OperatorDocument) {
   };
 
   const marketIntegration = new MarketIntegrationModel({
-    merge: marketIntegrationData.merge,
+    ...marketIntegrationData,
     operatorId: operator._id
   });
   
   const savedMarketIntegration = await marketIntegration.save();
-  
-  await mongoose.connection.collection('market_integrations').updateOne(
-    { _id: savedMarketIntegration._id },
-    { $set: { selections: marketIntegrationData.selections } }
-  );
   
   console.log(`Created market integration with ID: ${savedMarketIntegration._id.toString()}`);
 
   const gameIntegrationData = {
     gameId: 1,
     mergeEvent: {
-      streamServer: "https://streams.example.com"
+      streamServer: "https://streams.example.com",
+      testMege: "ExampleValue",
+      productCode: "SOCCER_MARBLE",
+      productTypeKey: "MARBLE"
     },
     mergeEventDetails: [
       {
@@ -135,6 +134,16 @@ async function createGameAndMarketIntegration(operator: OperatorDocument) {
       },
     ],
     patches: [
+      {
+        "op": "add", 
+        "path": "/test", 
+        "value": "addedValue"
+      },
+      {
+        "op": "jsonata", 
+        "path": "/eventName", 
+        "expression": "eventNameAKey & ' v ' & eventNameBKey"
+      },
       {
         "op": "jsonata",
         "path": "/eventDetails/0/goalInfo",

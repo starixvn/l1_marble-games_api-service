@@ -1,26 +1,8 @@
-import { getCredentials } from "../../../_stub/data/setup";
 import { getAuthHeader, getAuthToken } from "../../../utils/auth";
-import { setupGameIntegrationForTest } from "../../../utils/data";
 
 describe('With Patch', () => {
   it('should apply add patch operation from game integration', async () => {
     // Arrange
-    const credentials = getCredentials();
-    const operatorId = credentials[0].operatorId;
-    
-    await setupGameIntegrationForTest(
-      operatorId,
-      {
-      },
-      [
-        {
-          "op": "add", 
-          "path": "/test", 
-          "value": "addedValue"
-        }
-      ]
-    );
-
     const baseUrl = global.__API_SERVICE__.getBaseUrl();
     const token = await getAuthToken(baseUrl);
     const scheduleUrl = `${baseUrl}/api/schedule`;
@@ -46,22 +28,6 @@ describe('With Patch', () => {
 
   it('should apply jsonata patch operation from game integration', async () => {
     // Arrange
-    const credentials = getCredentials();
-    const operatorId = credentials[0].operatorId;
-
-    await setupGameIntegrationForTest(
-      operatorId,
-      {
-      },
-      [
-        {
-          "op": "jsonata", 
-          "path": "/eventName", 
-          "expression": "eventNameAKey & ' v ' & eventNameBKey"
-        }
-      ]
-    );
-
     const baseUrl = global.__API_SERVICE__.getBaseUrl();
     const token = await getAuthToken(baseUrl);
     const scheduleUrl = `${baseUrl}/api/schedule`;

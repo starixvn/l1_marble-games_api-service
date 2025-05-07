@@ -6,6 +6,7 @@ describe('Config function', () => {
     process.env.DATABASE_URI = 'mongodb://localhost:27017';
     process.env.JWT_SECRET = 'test-secret';
     process.env.JWT_EXPIREIN = '1h';
+    process.env.DATABASE_NAME = 'marble_odds_feed';
   });
 
   afterEach(() => {
