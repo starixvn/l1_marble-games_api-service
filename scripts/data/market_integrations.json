@@ -13,6 +13,7 @@
       "column": 1,
       "selectionOrder": 1,
       "selectionNameKey": "HOME_WIN",
+      "selectionNameLongKey": "HOME_WIN",
       "name": "ft_hdp_home"
     },
     {
@@ -20,6 +21,7 @@
       "column": 2,
       "selectionOrder": 1,
       "selectionNameKey": "AWAY_WIN",
+      "selectionNameLongKey": "AWAY_WIN",
       "name": "ft_hdp_away"
     }
   ]
@@ -39,6 +41,7 @@
       "column": 1,
       "selectionOrder": 1,
       "selectionNameKey": "HOME_WIN",
+      "selectionNameLongKey": "HOME_WIN",
       "name": "h1_hdp_home"
     },
     {
@@ -46,6 +49,7 @@
       "column": 2,
       "selectionOrder": 1,
       "selectionNameKey": "AWAY_WIN",
+      "selectionNameLongKey": "AWAY_WIN",
       "name": "h1_hdp_away"
     }
   ]
@@ -65,6 +69,7 @@
       "column": 1,
       "selectionOrder": 1,
       "selectionNameKey": "OVER",
+      "selectionNameLongKey": "OVER",
       "name": "ft_ou_over"
     },
     {
@@ -72,6 +77,7 @@
       "column": 2,
       "selectionOrder": 1,
       "selectionNameKey": "UNDER",
+      "selectionNameLongKey": "UNDER",
       "name": "ft_ou_under"
     }
   ]
@@ -91,6 +97,7 @@
       "column": 1,
       "selectionOrder": 1,
       "selectionNameKey": "OVER",
+      "selectionNameLongKey": "OVER",
       "name": "h1_ou_over"
     },
     {
@@ -98,6 +105,7 @@
       "column": 2,
       "selectionOrder": 1,
       "selectionNameKey": "UNDER",
+      "selectionNameLongKey": "UNDER",
       "name": "h1_ou_under"
     }
   ]
@@ -117,6 +125,7 @@
       "column": 1,
       "selectionOrder": 1,
       "selectionNameKey": "EVEN",
+      "selectionNameLongKey": "EVEN",
       "name": "ft_oe_even"
     },
     {
@@ -124,6 +133,7 @@
       "column": 2,
       "selectionOrder": 1,
       "selectionNameKey": "ODD",
+      "selectionNameLongKey": "ODD",
       "name": "ft_oe_odd"
     }
   ]
@@ -143,6 +153,7 @@
       "column": 1,
       "selectionOrder": 1,
       "selectionNameKey": "EVEN",
+      "selectionNameLongKey": "EVEN",
       "name": "h1_oe_even"
     },
     {
@@ -150,6 +161,7 @@
       "column": 2,
       "selectionOrder": 1,
       "selectionNameKey": "ODD",
+      "selectionNameLongKey": "ODD",
       "name": "h1_oe_odd"
     }
   ]
@@ -169,6 +181,7 @@
       "column": 1,
       "selectionOrder": 1,
       "selectionNameKey": "HOME",
+      "selectionNameLongKey": "HOME",
       "name": "ft_1x2_home"
     },
     {
@@ -176,6 +189,7 @@
       "column": 2,
       "selectionOrder": 1,
       "selectionNameKey": "AWAY",
+      "selectionNameLongKey": "AWAY",
       "name": "ft_1x2_away"
     },
     {
@@ -183,6 +197,7 @@
       "column": 3,
       "selectionOrder": 1,
       "selectionNameKey": "TIE",
+      "selectionNameLongKey": "TIE",
       "name": "ft_1x2_draw"
     }
   ]
@@ -202,6 +217,7 @@
       "column": 1,
       "selectionOrder": 1,
       "selectionNameKey": "HOME",
+      "selectionNameLongKey": "HOME",
       "name": "h1_1x2_home"
     },
     {
@@ -209,6 +225,7 @@
       "column": 2,
       "selectionOrder": 1,
       "selectionNameKey": "AWAY",
+      "selectionNameLongKey": "AWAY",
       "name": "h1_1x2_away"
     },
     {
@@ -216,6 +233,7 @@
       "column": 3,
       "selectionOrder": 1,
       "selectionNameKey": "TIE",
+      "selectionNameLongKey": "TIE",
       "name": "h1_1x2_draw"
     }
   ]
