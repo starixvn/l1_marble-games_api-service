@@ -10,6 +10,11 @@ Sentry.init({
   environment: process.env.ENVIRONMENT
 });
 
+const envarMap = {
+  OPERATOR_ID: process.env.MIGRATION_OPERATOR_ID,
+  OPERATOR_PASSWORD_HASH: process.env.MIGRATION_OPERATOR_PASSWORD_HASH
+}
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const dataDirectory = path.join(__dirname, "data");
@@ -25,6 +30,15 @@ function log(message) {
 function captureError(exception) {
   Sentry.captureException(exception);
   console.error(exception);
+}
+
+function validateEnvar(envar) {
+  for (const [key, value] of Object.entries(envarMap)) {
+    if (!value) {
+      log(`${key} environment variable is not set`);
+      process.exit(1);
+    }
+  }
 }
 
 if (!uri || !dbName) {
@@ -72,11 +86,18 @@ async function processDocument(model, item) {
 }
 
 async function processCollection(file) {
+  validateEnvar(envarMap);
+
   const collectionName = path.basename(file, ".json");
   log(`Processing collection: ${collectionName}`);
   
   const filePath = path.join(dataDirectory, file);
-  const jsonData = JSON.parse(fs.readFileSync(filePath, "utf8"));
+  let jsonString = fs.readFileSync(filePath, "utf8");
+  for (const [key, value] of Object.entries(envarMap)) {
+    jsonString = jsonString.replace(`$${key}`, value);
+  }
+
+  const jsonData = JSON.parse(jsonString);
   
   if (!Array.isArray(jsonData)) {
     log(`Data in ${file} is not an array. Skipping.`);
@@ -111,6 +132,7 @@ async function processCollection(file) {
 }
 
 async function migrateData() {
+
   try {
     await mongoose.connect(uri, {
       dbName
