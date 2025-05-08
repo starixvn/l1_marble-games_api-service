@@ -83,7 +83,7 @@ describe('EventService', () => {
       );
     });
 
-    it('should return events that have not ended when no startTime is provided', async () => {
+    it('should return incoming events that have not started when no startTime is provided', async () => {
       // Arrange
       const events = [
         {
@@ -111,10 +111,10 @@ describe('EventService', () => {
       // Assert
       expect(result).toEqual(events);
       
-      // Verify that find was called with a query containing startTime with $gte property
+      // Verify that find was called with a query containing scheduleStartTs with $lte property
       expect(eventModel.find).toHaveBeenCalled();
       const calledArgs = eventModel.find.mock.calls[0];
-      expect(calledArgs[0]).toHaveProperty('scheduleEndTs.$gte');
+      expect(calledArgs[0]).toHaveProperty('scheduleStartTs.$gte');
       expect(calledArgs[1]).toEqual({ eventDetails: 0 });
     });
   });

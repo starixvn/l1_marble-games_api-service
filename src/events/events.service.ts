@@ -25,7 +25,7 @@ export class EventService {
         },
     }
     : {
-        scheduleEndTs: {
+        scheduleStartTs: {
           $gte: new Date(),
         },
     }

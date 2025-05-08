@@ -30,7 +30,7 @@ describe('With time range', () => {
 });
 
 describe('Without time range', () => {
-  it('should have no event with endtime in the past', async () => {
+  it('should have no event with start time in the past', async () => {
     // Arrange
     const baseUrl = global.__API_SERVICE__.getBaseUrl();
     const token = await getAuthToken(baseUrl);
@@ -47,8 +47,8 @@ describe('Without time range', () => {
     const now = new Date();
     
     for (const event of events) {
-      const eventEndTime = new Date(event.scheduleEndTs);
-      expect(eventEndTime > now).toBeTruthy();
+      const eventStartTime = new Date(event.scheduleStartTs);
+      expect(eventStartTime > now).toBeTruthy();
     }
   });
 });
