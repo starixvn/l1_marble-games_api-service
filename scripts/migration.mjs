@@ -11,8 +11,7 @@ Sentry.init({
 });
 
 const envarMap = {
-  OPERATOR_ID: process.env.MIGRATION_OPERATOR_ID,
-  OPERATOR_PASSWORD_HASH: process.env.MIGRATION_OPERATOR_PASSWORD_HASH
+  ...process.env
 }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -32,14 +31,6 @@ function captureError(exception) {
   console.error(exception);
 }
 
-function validateEnvar(envar) {
-  for (const [key, value] of Object.entries(envarMap)) {
-    if (!value) {
-      log(`${key} environment variable is not set`);
-      process.exit(1);
-    }
-  }
-}
 
 if (!uri || !dbName) {
   log("DATABASE_URI or DATABASE_NAME environment variable is not set");
@@ -86,7 +77,6 @@ async function processDocument(model, item) {
 }
 
 async function processCollection(file) {
-  validateEnvar(envarMap);
 
   const collectionName = path.basename(file, ".json");
   log(`Processing collection: ${collectionName}`);
@@ -110,6 +100,9 @@ async function processCollection(file) {
   });
   
   const model = mongoose.model(collectionName, schema);
+  
+  log(`Clearing collection: ${collectionName}`);
+  await model.deleteMany({});
   
   let inserted = 0;
   let updated = 0;
