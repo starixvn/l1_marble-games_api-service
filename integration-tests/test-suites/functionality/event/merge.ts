@@ -53,7 +53,6 @@ describe('Merge', () => {
         }
       );
 
-      console.log(eventData.eventDetails[0]);
       
       // Assert
       expect(response.status).toBe(200);
@@ -81,7 +80,6 @@ describe('Merge', () => {
       
       const eventDetails = eventData.eventDetails;
       const actualMarketEvent1 = eventDetails[0].markets[0];
-      console.log(actualMarketEvent1);
       
       // Assert
       expect(actualMarketEvent1).toBeDefined();
@@ -130,7 +128,6 @@ describe('Merge', () => {
       );
       
       const eventDetails = eventData.eventDetails;
-      console.log(eventDetails[0]);
 
       const actualMarketEvent1 = eventDetails[0].markets[0];
       expect(actualMarketEvent1).toBeDefined();
