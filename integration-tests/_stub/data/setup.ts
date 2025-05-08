@@ -203,30 +203,6 @@ async function createEventAndEventDetails() {
   console.log(`Created ${savedEventDetails.length} event details.`);
   const eventDetailIds = savedEventDetails.map(detail => detail._id);
 
-  const eventsData = [
-    {
-      eventID: 1,
-      eventNameAKey: "Vietnam",
-      eventNameBKey: "Cambodia",
-      gameId: 1,
-      eventDetails: eventDetailIds,
-      scheduleStartTs: new Date("2025-03-13T10:23:14.527Z"),
-      scheduleEndTs: new Date("2025-03-13T10:25:14.527Z")
-    },
-    {
-      eventID: 2,
-      eventNameAKey: "Thailand",
-      eventNameBKey: "Laos",
-      gameId: 1,
-      eventDetails: [],
-      scheduleStartTs: new Date("2025-03-13T10:27:14.527Z"),
-      scheduleEndTs: new Date("2025-03-13T10:29:14.527Z")
-    }
-  ];
-
-  const savedEvents = await EventModel.insertMany(eventsData);
-  console.log(`Created ${savedEvents.length} events from JSON.`);
-
   const now = new Date();
   const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
   const thirdEventData = {
@@ -235,12 +211,32 @@ async function createEventAndEventDetails() {
       eventNameBKey: "Test",
       gameId: 1,
       eventDetails: [],
-      scheduleStartTs: now,
-      scheduleEndTs: oneHourLater
+      scheduleStartTs: oneHourLater,
   };
-  const thirdEvent = new EventModel(thirdEventData);
-  await thirdEvent.save();
-  console.log(`Created live event with ID: ${thirdEvent._id.toString()}`);
+
+  const eventsData = [
+    {
+      eventID: 1,
+      eventNameAKey: "Vietnam",
+      eventNameBKey: "Cambodia",
+      gameId: 1,
+      eventDetails: eventDetailIds,
+      scheduleStartTs: new Date("2025-03-13T10:23:14.527Z"),
+    },
+    {
+      eventID: 2,
+      eventNameAKey: "Thailand",
+      eventNameBKey: "Laos",
+      gameId: 1,
+      eventDetails: [],
+      scheduleStartTs: new Date("2025-03-13T10:27:14.527Z"),
+    },
+    thirdEventData
+  ];
+
+  const savedEvents = await EventModel.insertMany(eventsData);
+  console.log(`Created ${savedEvents.length} events from JSON.`);
+  
 }
 
 function getCredentials() {

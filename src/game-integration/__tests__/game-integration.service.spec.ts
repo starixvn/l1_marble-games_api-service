@@ -22,7 +22,6 @@ describe('GameIntegrationService', () => {
       eventNameBKey: 'team_b',
       gameId: 1,
       scheduleStartTs: new Date(),
-      scheduleEndTs: new Date(),
       eventDetails: []
     };
     

@@ -21,9 +21,6 @@ export class Event {
   @Prop({ type: Date })
   scheduleStartTs: Date;
 
-  @Prop({ type: Date })
-  scheduleEndTs: Date;
-
   @Prop({
     type: [{ type: MongooseSchema.Types.ObjectId, ref: EventDetail.name }],
   })
