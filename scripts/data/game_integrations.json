@@ -91,6 +91,16 @@
       "op": "move",
       "from": "/eventDetails/1/result/finalScore",
       "path": "/eventDetails/1/result"
+    },
+    {
+      "op": "move",
+      "from": "/eventDetails/0/hasResult",
+      "path": "/eventDetails/0/hasResults"
+    },
+    {
+      "op": "move",
+      "from": "/eventDetails/1/hasResult",
+      "path": "/eventDetails/1/hasResults"
     }
   ]
 }]
