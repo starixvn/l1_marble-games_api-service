@@ -692,12 +692,7 @@ describe('GameIntegrationService', () => {
             goalInfo: 'goalInfo1',
             result: {},
             selections: mockEventDetail.selections,
-            markets: [
-              {
-                name: 'Market1',
-                selections: []
-              }
-            ]
+            markets: []
           }
         ]
       };
@@ -769,12 +764,7 @@ describe('GameIntegrationService', () => {
             goalInfo: 'goalInfo1',
             result: {},
             selections: mockEventDetail.selections,
-            markets: [
-              {
-                name: 'Market1',
-                selections: []
-              }
-            ]
+            markets: []
           }
         ]
       };

@@ -141,7 +141,7 @@ export class GameIntegrationService {
           })
           .filter(selection => selection)
       })
-    })
+    }).filter(market => market.selections.length > 0);
   }
 
   private composeMergedSelection(source: MergeSelection, target: Selection) {
