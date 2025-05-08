@@ -97,8 +97,8 @@ describe('ScheduleController', () => {
       );
 
       const query: TimeRangeDto = {
-        fromDate: new Date('2024-03-17T00:00:00Z'),
-        toDate: new Date('2024-03-18T00:00:00Z'),
+        fromDate: '2024-03-17T00:00:00Z',
+        toDate: '2024-03-18T00:00:00Z',
       };
 
       const mockReq = {
@@ -112,8 +112,8 @@ describe('ScheduleController', () => {
 
       // Assert
       expect(mockEventService.getEventByTimeSpan).toHaveBeenCalledWith({
-        startTime: query.fromDate,
-        endTime: query.toDate,
+        startTime: new Date(query?.fromDate ?? ""),
+        endTime: new Date(query?.toDate ?? ""),
       });
 
       expect(mockGameIntegrationService.processForScheduleEvents).toHaveBeenCalledTimes(2);

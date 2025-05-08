@@ -43,9 +43,9 @@ export class GameIntegrationService {
 
   async processEvent(args: IntegrationArgs) {
     const gameIntegration = await this.getGameIntegrationWithCache(args.query);
-    const eventDetailMerged = await this.mergeEventWithEventDetails(args);
+    const eventDetailMerged = args.forSchedule ? args.targets : await this.mergeEventWithEventDetails(args);
     const merged = this.mergeEventWithGameIntegration(eventDetailMerged, gameIntegration);
-    return this.patchEventWithGameIntegration(merged, gameIntegration);
+    return this.patchEventWithGameIntegration(merged, gameIntegration, args.forSchedule);
   }
 
   async mergeWithEvents(args: IntegrationArgs) {

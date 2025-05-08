@@ -83,14 +83,14 @@
       "path": "/gameId"
     },
     {
-      "op": "move",
-      "from": "/eventDetails/0/result/finalScore",
-      "path": "/eventDetails/0/result"
+      "op": "jsonata",
+      "path": "/eventDetails/0/result",
+      "expression": "$exists(eventDetails[0].result) and $exists(eventDetails[0].result.finalScore) ? eventDetails[0].result.finalScore : \"\""
     },
     {
-      "op": "move",
-      "from": "/eventDetails/1/result/finalScore",
-      "path": "/eventDetails/1/result"
+      "op": "jsonata",
+      "path": "/eventDetails/1/result",
+      "expression": "$exists(eventDetails[1].result) and $exists(eventDetails[1].result.finalScore) ? eventDetails[1].result.finalScore : \"\""
     },
     {
       "op": "move",
