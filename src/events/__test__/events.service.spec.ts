@@ -38,7 +38,6 @@ describe('EventService', () => {
           gameId: 1,
           eventDetails: [],
           scheduleStartTs: new Date('2025-03-13T10:27:15.527Z'),
-          scheduleEndTs: new Date('2025-03-13T10:29:14.527Z'),
         },
         {
           eventID: 2,
@@ -47,7 +46,6 @@ describe('EventService', () => {
           gameId: 1,
           eventDetails: [],
           scheduleStartTs: new Date('2025-03-13T10:29:15.527Z'),
-          scheduleEndTs: new Date('2025-03-13T10:31:14.527Z'),
         },
       ];
 
@@ -93,7 +91,6 @@ describe('EventService', () => {
           gameId: 1,
           eventDetails: [],
           scheduleStartTs: new Date('2025-03-13T10:27:15.527Z'),
-          scheduleEndTs: new Date('2025-03-13T10:29:14.527Z'),
         },
       ];
 
@@ -142,7 +139,6 @@ describe('EventService', () => {
         gameId: 1,
         eventDetails: populatedEventDetails,
         scheduleStartTs: new Date('2025-03-13T10:27:15.527Z'),
-        scheduleEndTs: new Date('2025-03-13T10:29:14.527Z'),
       };
 
       const populateMock = jest.fn().mockReturnValue({
