@@ -11,7 +11,7 @@
     "productTypeKey": "MARBLE",
     "_id": null,
     "__v": null,
-    "streamServer": "https://d1aof1lwumql9k.cloudfront.net/2001",
+    "streamServer": "$STREAM_SERVER",
     "videoExtension": "mp4"
   },
   "mergeEventDetails": [],
