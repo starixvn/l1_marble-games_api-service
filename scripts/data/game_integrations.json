@@ -91,16 +91,6 @@
       "op": "jsonata",
       "path": "/eventDetails/1/result",
       "expression": "$exists(eventDetails[1].result) and $exists(eventDetails[1].result.finalScore) ? eventDetails[1].result.finalScore : \"\""
-    },
-    {
-      "op": "move",
-      "from": "/eventDetails/0/hasResult",
-      "path": "/eventDetails/0/hasResults"
-    },
-    {
-      "op": "move",
-      "from": "/eventDetails/1/hasResult",
-      "path": "/eventDetails/1/hasResults"
     }
   ]
 }]
