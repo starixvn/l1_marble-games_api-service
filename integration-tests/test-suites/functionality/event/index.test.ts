@@ -1,4 +1,4 @@
-import { getAuthToken, getAuthHeader } from "../../../utils/auth";
+import { getAuthToken, getAuthHeader, getAuthTokenWithoutIntegration } from "../../../utils/auth";
 
 describe(('Event'), () => {
 
@@ -26,7 +26,7 @@ describe(('Event'), () => {
       // Arrange
       const baseUrl = global.__API_SERVICE__.getBaseUrl();
       const token = await getAuthToken(baseUrl);
-      const eventUrl = `${baseUrl}/api/events?eventID=999999`;
+      const eventUrl = `${baseUrl}/api/events?eventID=999999999999`;
       
       // Act
       const response = await fetch(eventUrl, {
@@ -38,6 +38,25 @@ describe(('Event'), () => {
       expect(response.status).toBe(404);
     });
   });
+
+  describe('Without game integration', () => {
+    it('should return 404', async () => {
+      // Arrange
+      const baseUrl = global.__API_SERVICE__.getBaseUrl();
+      const token = await getAuthTokenWithoutIntegration(baseUrl);
+      const eventUrl = `${baseUrl}/api/events?eventID=4294967297`;
+      
+      // Act
+      const response = await fetch(eventUrl, {
+        method: 'GET',
+        headers: getAuthHeader(token)
+      });
+      
+      // Assert
+      expect(response.status).toBe(404);
+    });
+  });
+
   require('./merge');
   require('./patch');
 });

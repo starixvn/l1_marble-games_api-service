@@ -6,6 +6,7 @@ import {
   UseGuards,
   UseInterceptors,
   Req,
+  NotFoundException,
 } from '@nestjs/common';
 import { EventService } from './events.service';
 import { JwtAuthGuard } from '../common/guards/jwt.auth.guard';
@@ -18,6 +19,7 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { GameIntegrationService } from '../game-integration/game-integration.service';
+import { extractGameId } from '../utils/event-id';
 
 @ApiTags('events')
 @ApiBearerAuth()
@@ -59,15 +61,25 @@ export class EventsController {
     if (isNaN(eventId)) {
       throw new BadRequestException('eventID must be a valid integer');
     }
+
     const operatorId = req.user.userId;
+    const gameId = extractGameId(eventId);
+
+    const gameIntegration = await this.gameIntegrationService.getGameIntegration({
+      query: {
+        operatorId,
+        gameId,
+      },
+    });
+
+    if (!gameIntegration) {
+      throw new NotFoundException('Game integration not found');
+    }
 
     const rawEventData = await this.eventService.getEventById(eventId); 
     
-    return this.gameIntegrationService.processEvent({
-      query: {
-        operatorId,
-        gameId: rawEventData.gameId,
-      },
+    return this.gameIntegrationService.processEventWithGameIntegration({
+      gameIntegration,
       targets: rawEventData
     });
   }

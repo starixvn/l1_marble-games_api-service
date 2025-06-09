@@ -24,7 +24,8 @@ describe('EventsController', () => {
         {
           provide: GameIntegrationService,
           useValue: {
-            processEvent: jest.fn(),
+            getGameIntegration: jest.fn(),
+            processEventWithGameIntegration: jest.fn(),
           },
         },
       ],
@@ -41,6 +42,10 @@ describe('EventsController', () => {
   });
 
   describe('getEvents', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
     it('should return an event when eventID is provided', async () => {
       // Arrange
       const eventId = 83392;
@@ -48,7 +53,7 @@ describe('EventsController', () => {
         eventID: eventId,
         eventNameAKey: 'Thailand',
         eventNameBKey: 'Laos',
-        gameId: 1,
+        gameId: 0,
         startTime: new Date('2025-03-13T10:27:15.527Z'),
         endTime: new Date('2025-03-13T10:29:14.527Z'),
         eventDetails: [],
@@ -60,8 +65,15 @@ describe('EventsController', () => {
         additionalField: 'processed-data' 
       };
 
+      const mockGameIntegration = {
+        id: 'game-integration-id',
+        operatorId: 'test-operator',
+        gameId: 0
+      };
+
       jest.spyOn(eventService, 'getEventById').mockResolvedValue(event as any);
-      jest.spyOn(gameIntegrationService, 'processEvent').mockResolvedValue(processedEvent);
+      jest.spyOn(gameIntegrationService, 'getGameIntegration').mockResolvedValue(mockGameIntegration as any);
+      jest.spyOn(gameIntegrationService, 'processEventWithGameIntegration').mockResolvedValue(processedEvent);
 
       const mockReq = {
         user: {
@@ -75,11 +87,14 @@ describe('EventsController', () => {
       // Assert
       expect(result).toEqual(processedEvent);
       expect(eventService.getEventById).toHaveBeenCalledWith(eventId);
-      expect(gameIntegrationService.processEvent).toHaveBeenCalledWith({
+      expect(gameIntegrationService.getGameIntegration).toHaveBeenCalledWith({
         query: {
           operatorId: 'test-operator',
-          gameId: 1,
+          gameId: 0,
         },
+      });
+      expect(gameIntegrationService.processEventWithGameIntegration).toHaveBeenCalledWith({
+        gameIntegration: mockGameIntegration,
         targets: event
       });
     });
@@ -98,7 +113,8 @@ describe('EventsController', () => {
         new BadRequestException('eventID is required')
       );
       expect(eventService.getEventById).not.toHaveBeenCalled();
-      expect(gameIntegrationService.processEvent).not.toHaveBeenCalled();
+      expect(gameIntegrationService.getGameIntegration).not.toHaveBeenCalled();
+      expect(gameIntegrationService.processEventWithGameIntegration).not.toHaveBeenCalled();
     });
 
     it('should throw BadRequestException when eventID is not a valid integer', async () => {
@@ -115,7 +131,8 @@ describe('EventsController', () => {
         new BadRequestException('eventID must be a valid integer')
       );
       expect(eventService.getEventById).not.toHaveBeenCalled();
-      expect(gameIntegrationService.processEvent).not.toHaveBeenCalled();
+      expect(gameIntegrationService.getGameIntegration).not.toHaveBeenCalled();
+      expect(gameIntegrationService.processEventWithGameIntegration).not.toHaveBeenCalled();
     });
 
     it('should throw NotFoundException when event with ID is not found', async () => {
@@ -127,14 +144,52 @@ describe('EventsController', () => {
         },
       };
       
+      const mockGameIntegration = {
+        id: 'game-integration-id',
+        operatorId: 'test-operator',
+        gameId: 0
+      };
+
+      jest.spyOn(gameIntegrationService, 'getGameIntegration').mockResolvedValue(mockGameIntegration as any);
       jest.spyOn(eventService, 'getEventById').mockRejectedValue(
         new NotFoundException(`Event with ID ${eventId} not found`)
       );
 
       // Act & Assert
       await expect(controller.getEvents(eventId.toString(), mockReq)).rejects.toThrow(NotFoundException);
+      expect(gameIntegrationService.getGameIntegration).toHaveBeenCalledWith({
+        query: {
+          operatorId: 'test-operator',
+          gameId: 0,
+        },
+      });
       expect(eventService.getEventById).toHaveBeenCalledWith(eventId);
-      expect(gameIntegrationService.processEvent).not.toHaveBeenCalled();
+      expect(gameIntegrationService.processEventWithGameIntegration).not.toHaveBeenCalled();
+    });
+
+    it('should throw NotFoundException when game integration is not found', async () => {
+      // Arrange
+      const eventId = 83392;
+      const mockReq = {
+        user: {
+          userId: 'test-operator',
+        },
+      };
+      
+      jest.spyOn(gameIntegrationService, 'getGameIntegration').mockResolvedValue(undefined as any);
+
+      // Act & Assert
+      await expect(controller.getEvents(eventId.toString(), mockReq)).rejects.toThrow(
+        new NotFoundException('Game integration not found')
+      );
+      expect(gameIntegrationService.getGameIntegration).toHaveBeenCalledWith({
+        query: {
+          operatorId: 'test-operator',
+          gameId: 0,
+        },
+      });
+      expect(eventService.getEventById).not.toHaveBeenCalled();
+      expect(gameIntegrationService.processEventWithGameIntegration).not.toHaveBeenCalled();
     });
   });
 }); 

@@ -36,7 +36,7 @@ const retryFetch = async (url: string, options: RequestInit, maxRetries = 3, del
 };
 
 describe('Merge', () => {
-  const eventId = 1;
+  const eventId = 4294967297; // createEventId(1, 1) - extracts to gameId: 1, roundId: 1
 
   describe('event details', () => {
     it('should apply merge event details from mergeEventDetails of game integration document', async () => {
