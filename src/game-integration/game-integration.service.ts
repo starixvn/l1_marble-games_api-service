@@ -181,7 +181,7 @@ export class GameIntegrationService {
   }
 
   private composeMergedSelection(source: MergeSelection, target: Selection) {
-    return apply(apply(source, target), {
+    return apply(apply(target, source), {
       name: null
     });
   }
