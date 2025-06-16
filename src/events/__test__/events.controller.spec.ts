@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EventsController } from '../events.controller';
 import { EventService } from '../events.service';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { JwtAuthGuard } from '../../common/guards/jwt.auth.guard';
 import { LoggerInterceptor } from '../../logger/database-logger.interceptor';
 import { GameIntegrationService } from '../../game-integration/game-integration.service';
