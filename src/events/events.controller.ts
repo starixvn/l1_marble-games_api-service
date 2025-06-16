@@ -20,6 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { GameIntegrationService } from '../game-integration/game-integration.service';
 import { extractGameId } from '../utils/event-id';
+import { EventQueryDto } from './dto/event.dto';
 
 @ApiTags('events')
 @ApiBearerAuth()
@@ -47,20 +48,13 @@ export class EventsController {
   })
   @ApiQuery({
     name: 'eventID',
-    type: String,
+    type: Number,
     description: 'The ID of the event to retrieve',
     required: true,
   })
   @Get()
-  async getEvents(@Query('eventID') eventID?: string, @Req() req?: any) {
-    if (!eventID) {
-      throw new BadRequestException('eventID is required');
-    }
-
-    const eventId = parseInt(eventID, 10);
-    if (isNaN(eventId)) {
-      throw new BadRequestException('eventID must be a valid integer');
-    }
+  async getEvents(@Query() eventQueryDto: EventQueryDto, @Req() req?: any) {
+    const eventId = eventQueryDto.eventID;
 
     const operatorId = req.user.userId;
     const gameId = extractGameId(eventId);

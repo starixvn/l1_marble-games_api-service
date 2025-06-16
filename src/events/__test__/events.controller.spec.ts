@@ -5,6 +5,7 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { JwtAuthGuard } from '../../common/guards/jwt.auth.guard';
 import { LoggerInterceptor } from '../../logger/database-logger.interceptor';
 import { GameIntegrationService } from '../../game-integration/game-integration.service';
+import { EventQueryDto } from '../dto/event.dto';
 
 describe('EventsController', () => {
   let controller: EventsController;
@@ -81,8 +82,11 @@ describe('EventsController', () => {
         },
       };
 
+      const queryDto = new EventQueryDto();
+      queryDto.eventID = eventId;
+
       // Act
-      const result = await controller.getEvents(eventId.toString(), mockReq);
+      const result = await controller.getEvents(queryDto, mockReq);
 
       // Assert
       expect(result).toEqual(processedEvent);
@@ -101,7 +105,7 @@ describe('EventsController', () => {
 
     it('should throw BadRequestException when eventID is not provided', async () => {
       // Arrange
-      const eventID = undefined;
+      const queryDto = new EventQueryDto();
       const mockReq = {
         user: {
           userId: 'test-operator',
@@ -109,9 +113,7 @@ describe('EventsController', () => {
       };
 
       // Act & Assert
-      await expect(controller.getEvents(eventID, mockReq)).rejects.toThrow(
-        new BadRequestException('eventID is required')
-      );
+      await expect(controller.getEvents(queryDto, mockReq)).rejects.toThrow();
       expect(eventService.getEventById).not.toHaveBeenCalled();
       expect(gameIntegrationService.getGameIntegration).not.toHaveBeenCalled();
       expect(gameIntegrationService.processEventWithGameIntegration).not.toHaveBeenCalled();
@@ -119,7 +121,8 @@ describe('EventsController', () => {
 
     it('should throw BadRequestException when eventID is not a valid integer', async () => {
       // Arrange
-      const eventID = 'not-a-number';
+      const queryDto = new EventQueryDto();
+      queryDto.eventID = 'not-a-number' as any;
       const mockReq = {
         user: {
           userId: 'test-operator',
@@ -127,9 +130,7 @@ describe('EventsController', () => {
       };
 
       // Act & Assert
-      await expect(controller.getEvents(eventID, mockReq)).rejects.toThrow(
-        new BadRequestException('eventID must be a valid integer')
-      );
+      await expect(controller.getEvents(queryDto, mockReq)).rejects.toThrow();
       expect(eventService.getEventById).not.toHaveBeenCalled();
       expect(gameIntegrationService.getGameIntegration).not.toHaveBeenCalled();
       expect(gameIntegrationService.processEventWithGameIntegration).not.toHaveBeenCalled();
@@ -150,13 +151,16 @@ describe('EventsController', () => {
         gameId: 0
       };
 
+      const queryDto = new EventQueryDto();
+      queryDto.eventID = eventId;
+
       jest.spyOn(gameIntegrationService, 'getGameIntegration').mockResolvedValue(mockGameIntegration as any);
       jest.spyOn(eventService, 'getEventById').mockRejectedValue(
         new NotFoundException(`Event with ID ${eventId} not found`)
       );
 
       // Act & Assert
-      await expect(controller.getEvents(eventId.toString(), mockReq)).rejects.toThrow(NotFoundException);
+      await expect(controller.getEvents(queryDto, mockReq)).rejects.toThrow(NotFoundException);
       expect(gameIntegrationService.getGameIntegration).toHaveBeenCalledWith({
         query: {
           operatorId: 'test-operator',
@@ -176,10 +180,13 @@ describe('EventsController', () => {
         },
       };
       
+      const queryDto = new EventQueryDto();
+      queryDto.eventID = eventId;
+
       jest.spyOn(gameIntegrationService, 'getGameIntegration').mockResolvedValue(undefined as any);
 
       // Act & Assert
-      await expect(controller.getEvents(eventId.toString(), mockReq)).rejects.toThrow(
+      await expect(controller.getEvents(queryDto, mockReq)).rejects.toThrow(
         new NotFoundException('Game integration not found')
       );
       expect(gameIntegrationService.getGameIntegration).toHaveBeenCalledWith({

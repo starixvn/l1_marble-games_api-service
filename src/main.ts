@@ -1,16 +1,21 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { RequestMethod } from '@nestjs/common';
+import { RequestMethod, ValidationPipe } from '@nestjs/common';
 import { GlobalLoggerService } from './logger/global-logger.service';
 import { ConfigService } from '@nestjs/config';
 import { networkInterfaces } from 'os';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe({ 
+    transform: true,
+    transformOptions: {
+      enableImplicitConversion: true
+    }
+  }));
   app.useLogger(new GlobalLoggerService(app.get(ConfigService)));
 
-  // for healthcheck
   app.setGlobalPrefix('api', {
     exclude: [{ path: '', method: RequestMethod.GET }],
   });
