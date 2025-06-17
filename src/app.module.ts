@@ -7,7 +7,7 @@ import { ScheduleModule } from './schedule/schedule.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ConfigKeys } from './config/config-keys';
 import configuration from './config/config';
-import { HealthCheckModule } from './healthcheck/healthcheck.module';
+import { HealthcheckModule } from './healthcheck/healthcheck.module';
 import { LoggerModule } from './logger/logger.module';
 import { ConnectionNames } from './config/connection-names';
 import { GameIntegrationModule } from './game-integration/game-integration.module';
@@ -36,10 +36,10 @@ import { CacheModule } from './cache/cache.module';
     }),
     CacheModule,
     LoggerModule,
-    GameIntegrationModule,
+    HealthcheckModule,
     AuthModule,
     ScheduleModule,
-    HealthCheckModule,
+    GameIntegrationModule,
   ],
 })
 export class AppModule {}
