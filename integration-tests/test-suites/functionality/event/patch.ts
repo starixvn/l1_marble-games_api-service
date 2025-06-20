@@ -4,7 +4,7 @@ describe('Patch', () => {
   describe('event details', () => {
     it('should apply patches from patches of game integration document', async () => {
       // Arrange
-      const eventId = 1;
+      const eventId = 4294967297; // createEventId(1, 1) - extracts to gameId: 1, roundId: 1
 
       // Act
       const baseUrl = global.__API_SERVICE__.getBaseUrl();

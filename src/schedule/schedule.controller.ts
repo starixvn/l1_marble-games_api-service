@@ -84,24 +84,35 @@ export class ScheduleController {
       throw new BadRequestException('fromDate must be before toDate');
     }
 
+
+
     const events = await this.eventService.getEventByTimeSpan({
       startTime,
       endTime,
     });
 
-    return Promise.all(
+    const results = await Promise.all(
       events.map(async (event) => {
         const query = {
           operatorId: operatorId,
           gameId: event.gameId,
         }
 
-
-        return this.gameIntegrationService.processForScheduleEvents({
-          targets: event,
-          query,
+        const gameIntegration = await this.gameIntegrationService.getGameIntegration({
+          query
         });
-      }),
+
+        if (!gameIntegration) {
+          return null;
+        }
+
+        return this.gameIntegrationService.processForScheduleEventsWithGameIntegration({
+          targets: event,
+          gameIntegration,
+        });
+      })
     );
+
+    return results.filter(result => result !== null);
   }
 }
