@@ -19,6 +19,16 @@ interface GameIntegrationQuery {
   gameId: number;
 }
 
+interface IntegrationWithGameIntegrationArgs {
+  targets: Partial<Event>;
+  forSchedule?: boolean;
+  gameIntegration: GameIntegration;
+}
+
+interface IntegrationArgWithQueryOnly {
+  query: GameIntegrationQuery;
+}
+
 interface IntegrationArgs {
   targets: Partial<Event>;
   query: GameIntegrationQuery;
@@ -41,26 +51,36 @@ export class GameIntegrationService {
     });
   }
 
+  async processForScheduleEventsWithGameIntegration(args: IntegrationWithGameIntegrationArgs) {
+    const processed = await this.processEventWithGameIntegration({...args, forSchedule: true});
+    return apply(processed, {
+      eventDetails: null
+    });
+  }
+
   async processEvent(args: IntegrationArgs) {
-    const gameIntegration = await this.getGameIntegrationWithCache(args.query);
-    const eventDetailMerged = args.forSchedule ? args.targets : await this.mergeEventWithEventDetails(args);
-    const merged = this.mergeEventWithGameIntegration(eventDetailMerged, gameIntegration);
+    const gameIntegration = await this.getGameIntegration(args);
+    return this.processEventWithGameIntegration({...args, gameIntegration});
+  }
+
+  async processEventWithGameIntegration(args: IntegrationWithGameIntegrationArgs) {
+    const gameIntegration = args.gameIntegration;
+    const eventDetailMerged = args.forSchedule ? args.targets : this.mergeEventDetailsWithGameIntegration(args);
+    const merged = this.mergeWithEventsAndGameIntegration(eventDetailMerged, gameIntegration);
     return this.patchEventWithGameIntegration(merged, gameIntegration, args.forSchedule);
+  }
+
+  async getGameIntegration(args: IntegrationArgWithQueryOnly) {
+    return this.getGameIntegrationWithCache(args.query);
   }
 
   async mergeWithEvents(args: IntegrationArgs) {
     const gameIntegration =
       await this.getGameIntegrationWithCache(args.query);
-    return this.mergeEventWithGameIntegration(args.targets, gameIntegration);
+    return this.mergeWithEventsAndGameIntegration(args.targets, gameIntegration);
   }
 
-  async patchEvent(args: IntegrationArgs) {
-    const gameIntegration =
-      await this.getGameIntegrationWithCache(args.query);
-    return this.patchEventWithGameIntegration(args.targets, gameIntegration, args.forSchedule);
-  }
-
-  private mergeEventWithGameIntegration(target: Partial<Event>, gameIntegration: GameIntegration) {
+  private mergeWithEventsAndGameIntegration(target: Partial<Event>, gameIntegration: GameIntegration) {
     const merge = gameIntegration?.mergeEvent ?? {};
     return apply(target, merge);
   }
@@ -91,6 +111,22 @@ export class GameIntegrationService {
     return result;
   }
 
+  private mergeEventDetailsWithGameIntegration(args: IntegrationWithGameIntegrationArgs) {
+    const event = args.targets;
+    const gameIntegration = args.gameIntegration;
+    const merge = gameIntegration?.mergeEvent ?? {};
+    const eventDetails = (event.eventDetails ?? []) as EventDetail[];
+
+    const mergedEventDetails = eventDetails.map((eventDetail, index) => this.composeMergedEventDetail(gameIntegration, eventDetail, index));
+
+    const mergedEvent = apply(event, {
+      eventDetails: mergedEventDetails,
+    });
+
+    return apply(mergedEvent, merge);
+  }
+
+
   async mergeEventWithEventDetails(args: IntegrationArgs) {
     const event = args.targets;
     const gameIntegration = await this.getGameIntegrationWithCache(args.query);
@@ -114,7 +150,7 @@ export class GameIntegrationService {
     return apply({ ...eventDetail,markets }, {
       ...mergeEventDetails
     })
- 
+
   }
 
   private composeMergedMarkets(gameIntegration: GameIntegration, selections: Selection[] = []) {
@@ -145,7 +181,7 @@ export class GameIntegrationService {
   }
 
   private composeMergedSelection(source: MergeSelection, target: Selection) {
-    return apply(apply(source, target), {
+    return apply(apply(target, source), {
       name: null
     });
   }

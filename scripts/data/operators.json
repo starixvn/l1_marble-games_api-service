@@ -1,7 +1,0 @@
-[{
-  "_id": {
-    "$oid": "$OPERATOR_ID"
-  },
-  "password": "$OPERATOR_PASSWORD_HASH",
-  "__v": 0
-}]

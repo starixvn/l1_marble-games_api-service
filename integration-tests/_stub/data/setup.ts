@@ -205,18 +205,10 @@ async function createEventAndEventDetails() {
 
   const now = new Date();
   const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
-  const thirdEventData = {
-      eventID: 3, 
-      eventNameAKey: "Live Event",
-      eventNameBKey: "Test",
-      gameId: 1,
-      eventDetails: [],
-      scheduleStartTs: oneHourLater,
-  };
 
   const eventsData = [
     {
-      eventID: 1,
+      eventID: 4294967297, // createEventId(1, 1) - will extract to gameId: 1, roundId: 1
       eventNameAKey: "Vietnam",
       eventNameBKey: "Cambodia",
       gameId: 1,
@@ -224,14 +216,21 @@ async function createEventAndEventDetails() {
       scheduleStartTs: new Date("2025-03-13T10:23:14.527Z"),
     },
     {
-      eventID: 2,
+      eventID: 4294967298, // createEventId(1, 2) - will extract to gameId: 1, roundId: 2
       eventNameAKey: "Thailand",
       eventNameBKey: "Laos",
       gameId: 1,
       eventDetails: [],
       scheduleStartTs: new Date("2025-03-13T10:27:14.527Z"),
     },
-    thirdEventData
+    {
+      eventID: 4294967299, // createEventId(1, 3) - will extract to gameId: 1, roundId: 3
+      eventNameAKey: "Live Event",
+      eventNameBKey: "Test",
+      gameId: 1,
+      eventDetails: [],
+      scheduleStartTs: oneHourLater,
+    }
   ];
 
   const savedEvents = await EventModel.insertMany(eventsData);
@@ -281,8 +280,20 @@ async function clearDatabase() {
 async function setupDatabaseStub() {
   await connectToDatabase();  
   await clearDatabase();
-  const operator = await createOperator();
-  await createGameAndMarketIntegration(operator);
+  
+  // Create first operator with game integration
+  console.log('Creating first operator (will have game integration)...');
+  const operatorWithIntegration = await createOperator();
+  console.log(`First operator created with ID: ${operatorWithIntegration._id.toString()}`);
+  
+  await createGameAndMarketIntegration(operatorWithIntegration);
+  console.log(`Game integration linked to operator: ${operatorWithIntegration._id.toString()}`);
+  
+  // Create second operator without game integration
+  console.log('Creating second operator (no game integration)...');
+  const operatorWithoutIntegration = await createOperator();
+  console.log(`Second operator created without game integration: ${operatorWithoutIntegration._id.toString()}`);
+  
   await createEventAndEventDetails();
   await closeDatabaseConnection();
 }
