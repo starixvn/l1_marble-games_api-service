@@ -72,5 +72,62 @@ describe('LoggerInterceptor', () => {
         done();
       });
     });
+
+    it("when there is eventID in the query, should log additionalInfo", (done) => {
+      // Arrange
+      jest
+        .spyOn(Date, 'now')
+        .mockImplementationOnce(() => 0)
+        .mockImplementationOnce(() => 150);
+      
+      const mockRequest = {
+        method: 'POST',
+        path: '/test-endpoint',
+        query: { eventID: '8594229559297' }, // eventID with gameId and roundId
+        body: { key: 'value' },
+      };
+
+      const mockResponseBody = { success: true };
+
+      const expectedResponse = {
+        statusCode: 200,
+        responseBody: mockResponseBody,
+        responseTime: '150ms',
+      };
+
+      const expectedLogRecord = {
+        user: undefined,
+        request: {
+          ...mockRequest,
+          additionalInfo: {
+            eventId: 8594229559297,
+            gameId: 2001, // extracted from eventID
+            roundId: 1, // extracted from eventID
+          },
+        },
+        response: expectedResponse,
+      };
+
+      // Update execution context to include eventID in query
+      executionContext = {
+        switchToHttp: jest.fn().mockReturnValue({
+          getRequest: jest.fn().mockReturnValue(mockRequest),
+          getResponse: jest.fn().mockReturnValue({
+            statusCode: 200,
+          }),
+        }),
+      } as unknown as ExecutionContext;
+
+      // Act
+      const result$ = interceptor.intercept(executionContext, callHandler);
+
+      // Assert
+      result$.subscribe(() => {
+        expect(databaseLogService.insertLog).toHaveBeenCalledWith(
+          expectedLogRecord,
+        );
+        done();
+      });
+    });
   });
 });
