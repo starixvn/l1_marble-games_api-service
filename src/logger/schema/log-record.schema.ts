@@ -9,6 +9,8 @@ export class LogRecord {
   request: object;
   @Prop({ type: mongoose.Schema.Types.Mixed })
   response: object;
+  @Prop({ type: mongoose.Schema.Types.Mixed, required: false })
+  user?: object;
 
   @Prop({ type: Date, default: Date.now })
   timestamp?: Date;
