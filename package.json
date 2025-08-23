@@ -59,7 +59,7 @@
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
     "@types/json-merge-patch": "^1.0.0",
-    "@types/node": "^22.10.7",
+    "@types/node": "^24.0.0",
     "@types/supertest": "^6.0.2",
     "axios": "^1.8.4",
     "chalk": "^5.4.1",
