@@ -398,28 +398,23 @@
   resolved "https://npm.lumigame.com/@borewit/text-codec/-/text-codec-0.1.1.tgz#7e7f27092473d5eabcffef693a849f2cc48431da"
   integrity sha512-5L/uBxmjaCIX5h8Z+uu+kA9BQLkc/Wl06UGR5ajNRxu+/XjonB5i8JpgFMrPj3LXTCPA0pv8yxUvbUi+QthGGA==
 
-"@cacheable/memoize@^2.0.1", "@cacheable/memoize@^2.0.2":
-  version "2.0.2"
-  resolved "https://npm.lumigame.com/@cacheable/memoize/-/memoize-2.0.2.tgz#5b4796906454a1f4b41ccd789a9d9e6678ee9901"
-  integrity sha512-wPrr7FUiq3Qt4yQyda2/NcOLTJCFcQSU3Am2adP+WLy+sz93/fKTokVTHmtz+rjp4PD7ee0AEOeRVNN6IvIfsg==
+"@cacheable/memory@^2.0.6":
+  version "2.0.6"
+  resolved "http://npm.lumigame.com/@cacheable/memory/-/memory-2.0.6.tgz#de6679d26ffcfa1674c4bb40b97815b0f67839d5"
+  integrity sha512-7e8SScMocHxcAb8YhtkbMhGG+EKLRIficb1F5sjvhSYsWTZGxvg4KIDp8kgxnV2PUJ3ddPe6J9QESjKvBWRDkg==
   dependencies:
-    "@cacheable/utils" "^2.0.2"
+    "@cacheable/utils" "^2.3.2"
+    "@keyv/bigmap" "^1.3.0"
+    hookified "^1.13.0"
+    keyv "^5.5.4"
 
-"@cacheable/memory@^2.0.2":
-  version "2.0.2"
-  resolved "https://npm.lumigame.com/@cacheable/memory/-/memory-2.0.2.tgz#14787e34c3025bdbbb6f9c1719b5bc4e1af68e5b"
-  integrity sha512-sJTITLfeCI1rg7P3ssaGmQryq235EGT8dXGcx6oZwX5NRnKq9IE6lddlllcOl+oXW+yaeTRddCjo0xrfU6ZySA==
+"@cacheable/utils@^2.3.2":
+  version "2.3.2"
+  resolved "http://npm.lumigame.com/@cacheable/utils/-/utils-2.3.2.tgz#8d76faef710840c391a1a35183967028c0c521f0"
+  integrity sha512-8kGE2P+HjfY8FglaOiW+y8qxcaQAfAhVML+i66XJR3YX5FtyDqn6Txctr3K2FrbxLKixRRYYBWMbuGciOhYNDg==
   dependencies:
-    "@cacheable/memoize" "^2.0.1"
-    "@cacheable/utils" "^2.0.2"
-    "@keyv/bigmap" "^1.0.2"
-    hookified "^1.12.1"
-    keyv "^5.5.2"
-
-"@cacheable/utils@^2.0.2":
-  version "2.0.2"
-  resolved "https://npm.lumigame.com/@cacheable/utils/-/utils-2.0.2.tgz#5b28f9c653ca25ad9ab638ed4a98103afd7d88cf"
-  integrity sha512-JTFM3raFhVv8LH95T7YnZbf2YoE9wEtkPPStuRF9a6ExZ103hFvs+QyCuYJ6r0hA9wRtbzgZtwUCoDWxssZd4Q==
+    hashery "^1.2.0"
+    keyv "^5.5.4"
 
 "@colors/colors@1.5.0":
   version "1.5.0"
@@ -974,16 +969,17 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@keyv/bigmap@^1.0.2":
-  version "1.0.2"
-  resolved "https://npm.lumigame.com/@keyv/bigmap/-/bigmap-1.0.2.tgz#9480d168c99a4a6c2fd3b677387cd922aa82a470"
-  integrity sha512-KR03xkEZlAZNF4IxXgVXb+uNIVNvwdh8UwI0cnc7WI6a+aQcDp8GL80qVfeB4E5NpsKJzou5jU0r6yLSSbMOtA==
+"@keyv/bigmap@^1.3.0":
+  version "1.3.0"
+  resolved "http://npm.lumigame.com/@keyv/bigmap/-/bigmap-1.3.0.tgz#f06d9bb38488a59f012cd2758e6f429dfd312fb5"
+  integrity sha512-KT01GjzV6AQD5+IYrcpoYLkCu1Jod3nau1Z7EsEuViO3TZGRacSbO9MfHmbJ1WaOXFtWLxPVj169cn2WNKPkIg==
   dependencies:
-    hookified "^1.12.1"
+    hashery "^1.2.0"
+    hookified "^1.13.0"
 
 "@keyv/serialize@^1.1.1":
   version "1.1.1"
-  resolved "https://npm.lumigame.com/@keyv/serialize/-/serialize-1.1.1.tgz#0c01dd3a3483882af7cf3878d4e71d505c81fc4a"
+  resolved "http://npm.lumigame.com/@keyv/serialize/-/serialize-1.1.1.tgz#0c01dd3a3483882af7cf3878d4e71d505c81fc4a"
   integrity sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==
 
 "@lukeed/csprng@^1.0.0":
@@ -2859,15 +2855,15 @@ cacheable-request@^10.2.8:
     responselike "^3.0.0"
 
 cacheable@^2.0.0:
-  version "2.0.2"
-  resolved "https://npm.lumigame.com/cacheable/-/cacheable-2.0.2.tgz#25b71b64068e7e5e6be89231eaa42e0003fcc9c0"
-  integrity sha512-dWjhLx8RWnPsAWVKwW/wI6OJpQ/hSVb1qS0NUif8TR9vRiSwci7Gey8x04kRU9iAF+Rnbtex5Kjjfg/aB5w8Pg==
+  version "2.3.0"
+  resolved "http://npm.lumigame.com/cacheable/-/cacheable-2.3.0.tgz#4b4737cfff71df9834d8be75284860bf3abc85ec"
+  integrity sha512-HHiAvOBmlcR2f3SQ7kdlYD8+AUJG+wlFZ/Ze8tl1Vzvz0MdOh8IYA/EFU4ve8t1/sZ0j4MGi7ST5MoTwHessQA==
   dependencies:
-    "@cacheable/memoize" "^2.0.2"
-    "@cacheable/memory" "^2.0.2"
-    "@cacheable/utils" "^2.0.2"
-    hookified "^1.12.1"
-    keyv "^5.5.2"
+    "@cacheable/memory" "^2.0.6"
+    "@cacheable/utils" "^2.3.2"
+    hookified "^1.13.0"
+    keyv "^5.5.4"
+    qified "^0.5.2"
 
 call-bind-apply-helpers@^1.0.1, call-bind-apply-helpers@^1.0.2:
   version "1.0.2"
@@ -4049,6 +4045,13 @@ has-tostringtag@^1.0.2:
   dependencies:
     has-symbols "^1.0.3"
 
+hashery@^1.2.0:
+  version "1.3.0"
+  resolved "http://npm.lumigame.com/hashery/-/hashery-1.3.0.tgz#2af169f1698efc92bf9235c4880eec92cc5b5107"
+  integrity sha512-fWltioiy5zsSAs9ouEnvhsVJeAXRybGCNNv0lvzpzNOSDbULXRy7ivFWwCCv4I5Am6kSo75hmbsCduOoc2/K4w==
+  dependencies:
+    hookified "^1.13.0"
+
 hasown@^2.0.2:
   version "2.0.2"
   resolved "http://npm.lumigame.com/hasown/-/hasown-2.0.2.tgz#003eaf91be7adc372e84ec59dc37252cedb80003"
@@ -4056,10 +4059,10 @@ hasown@^2.0.2:
   dependencies:
     function-bind "^1.1.2"
 
-hookified@^1.12.1:
-  version "1.12.1"
-  resolved "https://npm.lumigame.com/hookified/-/hookified-1.12.1.tgz#b0de0116ca346fd6c4e55db901f52d5cd728ef00"
-  integrity sha512-xnKGl+iMIlhrZmGHB729MqlmPoWBznctSQTYCpFKqNsCgimJQmithcW0xSQMMFzYnV2iKUh25alswn6epgxS0Q==
+hookified@^1.13.0:
+  version "1.13.0"
+  resolved "http://npm.lumigame.com/hookified/-/hookified-1.13.0.tgz#fa7f8ab04897d77eecba52f35fe29e3d1f97dbbf"
+  integrity sha512-6sPYUY8olshgM/1LDNW4QZQN0IqgKhtl/1C8koNZBJrKLBk3AZl6chQtNwpNztvfiApHMEwMHek5rv993PRbWw==
 
 html-escaper@^2.0.0:
   version "2.0.2"
@@ -4822,10 +4825,10 @@ keyv@^4.5.3, keyv@^4.5.4:
   dependencies:
     json-buffer "3.0.1"
 
-keyv@^5.5.2:
-  version "5.5.2"
-  resolved "https://npm.lumigame.com/keyv/-/keyv-5.5.2.tgz#942348b882e08a27429688897eec4f735f75a978"
-  integrity sha512-TXcFHbmm/z7MGd1u9ASiCSfTS+ei6Z8B3a5JHzx3oPa/o7QzWVtPRpc4KGER5RR469IC+/nfg4U5YLIuDUua2g==
+keyv@^5.5.4:
+  version "5.5.5"
+  resolved "http://npm.lumigame.com/keyv/-/keyv-5.5.5.tgz#a975b32fc03e300a0e443c705b103d8b05220834"
+  integrity sha512-FA5LmZVF1VziNc0bIdCSA1IoSVnDCqE8HJIZZv2/W8YmoAM50+tnUgJR/gQZwEeIMleuIOnRnHA/UaZRNeV4iQ==
   dependencies:
     "@keyv/serialize" "^1.1.1"
 
@@ -5589,6 +5592,13 @@ pure-rand@^6.0.0:
   version "6.1.0"
   resolved "https://npm.lumigame.com/pure-rand/-/pure-rand-6.1.0.tgz#d173cf23258231976ccbdb05247c9787957604f2"
   integrity sha512-bVWawvoZoBYpp6yIoQtQXHZjmz35RSVHnUOTefl8Vcjr8snTPY1wnpSPMWekcFwbxI6gtmT7rSYPFvz71ldiOA==
+
+qified@^0.5.2:
+  version "0.5.3"
+  resolved "http://npm.lumigame.com/qified/-/qified-0.5.3.tgz#2d01866eb99c8de3a18965a4a809d9349e26210a"
+  integrity sha512-kXuQdQTB6oN3KhI6V4acnBSZx8D2I4xzZvn9+wFLLFCoBNQY/sFnCW6c43OL7pOQ2HvGV4lnWIXNmgfp7cTWhQ==
+  dependencies:
+    hookified "^1.13.0"
 
 qs@^6.11.2, qs@^6.14.0:
   version "6.14.0"
